@@ -149,16 +149,23 @@ def parse_morador_2017(caminho: Path) -> pd.DataFrame:
     return morador
 
 
+def _gravar_interim(
+    edicao: str, consumo: pd.DataFrame, morador: pd.DataFrame, pasta_saida: Path
+) -> tuple[Path, Path]:
+    """Valida os dois frames no esquema comum e grava os parquets da edição."""
+    pasta_saida.mkdir(parents=True, exist_ok=True)
+    destino_consumo = pasta_saida / f"consumo_{edicao}.parquet"
+    destino_morador = pasta_saida / f"morador_{edicao}.parquet"
+    validar_consumo(consumo).to_parquet(destino_consumo, index=False)
+    validar_morador(morador).to_parquet(destino_morador, index=False)
+    return destino_consumo, destino_morador
+
+
 def gravar_interim_2017(pasta_bruta: Path, pasta_saida: Path) -> tuple[Path, Path]:
     """Lê os brutos de 2017-2018, valida no esquema comum e grava os dois parquets."""
-    pasta_saida.mkdir(parents=True, exist_ok=True)
-    consumo = validar_consumo(parse_consumo_2017(pasta_bruta / "CONSUMO_ALIMENTAR.txt"))
-    morador = validar_morador(parse_morador_2017(pasta_bruta / "MORADOR.txt"))
-    destino_consumo = pasta_saida / f"consumo_{EDICAO_2017}.parquet"
-    destino_morador = pasta_saida / f"morador_{EDICAO_2017}.parquet"
-    consumo.to_parquet(destino_consumo, index=False)
-    morador.to_parquet(destino_morador, index=False)
-    return destino_consumo, destino_morador
+    consumo = parse_consumo_2017(pasta_bruta / "CONSUMO_ALIMENTAR.txt")
+    morador = parse_morador_2017(pasta_bruta / "MORADOR.txt")
+    return _gravar_interim(EDICAO_2017, consumo, morador, pasta_saida)
 
 
 _DIAS_NUMERICOS: dict[str, int] = {str(n): n for n in range(1, 8)}
@@ -224,11 +231,6 @@ def parse_morador_2008(caminho: Path) -> pd.DataFrame:
 
 def gravar_interim_2008(pasta_bruta: Path, pasta_saida: Path) -> tuple[Path, Path]:
     """Lê os brutos de 2008-2009, valida no esquema comum e grava os dois parquets."""
-    pasta_saida.mkdir(parents=True, exist_ok=True)
-    consumo = validar_consumo(parse_consumo_2008(pasta_bruta / "T_CONSUMO_S.txt"))
-    morador = validar_morador(parse_morador_2008(pasta_bruta / "T_MORADOR_S.txt"))
-    destino_consumo = pasta_saida / f"consumo_{EDICAO_2008}.parquet"
-    destino_morador = pasta_saida / f"morador_{EDICAO_2008}.parquet"
-    consumo.to_parquet(destino_consumo, index=False)
-    morador.to_parquet(destino_morador, index=False)
-    return destino_consumo, destino_morador
+    consumo = parse_consumo_2008(pasta_bruta / "T_CONSUMO_S.txt")
+    morador = parse_morador_2008(pasta_bruta / "T_MORADOR_S.txt")
+    return _gravar_interim(EDICAO_2008, consumo, morador, pasta_saida)
