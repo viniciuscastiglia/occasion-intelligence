@@ -11,6 +11,7 @@ O que existe:
 - `Occasion_Intelligence_Pizza_Guarana.md`: o TAPI, enunciado do case.
 - `docs/superpowers/specs/2026-11-12-occasion-intelligence-design.md`: o design aprovado pelo autor em 12/11/2026. Ele prevalece sobre os resumos deste arquivo.
 - `docs/registro-de-decisoes.md`: como cada decisão foi tomada, com as alternativas descartadas e os motivos.
+- `docs/superpowers/plans/2026-11-12-plano-1-dados-e-caminho-inteiro.md`: o Plano 1, aprovado e ainda não executado. Vai dos microdados até a tela funcionando com a tabela de taxas. Os planos 2 (modelos, teste final e Trends) e 3 (tela completa, briefing e documentação) são escritos depois que o Plano 1 rodar.
 
 A stack está definida na seção 16 do design: Python 3.12 fixado pelo `uv`, pandas, pandera, scikit-learn, LightGBM, SHAP, pytest, Hypothesis, Pydantic, Streamlit e FastAPI.
 
