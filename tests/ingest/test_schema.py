@@ -1,8 +1,10 @@
 """Testes dos esquemas comuns de consumo e morador (contrato entre as duas edições)."""
 
+from collections.abc import Callable
+
 import pandas as pd
 import pytest
-from pandera.errors import SchemaError, SchemaErrors
+from pandera.errors import SchemaErrors
 
 from occasion.ingest.schema import (
     ESQUEMA_CONSUMO,
@@ -11,8 +13,17 @@ from occasion.ingest.schema import (
     validar_morador,
 )
 
-# Erros de colunas a mais ou a menos vêm agregados em SchemaErrors; os demais, em SchemaError.
-ERRO_DE_ESQUEMA = (SchemaError, SchemaErrors)
+
+def _exige_falha(validar: Callable[[pd.DataFrame], pd.DataFrame], df: pd.DataFrame, motivo: str):
+    """Exige SchemaErrors com ao menos uma falha da coluna ou da regra `motivo`.
+
+    Alterar uma chave pode quebrar também regras derivadas (estrato, id_pessoa), então não se
+    exige que `motivo` seja a única falha.
+    """
+    with pytest.raises(SchemaErrors) as excecao:
+        validar(df)
+    casos = excecao.value.failure_cases
+    assert ((casos["column"] == motivo) | (casos["check"] == motivo)).any(), casos
 
 
 def _chaves(edicao: str, quadro: int) -> dict[str, object]:
@@ -118,8 +129,7 @@ def test_esquemas_expostos() -> None:
 def test_consumo_valor_invalido_falha(coluna: str, valor: object, trecho: str) -> None:
     df = consumo_valido()
     df[coluna] = pd.Series([valor, valor], dtype=df[coluna].dtype)
-    with pytest.raises(ERRO_DE_ESQUEMA, match=trecho):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, trecho)
 
 
 @pytest.mark.parametrize(
@@ -133,8 +143,7 @@ def test_consumo_quadro_incompativel_com_a_edicao_falha(edicao: str, quadro: int
     # mantém ids coerentes para que só a regra do quadro seja violada
     df["id_pessoa"] = f"{edicao}|350000001|1|1|2"
     df["id_dia"] = df["id_pessoa"] + f"|{quadro}"
-    with pytest.raises(ERRO_DE_ESQUEMA, match="quadro_conforme_edicao"):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, "quadro_conforme_edicao")
 
 
 @pytest.mark.parametrize(
@@ -148,35 +157,30 @@ def test_consumo_quadro_incompativel_com_a_edicao_falha(edicao: str, quadro: int
 def test_consumo_campo_montado_incoerente_falha(coluna: str, valor: str, regra: str) -> None:
     df = consumo_valido().iloc[[0]].copy()
     df[coluna] = valor
-    with pytest.raises(ERRO_DE_ESQUEMA, match=regra):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, regra)
 
 
 def test_consumo_coluna_extra_falha() -> None:
     df = consumo_valido()
     df["extra"] = 1
-    with pytest.raises(ERRO_DE_ESQUEMA, match="extra"):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, "column_in_schema")
 
 
 def test_consumo_coluna_ausente_falha() -> None:
     df = consumo_valido().drop(columns=["peso_final"])
-    with pytest.raises(ERRO_DE_ESQUEMA, match="peso_final"):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, "column_in_dataframe")
 
 
 def test_consumo_nao_coage_tipos() -> None:
     df = consumo_valido()
     df["uf"] = df["uf"].astype(str)
-    with pytest.raises(ERRO_DE_ESQUEMA, match="uf"):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, "uf")
 
 
 def test_consumo_hora_float_falha() -> None:
     df = consumo_valido()
     df["hora"] = df["hora"].astype("float64")
-    with pytest.raises(ERRO_DE_ESQUEMA, match="hora"):
-        validar_consumo(df)
+    _exige_falha(validar_consumo, df, "hora")
 
 
 @pytest.mark.parametrize(
@@ -192,33 +196,28 @@ def test_consumo_hora_float_falha() -> None:
 def test_morador_valor_invalido_falha(coluna: str, valor: object) -> None:
     df = morador_valido()
     df[coluna] = valor
-    with pytest.raises(ERRO_DE_ESQUEMA, match=coluna):
-        validar_morador(df)
+    _exige_falha(validar_morador, df, coluna)
 
 
 def test_morador_id_pessoa_repetida_falha() -> None:
     df = morador_valido()
     df.loc[1, ["cod_informante", "id_pessoa"]] = [1, df.loc[0, "id_pessoa"]]
-    with pytest.raises(ERRO_DE_ESQUEMA, match="id_pessoa"):
-        validar_morador(df)
+    _exige_falha(validar_morador, df, "id_pessoa")
 
 
 def test_morador_id_pessoa_incoerente_falha() -> None:
     df = morador_valido()
     df.loc[0, "id_pessoa"] = "2017-2018|350000001|1|1|9"
-    with pytest.raises(ERRO_DE_ESQUEMA, match="id_pessoa_montado"):
-        validar_morador(df)
+    _exige_falha(validar_morador, df, "id_pessoa_montado")
 
 
 def test_morador_n_moradores_incoerente_falha() -> None:
     df = morador_valido()
     df["n_moradores_uc"] = 5
-    with pytest.raises(ERRO_DE_ESQUEMA, match="n_moradores_conforme_linhas"):
-        validar_morador(df)
+    _exige_falha(validar_morador, df, "n_moradores_conforme_linhas")
 
 
 def test_morador_coluna_extra_falha() -> None:
     df = morador_valido()
     df["extra"] = 1
-    with pytest.raises(ERRO_DE_ESQUEMA, match="extra"):
-        validar_morador(df)
+    _exige_falha(validar_morador, df, "column_in_schema")

@@ -117,10 +117,10 @@ ESQUEMA_MORADOR = pa.DataFrameSchema(
 
 
 def validar_consumo(df: pd.DataFrame) -> pd.DataFrame:
-    """Valida o quadro de consumo contra o esquema comum; levanta `SchemaError` se falhar."""
-    return ESQUEMA_CONSUMO.validate(df)
+    """Valida o quadro de consumo contra o esquema comum; levanta sempre `SchemaErrors` se falhar."""
+    return ESQUEMA_CONSUMO.validate(df, lazy=True)
 
 
 def validar_morador(df: pd.DataFrame) -> pd.DataFrame:
-    """Valida o quadro de moradores contra o esquema comum; levanta `SchemaError` se falhar."""
-    return ESQUEMA_MORADOR.validate(df)
+    """Valida o quadro de moradores contra o esquema comum; levanta sempre `SchemaErrors` se falhar."""
+    return ESQUEMA_MORADOR.validate(df, lazy=True)
