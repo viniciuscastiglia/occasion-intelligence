@@ -24,13 +24,28 @@ def test_extrair_zip_preserva_nomes_com_acento(tmp_path: Path) -> None:
     assert [a.name for a in arquivos] == ["Dicionários de váriaveis.xls"]
 
 
-def test_extrair_zip_decodifica_nome_cp850_marcado_como_cp437(tmp_path: Path) -> None:
+def test_extrair_zip_decodifica_nome_cp850_com_bit_utf8_desligado(tmp_path: Path) -> None:
+    # O zipfile liga o bit de UTF-8 para nomes não ASCII; para simular o zip do IBGE, grava-se
+    # um nome ASCII de mesmo tamanho e trocam-se os bytes por cp850 (bit desligado).
     zip_path = tmp_path / "antigo.zip"
-    nome_cp850 = "Dicionários de variáveis.xls".encode("cp850").decode("cp437")
-    _criar_zip(zip_path, {nome_cp850: b"x"})
+    _criar_zip(zip_path, {"Classificacao.xls": b"x"})
+    bruto = zip_path.read_bytes().replace(b"Classificacao.xls", "Classificação.xls".encode("cp850"))
+    zip_path.write_bytes(bruto)
+    with zipfile.ZipFile(zip_path) as z:
+        assert z.infolist()[0].flag_bits & 0x800 == 0
+        assert z.namelist() == ["Classificação.xls".encode("cp850").decode("cp437")]
     arquivos = extrair_zip(zip_path, tmp_path / "saida")
-    assert [a.name for a in arquivos] == ["Dicionários de variáveis.xls"]
+    assert [a.name for a in arquivos] == ["Classificação.xls"]
     assert arquivos[0].read_bytes() == b"x"
+
+
+def test_extrair_zip_mantem_nome_com_bit_utf8_ligado(tmp_path: Path) -> None:
+    zip_path = tmp_path / "utf8.zip"
+    _criar_zip(zip_path, {"Classificação.xls": b"x"})
+    with zipfile.ZipFile(zip_path) as z:
+        assert z.infolist()[0].flag_bits & 0x800
+    arquivos = extrair_zip(zip_path, tmp_path / "saida")
+    assert [a.name for a in arquivos] == ["Classificação.xls"]
 
 
 def test_extrair_zip_recusa_caminho_fora_do_destino(tmp_path: Path) -> None:
