@@ -1,0 +1,47 @@
+[project]
+name = "occasion"
+version = "0.1.0"
+description = "Occasion Intelligence Pizza + Guaraná: score de ocasião e Decision Engine a partir da POF/IBGE"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pandas",
+    "pyarrow",
+    "pandera",
+    "scikit-learn",
+    "pydantic",
+    "streamlit",
+    "joblib",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "hypothesis",
+    "ruff",
+    "pyright",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/occasion"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-p", "pytester"]
+markers = [
+    "dados: precisa dos microdados em data/raw (pulado quando a pasta não existe)",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
