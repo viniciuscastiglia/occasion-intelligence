@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade
+.PHONY: ambiente teste teste-dados qualidade dados-brutos
 
 ambiente:
 	uv sync
@@ -11,3 +11,6 @@ teste-dados:
 
 qualidade:
 	uv run ruff check . && uv run pyright
+
+dados-brutos:
+	uv run python -m occasion.ingest.download
