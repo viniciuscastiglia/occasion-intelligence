@@ -528,7 +528,8 @@ O reajuste na base inteira nunca acontece sem o experimento de H9. Juntar as dua
 - **Coleta:** arquivos CSV exportados do site do Google Trends pelo autor do projeto, um por janela, e guardados no repositório com a data da extração, os termos e os filtros. A exportação pode ser feita a qualquer momento, porque não usa a POF. A biblioteca não oficial não é usada, porque costuma ser bloqueada.
 - **Linguagem:** o Trends é sempre descrito como interesse de busca. Nenhum texto o usa como evidência de consumo atual.
 - **Janelas:** o período de coleta de cada edição da POF, conforme a documentação do IBGE, e os doze meses mais recentes.
-- **Limites declarados:** são 27 pontos; o volume de buscas em 2008-2009 era menor, e estados pequenos podem vir zerados; busca por marca tem outros motivos além de consumo.
+- **Como as datas são casadas:** a POF não tem data por registro, então não há cruzamento dia a dia. Cada janela do Trends cobre o período inteiro de coleta de uma edição, e a comparação é um valor por UF contra um valor por UF.
+- **Limites declarados:** são 27 pontos; o volume de buscas em 2008-2009 era menor, e estados pequenos podem vir zerados; em 2008-2009 uma parcela menor da população usava a internet, com perfil diferente do da população geral, então a comparação daquela edição é a mais fraca das duas; busca por marca tem outros motivos além de consumo. Avisos que o próprio site do Trends exibir sobre mudanças na coleta são anotados junto com cada arquivo.
 - **Extras, só se sobrar tempo:** sazonalidade ao longo do ano e conferência do padrão semanal, mostrados como contexto de interesse de busca.
 
 ---
