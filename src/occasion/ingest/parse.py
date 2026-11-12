@@ -10,6 +10,7 @@ from occasion.ingest.layouts import LAYOUTS, Campos
 from occasion.ingest.schema import validar_consumo, validar_morador
 
 EDICAO_2017 = "2017-2018"
+EDICAO_2008 = "2008-2009"
 
 _DIAS_DA_SEMANA: dict[str, int] = {
     "segunda-feira": 1,
@@ -67,10 +68,12 @@ def _inteiro(serie: pd.Series, campo: str) -> pd.Series:
     return serie.astype("int64")
 
 
-def _decimal(serie: pd.Series, campo: str) -> pd.Series:
+def _decimal(serie: pd.Series, campo: str, decimais: int = 0) -> pd.Series:
+    """Texto para float. Com ponto, converte direto; sem ponto, divide por 10**decimais."""
     if (serie == "").any():
         raise ValueError(f"{campo} vazio em {(serie == '').sum()} linhas")
-    return serie.astype("float64")
+    valor = serie.astype("float64")
+    return valor.where(serie.str.contains(".", regex=False), valor / 10**decimais)
 
 
 def _chaves(bruto: pd.DataFrame, edicao: str) -> pd.DataFrame:
@@ -153,6 +156,79 @@ def gravar_interim_2017(pasta_bruta: Path, pasta_saida: Path) -> tuple[Path, Pat
     morador = validar_morador(parse_morador_2017(pasta_bruta / "MORADOR.txt"))
     destino_consumo = pasta_saida / f"consumo_{EDICAO_2017}.parquet"
     destino_morador = pasta_saida / f"morador_{EDICAO_2017}.parquet"
+    consumo.to_parquet(destino_consumo, index=False)
+    morador.to_parquet(destino_morador, index=False)
+    return destino_consumo, destino_morador
+
+
+_DIAS_NUMERICOS: dict[str, int] = {str(n): n for n in range(1, 8)}
+
+
+def _com_chaves_2008(bruto: pd.DataFrame) -> pd.DataFrame:
+    """Acrescenta `UF`, `COD_UPA` (UF + NUM_SEQ + NUM_DV, com zeros) e normaliza o estrato.
+
+    Se o registro já traz `COD_UPA`, ele precisa ser igual ao montado (erro claro se divergir).
+    """
+    bruto = bruto.copy()
+    montado = (
+        _col(bruto, "COD_UF").str.zfill(2)
+        + _col(bruto, "NUM_SEQ").str.zfill(3)
+        + _col(bruto, "NUM_DV").str.zfill(1)
+    )
+    if "COD_UPA" in bruto:
+        divergentes = _col(bruto, "COD_UPA").str.zfill(6) != montado
+        if divergentes.any():
+            raise ValueError(f"COD_UPA diverge de UF+NUM_SEQ+NUM_DV em {divergentes.sum()} linhas")
+    bruto["UF"] = bruto["COD_UF"]
+    bruto["COD_UPA"] = montado
+    bruto["ESTRATO_POF"] = _col(bruto, "ESTRATO_POF").str.zfill(2)
+    return bruto
+
+
+def _local_2008(serie: pd.Series) -> pd.Series:
+    """V9018 (fonte do alimento): 1 dentro, 2 fora do domicílio; outro valor ou vazio é indeterminado."""
+    mapa = {"1": "em_casa", "2": "fora_de_casa"}
+    return serie.map(mapa).fillna("indeterminado")
+
+
+def parse_consumo_2008(caminho: Path) -> pd.DataFrame:
+    """Lê `T_CONSUMO_S.txt` (2008-2009) no esquema comum de consumo."""
+    bruto = _com_chaves_2008(ler_largura_fixa(caminho, LAYOUTS[EDICAO_2008]["consumo"]))
+    consumo = _chaves(bruto, EDICAO_2008)
+    consumo["quadro"] = _inteiro(_col(bruto, "NUM_QUADRO"), "NUM_QUADRO")
+    consumo["id_dia"] = consumo["id_pessoa"] + "|" + consumo["quadro"].astype(str)
+    consumo["cod_alimento"] = _inteiro(_col(bruto, "V9001"), "V9001")
+    consumo["hora"] = _hora(_col(bruto, "V9015"))
+    consumo["local"] = _local_2008(_col(bruto, "V9018"))
+    consumo["dia_semana"] = _mapear(
+        _col(bruto, "DIA_SEMANA"), _DIAS_NUMERICOS, "DIA_SEMANA"
+    ).astype("int64")
+    consumo["peso_final"] = _decimal(_col(bruto, "PESO_FINAL"), "PESO_FINAL", decimais=8)
+    consumo["renda_total_uc"] = _decimal(_col(bruto, "RENDA_TOTAL"), "RENDA_TOTAL", decimais=2)
+    return consumo
+
+
+def parse_morador_2008(caminho: Path) -> pd.DataFrame:
+    """Lê `T_MORADOR_S.txt` (2008-2009) no esquema comum de morador."""
+    bruto = _com_chaves_2008(ler_largura_fixa(caminho, LAYOUTS[EDICAO_2008]["morador"]))
+    morador = _chaves(bruto, EDICAO_2008)
+    situacao = {"1": "urbano", "2": "rural"}
+    morador["situacao"] = _mapear(_col(bruto, "TIPO_SITUACAO_REG"), situacao, "TIPO_SITUACAO_REG")
+    morador["idade"] = _inteiro(_col(bruto, "IDADE_ANOS"), "IDADE_ANOS")
+    sexo = {"1": "masculino", "2": "feminino"}
+    morador["sexo"] = _mapear(_col(bruto, "V0405"), sexo, "V0405")
+    chave_uc = ["cod_upa", "num_dom", "num_uc"]
+    morador["n_moradores_uc"] = morador.groupby(chave_uc)["cod_informante"].transform("size")
+    return morador
+
+
+def gravar_interim_2008(pasta_bruta: Path, pasta_saida: Path) -> tuple[Path, Path]:
+    """Lê os brutos de 2008-2009, valida no esquema comum e grava os dois parquets."""
+    pasta_saida.mkdir(parents=True, exist_ok=True)
+    consumo = validar_consumo(parse_consumo_2008(pasta_bruta / "T_CONSUMO_S.txt"))
+    morador = validar_morador(parse_morador_2008(pasta_bruta / "T_MORADOR_S.txt"))
+    destino_consumo = pasta_saida / f"consumo_{EDICAO_2008}.parquet"
+    destino_morador = pasta_saida / f"morador_{EDICAO_2008}.parquet"
     consumo.to_parquet(destino_consumo, index=False)
     morador.to_parquet(destino_morador, index=False)
     return destino_consumo, destino_morador

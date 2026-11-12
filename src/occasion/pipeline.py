@@ -4,9 +4,12 @@ import argparse
 from collections.abc import Sequence
 
 from occasion.config import DADOS_BRUTOS, DADOS_INTERIM
-from occasion.ingest.parse import gravar_interim_2017
+from occasion.ingest.parse import gravar_interim_2008, gravar_interim_2017
 
-_INTERIM_POR_EDICAO = {"2017-2018": gravar_interim_2017}
+_INTERIM_POR_EDICAO = {
+    "2008-2009": gravar_interim_2008,
+    "2017-2018": gravar_interim_2017,
+}
 
 
 def _interim(edicao: str) -> None:
