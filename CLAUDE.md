@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Estado do repositório
 
-Ainda não há código, stack definida, nem comandos de build, lint ou teste. O único arquivo é o TAPI (`Occasion_Intelligence_Pizza_Guarana.md`), o enunciado do case. Quando o código existir, registrar aqui os comandos reais; não inventar comandos antes disso.
+Ainda não há código nem comandos de build, lint ou teste. Quando o código existir, registrar aqui os comandos reais; não inventar comandos antes disso.
+
+O que existe:
+
+- `Occasion_Intelligence_Pizza_Guarana.md`: o TAPI, enunciado do case.
+- `docs/superpowers/specs/2026-11-12-occasion-intelligence-design.md`: o design aprovado pelo autor em 12/11/2026. Ele prevalece sobre os resumos deste arquivo.
+- `docs/registro-de-decisoes.md`: como cada decisão foi tomada, com as alternativas descartadas e os motivos.
+
+A stack está definida na seção 16 do design: Python 3.12 fixado pelo `uv`, pandas, pandera, scikit-learn, LightGBM, SHAP, pytest, Hypothesis, Pydantic, Streamlit e FastAPI.
 
 O projeto é individual, com entrega por volta de 25/11/2026 (duas semanas a partir de 11/11/2026). O escopo precisa caber nesse prazo: priorizar os entregáveis obrigatórios e reservar tempo para o vídeo, que é eliminatório.
 
@@ -47,14 +55,18 @@ A Ambev já tem dados de venda melhores que qualquer base pública, então o pro
 
 O Occasion Score tem duas partes:
 
-- **Parte 1, ocasião:** chance de pizza com refrigerante no mesmo horário, dado o contexto. Carrega o "quando".
-- **Parte 2, preferência:** chance de o refrigerante ser guaraná, dado o contexto. É treinada em todas as refeições com refrigerante, não só nas de pizza, porque pizza com guaraná sozinha tem poucos casos. Carrega o "quem e onde".
+- **Parte 1, ocasião:** chance de pizza com refrigerante no mesmo horário, dado o contexto. Carrega o "quando". A unidade é pessoa x dia x célula, em que a célula é uma faixa de horário combinada com o local (em casa ou fora). Horário e local só existem quando a pessoa come algo; com células, eles viram entradas legítimas.
+- **Parte 2, preferência:** chance de o refrigerante ser guaraná, dado o contexto. É treinada em todas as refeições com refrigerante, não só nas de pizza, porque pizza com guaraná sozinha tem poucos casos. Carrega o "quem e onde". A variável "tem pizza" entra no modelo e é fixada em "sim" na inferência.
 
-O Decision Engine escolhe a ativação pela combinação das duas partes. Promoção de pizza em app de delivery e influencers digitais são categorias de ativação, não o modelo. O briefing gerado por LLM a partir da decisão estruturada está no escopo, por decisão do autor do projeto, mesmo sendo opcional no TAPI.
+O score é o produto das duas partes, mostrado como posição de 0 a 100 entre os contextos da população de referência.
+
+O Decision Engine escolhe a ativação pela combinação das duas partes, em duas camadas: objetivo (sustentar, converter, criar ocasião ou não priorizar) e canal. Promoção de pizza em app de delivery e influencers digitais são categorias de ativação, não o modelo. O briefing gerado por LLM a partir da decisão estruturada está no escopo, por decisão do autor do projeto, mesmo sendo opcional no TAPI. O provedor é um serviço com interface compatível com a da OpenAI, como Groq ou NVIDIA NIM.
+
+O modelo avaliado é treinado em 2008-2009. Depois do teste final, a mesma receita é reajustada para a aplicação (modelo servido), conforme a seção 12 do design.
 
 ## Fonte de dados: POF/IBGE
 
-O ground truth é o bloco de Consumo Alimentar Pessoal da Pesquisa de Orçamentos Familiares. Cada linha é um alimento consumido por uma pessoa de 10 anos ou mais em um dia. A unidade de análise é pessoa x dia; treino na edição 2008-2009 e teste na 2017-2018.
+O ground truth é o bloco de Consumo Alimentar Pessoal da Pesquisa de Orçamentos Familiares. Cada linha é um alimento consumido por uma pessoa de 10 anos ou mais em um dia. A base parte de pessoa x dia; as unidades de modelagem estão em "Direção escolhida". Treino na edição 2008-2009 e teste na 2017-2018.
 
 Microdados públicos:
 
@@ -115,6 +127,8 @@ Contagens já conferidas nos microdados, úteis para validar o pipeline:
 
 Em 2017-2018 há 15.863 ocasiões com refrigerante: 27% com guaraná e 56% com cola (ponderado). Quando há pizza, o guaraná cai para 23% e a cola sobe para 64%.
 
+Esses percentuais são da edição de teste e já foram vistos. Eles não orientam o modelo sem serem refeitos em 2008-2009. Até a abertura do teste final, nenhuma outra estatística do target de 2017-2018 é calculada; as contagens da tabela continuam valendo como teste do parser.
+
 ### Armadilhas
 
 - **Sabor, não marca:** a POF registra "refrigerante de guaraná", nunca Guaraná Antarctica. Toda conclusão é sobre o sabor.
@@ -123,6 +137,8 @@ Em 2017-2018 há 15.863 ocasiões com refrigerante: 27% com guaraná e 56% com c
 - **Dias desbalanceados:** a amostra tem muito mais domingos (16.585) que sábados (3.862). Usar `PESO_FINAL` e não comparar contagens brutas entre dias.
 - **Nomes no zip da documentação:** os arquivos têm acentos em codificação antiga, e o `unzip` do macOS falha. Extrair com `zipfile` do Python.
 - **Base antiga:** a edição mais recente é de 2017-2018, anterior à expansão do delivery.
+- **Método de coleta diferente:** 2008-2009 usou registro alimentar preenchido pelo morador; 2017-2018 usou recordatório de 24 horas. A queda de desempenho no teste mistura mudança de hábito com mudança de método.
+- **Renda em reais não é comparável entre as edições:** usar a renda por pessoa em salários mínimos da data de referência de cada edição.
 
 ## Fluxo de trabalho com o superpowers
 
@@ -180,6 +196,8 @@ Além do código, o revisor confere:
 - **Target:** a definição de ocasião não mudou em relação ao Data Card.
 - **Linguagem:** nenhum texto afirma causalidade, e "guaraná" nunca é apresentado como a marca Guaraná Antarctica.
 - **LLM:** o briefing só usa fatores que vieram da camada analítica.
+- **Teste:** a receita não muda depois do teste final, e o modelo servido só é reajustado depois de o resultado estar commitado.
+- **Hipóteses:** cada hipótese da seção 7 do design foi commitada antes da etapa em que é testada.
 
 ### Quando um número não bate
 
@@ -191,11 +209,15 @@ Usar `superpowers:systematic-debugging`. Se uma contagem divergir da tabela de r
 - `pyright-lsp` (checagem de tipos em Python): código novo leva anotações de tipo nas funções públicas, e os diagnósticos do Pyright são resolvidos antes de dar a tarefa como pronta. O Pyright está em `~/.local/bin`.
 - `claude-md-management`: ao fim de cada etapa do pipeline, rodar `/revise-claude-md` para registrar aqui o que a etapa ensinou (comandos reais, decisões, armadilhas). Usar a skill `claude-md-improver` para auditar este arquivo quando ele crescer.
 - `dataviz`: carregar antes de escrever qualquer gráfico, na EDA ou na aplicação.
-- `claude-api`: carregar antes de escrever o código do briefing por LLM.
+- Briefing por LLM: o provedor não é a Anthropic, então a skill `claude-api` não se aplica. Consultar pelo `context7` a documentação do provedor escolhido (Groq ou NVIDIA NIM) e da biblioteca cliente.
 - `frontend-design` ou `impeccable`: só se a interface não for Streamlit.
 
 ## Em aberto
 
-- Stack, formato da aplicação e regras exatas do Decision Engine.
-- Comparabilidade entre as duas edições da POF (o método de coleta pode ter mudado) e estabilidade da preferência guaraná x cola em 2008-2009.
-- Uso da "mesa" (moradores do mesmo domicílio comendo pizza no mesmo horário) como unidade para recomendar formato de embalagem.
+As decisões de stack, formato da aplicação e Decision Engine estão fechadas no design. Falta conferir nos dados:
+
+- Posições dos campos e listas de códigos de alimento da edição 2008-2009.
+- Se algum registro informa o trimestre da coleta.
+- Datas de referência e de coleta de cada edição, para a renda em salários mínimos e para as janelas do Google Trends.
+
+Fora do escopo, citados no README como próximos passos: a "mesa" (moradores do mesmo domicílio comendo pizza no mesmo horário), o coletor de cardápios de delivery e a POF 2024-2025.
