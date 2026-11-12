@@ -4,10 +4,11 @@ from pathlib import Path
 from typing import cast
 
 import pandas as pd
+import pandera.errors
 import pytest
 
 from occasion.config import DADOS_INTERIM
-from occasion.ingest.parse import parse_consumo_2008, parse_morador_2008
+from occasion.ingest.parse import _gravar_interim, parse_consumo_2008, parse_morador_2008
 from occasion.ingest.schema import validar_consumo, validar_morador
 
 # Posições (base 1, tamanho) escritas aqui de propósito, independentes de layouts.py.
@@ -203,6 +204,16 @@ def test_sexo_desconhecido_falha(tmp_path):
 def test_cod_upa_divergente_entre_campos_do_morador_falha(tmp_path):
     with pytest.raises(ValueError, match="COD_UPA"):
         parse_morador_2008(_escrever(tmp_path, [_linha_morador(COD_UPA="350124")]))
+
+
+def test_morador_invalido_nao_grava_nenhum_parquet(tmp_path):
+    consumo = parse_consumo_2008(_escrever(tmp_path, [_linha_consumo()], "c.txt"))
+    morador = parse_morador_2008(_escrever(tmp_path, [_linha_morador()], "m.txt"))
+    morador["n_moradores_uc"] = 5  # diverge do número de linhas da unidade de consumo
+    saida = tmp_path / "saida"
+    with pytest.raises(pandera.errors.SchemaErrors):
+        _gravar_interim("2008-2009", consumo, morador, saida)
+    assert not saida.exists() or list(saida.iterdir()) == []
 
 
 @pytest.mark.dados

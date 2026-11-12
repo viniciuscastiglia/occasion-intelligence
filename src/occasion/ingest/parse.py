@@ -152,12 +152,17 @@ def parse_morador_2017(caminho: Path) -> pd.DataFrame:
 def _gravar_interim(
     edicao: str, consumo: pd.DataFrame, morador: pd.DataFrame, pasta_saida: Path
 ) -> tuple[Path, Path]:
-    """Valida os dois frames no esquema comum e grava os parquets da edição."""
+    """Valida os dois frames no esquema comum e só então grava os parquets da edição.
+
+    Se qualquer um falhar na validação, nenhum arquivo é gravado.
+    """
+    consumo = validar_consumo(consumo)
+    morador = validar_morador(morador)
     pasta_saida.mkdir(parents=True, exist_ok=True)
     destino_consumo = pasta_saida / f"consumo_{edicao}.parquet"
     destino_morador = pasta_saida / f"morador_{edicao}.parquet"
-    validar_consumo(consumo).to_parquet(destino_consumo, index=False)
-    validar_morador(morador).to_parquet(destino_morador, index=False)
+    consumo.to_parquet(destino_consumo, index=False)
+    morador.to_parquet(destino_morador, index=False)
     return destino_consumo, destino_morador
 
 
