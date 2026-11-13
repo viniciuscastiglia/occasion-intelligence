@@ -6,6 +6,7 @@ from collections.abc import Sequence
 
 import pandas as pd
 
+from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
 from occasion.config import (
     DADOS_BRUTOS,
@@ -54,6 +55,24 @@ def _ocasioes(edicao: str) -> None:
     _atualizar_relatorio(edicao, {"itens_sem_hora": int(ocasioes.attrs["itens_sem_hora"])})
 
 
+def _modelagem(edicao: str) -> None:
+    pessoa_dia = pd.read_parquet(DADOS_PROCESSADOS / f"pessoa_dia_{edicao}.parquet")
+    ocasioes = pd.read_parquet(DADOS_PROCESSADOS / f"ocasioes_{edicao}.parquet")
+    celulas = montar_celulas(pessoa_dia, ocasioes)
+    ocasioes_refri = montar_ocasioes_refri(pessoa_dia, ocasioes)
+    for nome, quadro in (("celulas", celulas), ("ocasioes_refri", ocasioes_refri)):
+        destino = DADOS_PROCESSADOS / f"{nome}_{edicao}.parquet"
+        quadro.to_parquet(destino, index=False)
+        print(f"gravado: {destino} ({len(quadro)} linhas)")
+    _atualizar_relatorio(
+        edicao,
+        {
+            "dias_positivos_excluidos": int(celulas.attrs["dias_positivos_excluidos"]),
+            "ocasioes_excluidas": int(ocasioes_refri.attrs["ocasioes_excluidas"]),
+        },
+    )
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="occasion.pipeline", description=__doc__)
     subcomandos = parser.add_subparsers(dest="comando", required=True)
@@ -65,12 +84,19 @@ def main(argv: Sequence[str] | None = None) -> None:
         "ocasioes", help="monta ocasiões e a base pessoa x dia a partir dos parquets interim"
     )
     ocasioes.add_argument("--edicao", choices=EDICOES, help="padrão: as duas edições")
+    modelagem = subcomandos.add_parser(
+        "modelagem", help="monta as bases de células (parte 1) e de ocasiões com refrigerante"
+    )
+    modelagem.add_argument("--edicao", choices=EDICOES, help="padrão: as duas edições")
     args = parser.parse_args(argv)
     if args.comando == "interim":
         _interim(args.edicao)
     elif args.comando == "ocasioes":
         for edicao in [args.edicao] if args.edicao else EDICOES:
             _ocasioes(edicao)
+    elif args.comando == "modelagem":
+        for edicao in [args.edicao] if args.edicao else EDICOES:
+            _modelagem(edicao)
 
 
 if __name__ == "__main__":
