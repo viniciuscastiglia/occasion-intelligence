@@ -123,16 +123,42 @@ def formulario() -> Contexto | None:
     )
 
 
-def _rotulo_fator(f: Fator) -> str:
+ROTULOS_REGIAO = {
+    "norte": "Norte", "nordeste": "Nordeste", "sudeste": "Sudeste", "sul": "Sul",
+    "centro_oeste": "Centro-Oeste",
+}  # fmt: skip
+_ROTULOS_DO_VALOR: dict[str, dict[str, str]] = {
+    "dia_semana": ROTULOS_DIA,
+    "faixa_horario": {c: r.lower() for c, r in ROTULOS_HORARIO.items()},
+    "local": {c: r.lower() for c, r in ROTULOS_LOCAL.items()},
+    "situacao": {c: r.lower() for c, r in ROTULOS_SITUACAO.items()},
+    "sexo": {c: r.lower() for c, r in ROTULOS_SEXO.items()},
+    "regiao": ROTULOS_REGIAO,
+}
+ALTURA_POR_FATOR = 36
+
+
+def valor_legivel(variavel: str, valor: str) -> str:
+    """Valor do fator em texto legível: sem códigos com sublinhado."""
+    if variavel == "renda_pc_sm":
+        try:
+            return f"{float(valor):.1f} salário mínimo por pessoa".replace(".", ",")
+        except ValueError:
+            pass
+    rotulos = _ROTULOS_DO_VALOR.get(variavel, {})
+    return rotulos.get(valor, valor.replace("_", " "))
+
+
+def rotulo_do_fator(f: Fator) -> str:
     variavel = ROTULOS_VARIAVEL.get(f.variavel, f.variavel)
-    return f"{variavel} = {f.valor} ({ROTULOS_PARTE[f.parte]})"
+    return f"{variavel}: {valor_legivel(f.variavel, f.valor)} ({ROTULOS_PARTE[f.parte]})"
 
 
-def grafico_fatores(fatores: list[Fator]) -> alt.Chart:
-    """Barras horizontais das contribuições em log-chances; a cor e o texto dizem a direção."""
-    tabela = pd.DataFrame(
+def tabela_fatores(fatores: list[Fator]) -> pd.DataFrame:
+    """Uma linha por fator, com rótulo legível único, contribuição e direção."""
+    return pd.DataFrame(
         {
-            "fator": [_rotulo_fator(f) for f in fatores],
+            "fator": [rotulo_do_fator(f) for f in fatores],
             "contribuicao": [f.contribuicao for f in fatores],
             "direção": [
                 "aumenta a chance" if f.direcao == "aumenta" else "diminui a chance"
@@ -140,12 +166,22 @@ def grafico_fatores(fatores: list[Fator]) -> alt.Chart:
             ],
         }
     )
+
+
+def grafico_fatores(fatores: list[Fator]) -> alt.Chart:
+    """Barras horizontais das contribuições em log-chances; a cor e o texto dizem a direção."""
+    tabela = tabela_fatores(fatores)
     return (
         alt.Chart(tabela)
         .mark_bar(size=18, cornerRadiusEnd=4)
         .encode(
             x=alt.X("contribuicao:Q", title="Contribuição (log-chances)"),
-            y=alt.Y("fator:N", sort=None, title=None, axis=alt.Axis(labelLimit=320)),
+            y=alt.Y(
+                "fator:N",
+                sort=None,
+                title=None,
+                axis=alt.Axis(labelLimit=400, labelOverlap=False),
+            ),
             color=alt.Color(
                 "direção:N",
                 scale=alt.Scale(
@@ -156,7 +192,7 @@ def grafico_fatores(fatores: list[Fator]) -> alt.Chart:
             ),
             tooltip=["fator", "direção", alt.Tooltip("contribuicao:Q", format="+.3f")],
         )
-        .properties(height=40 * len(tabela) + 40)
+        .properties(height=alt.Step(ALTURA_POR_FATOR))
     )
 
 
@@ -229,4 +265,5 @@ def main() -> None:
         st.json(resultado.model_dump())
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -6,6 +6,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 from tests.inference.test_predict import _artefato_unico
 
+from occasion.inference.contract import Fator
 from occasion.inference.predict import ArtefatoModelo, salvar_artefato
 
 CAMINHO_APP = str(Path(__file__).resolve().parents[2] / "app" / "streamlit_app.py")
@@ -38,3 +39,35 @@ def test_tela_sem_artefato_mostra_instrucao_e_nao_quebra(sem_artefato: None) -> 
     at = AppTest.from_file(CAMINHO_APP).run()
     assert not at.exception
     assert any("make baseline" in e.value for e in at.error)
+
+
+def _fatores_exemplo() -> list[Fator]:
+    itens = [
+        ("ocasiao", "faixa_horario", "noite"),
+        ("ocasiao", "dia_semana", "sabado"),
+        ("ocasiao", "local", "em_casa"),
+        ("preferencia", "regiao", "centro_oeste"),
+        ("preferencia", "local", "fora_de_casa"),
+    ]
+    return [
+        Fator(
+            parte=parte,  # type: ignore[arg-type]
+            variavel=variavel,
+            valor=valor,
+            direcao="aumenta" if i % 2 == 0 else "diminui",
+            contribuicao=0.5 - i * 0.2,
+        )
+        for i, (parte, variavel, valor) in enumerate(itens)
+    ]
+
+
+def test_grafico_tem_um_rotulo_legivel_por_fator() -> None:
+    from app.streamlit_app import ALTURA_POR_FATOR, grafico_fatores, tabela_fatores
+
+    fatores = _fatores_exemplo()
+    tabela = tabela_fatores(fatores)
+    assert len(tabela) == len(fatores)
+    assert tabela["fator"].is_unique
+    assert not any("_" in rotulo for rotulo in tabela["fator"])
+    assert "centro-oeste" in " ".join(tabela["fator"]).lower()
+    assert grafico_fatores(fatores).to_dict()["height"] == {"step": ALTURA_POR_FATOR}
