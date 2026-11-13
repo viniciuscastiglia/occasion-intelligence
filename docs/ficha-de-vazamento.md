@@ -6,7 +6,7 @@ Instante de previsão: o momento do planejamento da ativação, antes de a ocasi
 |---|---|---|
 | `dia_semana` | 1 e 2 | O planejador escolhe o dia da ativação. Não depende do consumo. |
 | `faixa_horario` | 1 e 2 | Na parte 1 é a própria célula, que existe mesmo quando nada foi consumido nela (spec, 5.2); com uma linha por pessoa e dia, usá-la seria vazamento. Na parte 2 é o horário da ocasião que se quer ativar, escolhido no planejamento. |
-| `local` | 1 e 2 | Mesmo argumento da faixa: na parte 1 é a célula (em casa ou fora de casa); na parte 2 é o local da ocasião que se quer ativar. |
+| `local` | 1 e 2 | Mesmo argumento da faixa: na parte 1 é a célula (em casa ou fora de casa); na parte 2 é o local da ocasião que se quer ativar. Limite da fonte: o `V9018` não mede a mesma coisa nas duas edições. Em 2008-2009 é a fonte do alimento (1 = dentro do domicílio, 2 = fora); em 2017-2018 é o local da refeição (1 = em casa ou levado de casa, 2 a 7 = fora). A comparação entre edições carrega essa diferença. |
 | `uf` | 1 e 2 | Atributo do público-alvo da ativação, conhecido de antemão. |
 | `regiao` | 1 e 2 | Derivada da UF pelo primeiro dígito do código IBGE (`regiao_da_uf`). Sem informação de consumo. |
 | `situacao` | 1 e 2 | Área urbana ou rural: atributo do público, conhecido de antemão. |

@@ -107,6 +107,8 @@ O teste já foi olhado antes deste design, e isso precisa ficar registrado:
 - A participação de guaraná (27%) e cola (56%) nas ocasiões com refrigerante, e a queda do guaraná para 23% quando há pizza.
 - Uma leitura descritiva de que o guaraná é mais forte no Nordeste, na renda baixa e entre pessoas de 60 anos ou mais, e mais fraco no Sul, na renda alta e entre 18 e 29 anos; e de que dia e horário quase não mudam a preferência.
 
+> Nota de 13/11/2026: os percentuais de 2017-2018 citados nesta seção foram calculados com a lista antiga de refrigerantes (decisão R13, seção 25 do registro de decisões).
+
 Consequências:
 
 - Nenhuma dessas observações pode orientar o desenho do modelo sem ser refeita em 2008-2009.
@@ -124,6 +126,8 @@ Os nomes de pasta e de arquivo são sugestão; quem implementa pode ajustar, des
 | Esquema comum | Os quatro arquivos acima | Mesmas colunas, tipos e códigos nas duas edições | Validação de esquema passa nas duas |
 | Base da parte 1 | Esquema comum | `data/processed/celulas_<edição>.parquet`: uma linha por pessoa, dia e célula | Número de linhas igual a dias-pessoa vezes número de células; soma dos positivos compatível com as contagens de referência |
 | Base da parte 2 | Esquema comum | `data/processed/ocasioes_refri_<edição>.parquet`: uma linha por ocasião com refrigerante | Em 2017-2018, 15.863 ocasiões |
+
+> **Emenda de 13/11/2026.** Os critérios de aceite de contagem desta tabela passaram a ser os números novos, pelas decisões R12 (a ocasião é dia + hora nas duas edições) e R13 (refrigerante definido pelo produto, com a mesma regra nas duas edições), aprovadas pelo autor em 12/11/2026. Em 2017-2018: 85.018 dias-pessoa, 1.681 com pizza, 797 com pizza e refrigerante, 180 com pizza e guaraná e 16.122 ocasiões com refrigerante. Em 2008-2009: 66.903, 1.149, 651, 101 e 19.182 ocasiões. As listas antigas, com a chave dia + hora, reproduzem 635/101 (2008-2009) e 793/180/15.863 (2017-2018), o que conferiu os parsers. Ver a seção 25 do `docs/registro-de-decisoes.md` e a tabela de números de referência do `CLAUDE.md`. O texto original da tabela fica como foi aprovado.
 
 Pontos de atenção para os parsers:
 

@@ -36,6 +36,7 @@ Os assuntos estão na ordem em que apareceram. Cada um indica quem decidiu: o au
 | 22 | Segunda verificação das edições da POF | Confirmado: só duas edições têm consumo individual |
 | 23 | Ajustes feitos ao escrever o design | Três correções e as escolhas do redator |
 | 24 | Revisão independente do design | Sete perguntas respondidas e nove inconsistências corrigidas |
+| 25 | Decisões durante a execução do Plano 1 | R12 e R13 (target), R9, R11 e R14 (escolhas do executor) |
 
 ---
 
@@ -590,6 +591,38 @@ Ao escrever o design, o Claude leu o TAPI por inteiro e fez três correções em
 **9. Juntar as edições no modelo servido.** O revisor lembrou que o próprio design declara a troca de método de coleta, e que a salvaguarda está na ordem de corte. Correção: o design diz expressamente que o reajuste na base inteira nunca acontece sem a salvaguarda; se ela for cortada, vale o plano B. A junção das edições entra como limite declarado.
 
 **Pendência no `CLAUDE.md`.** O revisor também notou que o `CLAUDE.md` manda carregar a skill da API do Claude para o briefing, enquanto o design usa outro provedor. A atualização do `CLAUDE.md` fica para depois da aprovação do design.
+
+---
+
+## 25. Decisões durante a execução do Plano 1
+
+Duas decisões mudaram a definição do target e foram aprovadas pelo autor em 12/11/2026. Três escolhas menores ficaram com o executor e estão marcadas.
+
+### R12. A ocasião é dia + hora nas duas edições
+
+**Decisão (decidido pelo autor).** A ocasião é a chave do dia mais o horário (`V9015`), nas duas edições.
+
+**Motivo.** Os números antigos de 2017-2018 (783 e 176) vinham da chave dia + hora + refeição (`V9017`), campo que não existe em 2008-2009. Com chaves diferentes, as duas edições não medem a mesma coisa.
+
+**Evidência.** As listas antigas de códigos, com a chave dia + hora, reproduzem 635/101 em 2008-2009 e 793/180 e 15.863 ocasiões com refrigerante em 2017-2018. Isso conferiu o parser.
+
+**Alternativa descartada:** manter a refeição na chave em 2017-2018. A definição do target ficaria diferente entre treino e teste.
+
+### R13. Refrigerante é definido pelo produto, genérico ou de marca
+
+**Decisão (decidido pelo autor).** A mesma regra nas duas edições: conta como refrigerante o produto, genérico ou de marca, e os sabores registrados por marca entram.
+
+**Motivo.** As listas antigas não traziam os sabores registrados por marca, então subcontavam refrigerante e guaraná.
+
+**Evidência.** Números novos, com a chave dia + hora. Em 2017-2018: 85.018 dias-pessoa, 1.681 com pizza, 797 com pizza e refrigerante, 180 com pizza e guaraná, 16.122 ocasiões com refrigerante. Em 2008-2009: 66.903, 1.149, 651, 101 e 19.182 ocasiões.
+
+**Alternativa descartada:** manter as listas antigas, que seriam comparáveis ao `CLAUDE.md` original mas incompletas.
+
+### Escolhas do executor
+
+- **R9 (escolha do executor):** `ufs_midia_regional` inclui as UFs empatadas com a 7ª. No degrau A, que usa região na parte 2, isso dá as 9 UFs do Nordeste. Cortar em 7 seria arbitrário entre UFs com a mesma média.
+- **R11 (escolha do executor):** as dobras da validação adversarial são agrupadas por `cod_upa`, para a mesma UPA não cair em treino e validação ao mesmo tempo.
+- **R14 (escolha do executor):** `receita_commit` vem de `git describe --always --dirty`, para o artefato dizer de que versão do código saiu e se havia alterações não commitadas.
 
 ---
 

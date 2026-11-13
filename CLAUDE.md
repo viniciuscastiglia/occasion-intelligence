@@ -132,7 +132,7 @@ A fonte de verdade é `src/occasion/config.py` (`CODIGOS`), com a regra R13 come
 - **Guaraná e cola:** as mesmas listas de 2017-2018.
 - **Outros refrigerantes:** `8200202`, `8200204`, `8200208`, `8200407`, `8200505`, `8200902`, `8201202`, `8201302`, `8201402`, `8201502`, `8201504`, `8201508`, `8201702`, `8201802`, `8201902`, `8203501`, `8204902`, `8205402`, `8207601`, `8207705`, `8207902`, `8208202`, `8208302`, `8208402`, `8208502`, `8209002`, `8209102`, `8212902`, `8212906`.
 
-`8200308` e `8500608` são refresco de guaraná natural, não refrigerante. Mate (`8201104`, `8208104`, `8212802`) é chá e fica fora, assim como Q-Refresko, energéticos, isotônicos e águas.
+`8200308` e `8500608` são refresco de guaraná natural, não refrigerante. Mate (`8201104`, `8208104`, `8212802`; o `8212802` só existe no cadastro de 2017-2018) é chá e fica fora, assim como Q-Refresko, energéticos, isotônicos e águas.
 
 ### Diferenças da edição 2008-2009
 
