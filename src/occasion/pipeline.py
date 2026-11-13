@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import subprocess
 from collections.abc import Sequence
 
 import pandas as pd
@@ -13,9 +14,13 @@ from occasion.config import (
     DADOS_BRUTOS,
     DADOS_INTERIM,
     DADOS_PROCESSADOS,
+    EDICAO_TREINO,
     EDICOES,
+    MODELOS,
+    RAIZ,
     RELATORIOS,
 )
+from occasion.inference.predict import salvar_artefato, treinar_baseline
 from occasion.ingest.parse import gravar_interim_2008, gravar_interim_2017
 
 _INTERIM_POR_EDICAO = {
@@ -74,6 +79,20 @@ def _modelagem(edicao: str) -> None:
     )
 
 
+def _baseline() -> None:
+    celulas = pd.read_parquet(DADOS_PROCESSADOS / f"celulas_{EDICAO_TREINO}.parquet")
+    ocasioes_refri = pd.read_parquet(DADOS_PROCESSADOS / f"ocasioes_refri_{EDICAO_TREINO}.parquet")
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=RAIZ, capture_output=True, text=True, check=True
+    ).stdout.strip()
+    artefato = treinar_baseline(celulas, ocasioes_refri, commit)
+    destino = salvar_artefato(artefato, MODELOS / "avaliado")
+    print(f"gravado: {destino}")
+    print(f"taxa geral, parte 1: {artefato.modelo_p1.taxa_geral_:.6f}")
+    print(f"taxa geral, parte 2: {artefato.modelo_p2.taxa_geral_:.6f}")
+    print(f"UFs de mídia regional: {sorted(artefato.ufs_midia_regional)}")
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="occasion.pipeline", description=__doc__)
     subcomandos = parser.add_subparsers(dest="comando", required=True)
@@ -90,6 +109,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     )
     modelagem.add_argument("--edicao", choices=EDICOES, help="padrão: as duas edições")
     subcomandos.add_parser("auditoria", help="audita os dados e grava reports/auditoria.json")
+    subcomandos.add_parser("baseline", help="treina o degrau A em 2008-2009 e grava o artefato")
     args = parser.parse_args(argv)
     if args.comando == "interim":
         _interim(args.edicao)
@@ -102,6 +122,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     elif args.comando == "auditoria":
         rodar_auditoria()
         print(f"gravado: {RELATORIOS / 'auditoria.json'}")
+    elif args.comando == "baseline":
+        _baseline()
 
 
 if __name__ == "__main__":
