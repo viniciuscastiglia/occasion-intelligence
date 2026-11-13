@@ -31,6 +31,7 @@ packages = ["src/occasion"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = ["-p", "pytester"]
 markers = [
     "dados: precisa dos microdados em data/raw (pulado quando a pasta não existe)",
@@ -41,7 +42,7 @@ line-length = 100
 src = ["src", "tests"]
 
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "tests", "app"]
 pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
