@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos
+.PHONY: ambiente teste teste-dados qualidade dados-brutos auditoria
 
 ambiente:
 	uv sync
@@ -14,3 +14,6 @@ qualidade:
 
 dados-brutos:
 	uv run python -m occasion.ingest.download
+
+auditoria:
+	uv run python -m occasion.pipeline auditoria

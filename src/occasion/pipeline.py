@@ -6,6 +6,7 @@ from collections.abc import Sequence
 
 import pandas as pd
 
+from occasion.audit.auditoria import rodar_auditoria
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
 from occasion.config import (
@@ -88,6 +89,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         "modelagem", help="monta as bases de células (parte 1) e de ocasiões com refrigerante"
     )
     modelagem.add_argument("--edicao", choices=EDICOES, help="padrão: as duas edições")
+    subcomandos.add_parser("auditoria", help="audita os dados e grava reports/auditoria.json")
     args = parser.parse_args(argv)
     if args.comando == "interim":
         _interim(args.edicao)
@@ -97,6 +99,9 @@ def main(argv: Sequence[str] | None = None) -> None:
     elif args.comando == "modelagem":
         for edicao in [args.edicao] if args.edicao else EDICOES:
             _modelagem(edicao)
+    elif args.comando == "auditoria":
+        rodar_auditoria()
+        print(f"gravado: {RELATORIOS / 'auditoria.json'}")
 
 
 if __name__ == "__main__":

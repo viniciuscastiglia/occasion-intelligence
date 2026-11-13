@@ -1,0 +1,402 @@
+{
+  "disponibilidade": {
+    "celulas": {
+      "dia_semana": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "faixa_horario": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "local": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "uf": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "regiao": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "situacao": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "idade": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "sexo": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "renda_pc_sm": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "n_moradores_uc": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      }
+    },
+    "ocasioes_refri": {
+      "dia_semana": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "faixa_horario": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "local": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "uf": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "regiao": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "situacao": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "idade": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "sexo": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "renda_pc_sm": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      },
+      "n_moradores_uc": {
+        "2008-2009": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        },
+        "2017-2018": {
+          "presente": true,
+          "fracao_nulos": 0.0
+        }
+      }
+    }
+  },
+  "exclusoes": {
+    "2008-2009": {
+      "dias_positivos_excluidos": 0,
+      "itens_sem_hora": 0,
+      "ocasioes_excluidas": 0
+    },
+    "2017-2018": {
+      "dias_positivos_excluidos": 1,
+      "itens_sem_hora": 0,
+      "ocasioes_excluidas": 10
+    }
+  },
+  "tamanho_de_amostra": {
+    "edicao": "2008-2009",
+    "criterio": "Riley et al. 2019, critério (i), encolhimento 0,9",
+    "r2_cs_usado_como": "0.15 do R² de Cox-Snell máximo",
+    "contagens": "simples, sem peso amostral",
+    "parte1": {
+      "n": 669030,
+      "eventos": 654,
+      "r2_cs_maximo": 0.015384112442270892,
+      "r2_cs_usado": 0.0023076168663406335,
+      "parametros_sustentados": 171
+    },
+    "parte2": {
+      "n": 19182,
+      "eventos": 4684,
+      "r2_cs_maximo": 0.6710064868476051,
+      "r2_cs_usado": 0.10065097302714077,
+      "parametros_sustentados": 227
+    },
+    "parte2_recorte_pizza": {
+      "n": 655,
+      "eventos": 101,
+      "r2_cs_maximo": 0.5767728822761308,
+      "r2_cs_usado": 0.08651593234141962,
+      "parametros_sustentados": 6
+    }
+  },
+  "validacao_adversarial": {
+    "parte1": {
+      "auc": 0.6987168555555554,
+      "auc_por_dobra": [
+        0.6991067777777779,
+        0.6996165555555556,
+        0.7024735555555555,
+        0.6985207777777777,
+        0.6938666111111111
+      ],
+      "importancias": [
+        {
+          "variavel": "dia_semana",
+          "valor": 0.13006929980575757
+        },
+        {
+          "variavel": "uf",
+          "valor": 0.04667307505516387
+        },
+        {
+          "variavel": "renda_pc_sm",
+          "valor": 0.01629432020439093
+        },
+        {
+          "variavel": "n_moradores_uc",
+          "valor": 0.016206364647695287
+        },
+        {
+          "variavel": "idade",
+          "valor": 0.013993372780253189
+        },
+        {
+          "variavel": "situacao",
+          "valor": 0.010716436650775736
+        },
+        {
+          "variavel": "faixa_horario",
+          "valor": 0.0
+        },
+        {
+          "variavel": "local",
+          "valor": 0.0
+        },
+        {
+          "variavel": "regiao",
+          "valor": -3.361099187878894e-05
+        },
+        {
+          "variavel": "sexo",
+          "valor": -0.00010914384490747772
+        }
+      ],
+      "dobras": {
+        "n_dobras": 5,
+        "esquema": "StratifiedGroupKFold(shuffle=True)",
+        "agrupamento": "cod_upa",
+        "semente": 20261112
+      },
+      "importancia_metodo": "permutação, queda média da AUC, 3 repetições",
+      "linhas": {
+        "2008-2009": 150000,
+        "2017-2018": 150000
+      },
+      "amostragem": "15000 dias por edição (semente 20261112), com as 10 células de cada dia"
+    },
+    "parte2": {
+      "auc": 0.7100034540034288,
+      "auc_por_dobra": [
+        0.713158316609277,
+        0.7170006975411674,
+        0.7131619872304152,
+        0.6989608110257098,
+        0.7077354576105749
+      ],
+      "importancias": [
+        {
+          "variavel": "dia_semana",
+          "valor": 0.14043044589316883
+        },
+        {
+          "variavel": "uf",
+          "valor": 0.03569401967151925
+        },
+        {
+          "variavel": "renda_pc_sm",
+          "valor": 0.027212912146934026
+        },
+        {
+          "variavel": "idade",
+          "valor": 0.01238771885167176
+        },
+        {
+          "variavel": "n_moradores_uc",
+          "valor": 0.009572750664005047
+        },
+        {
+          "variavel": "situacao",
+          "valor": 0.003967080912563814
+        },
+        {
+          "variavel": "faixa_horario",
+          "valor": 0.0029478367708692865
+        },
+        {
+          "variavel": "local",
+          "valor": 0.00286382616166209
+        },
+        {
+          "variavel": "sexo",
+          "valor": 0.001073388132918181
+        },
+        {
+          "variavel": "regiao",
+          "valor": 0.00011551247713637766
+        }
+      ],
+      "dobras": {
+        "n_dobras": 5,
+        "esquema": "StratifiedGroupKFold(shuffle=True)",
+        "agrupamento": "cod_upa",
+        "semente": 20261112
+      },
+      "importancia_metodo": "permutação, queda média da AUC, 3 repetições",
+      "linhas": {
+        "2008-2009": 19182,
+        "2017-2018": 16112
+      },
+      "amostragem": "todas as ocasiões com refrigerante, sem amostragem"
+    }
+  },
+  "periodo_coleta": {
+    "pergunta": "algum registro informa o período da coleta?",
+    "2008-2009": {
+      "informa": true,
+      "campo": "PERIODO_REAL",
+      "registro": "T_DOMICILIO_S (domicílio; posição 41, tamanho 4)",
+      "descricao": "semana em que o domicílio foi efetivamente pesquisado, definida pelo primeiro dia de preenchimento da caderneta de despesa coletiva. Está no registro do domicílio, não no de consumo; a junção com o consumo não faz parte das bases atuais."
+    },
+    "2017-2018": {
+      "informa": false,
+      "campo": null,
+      "registro": null,
+      "descricao": "não há: os registros de consumo, morador e domicílio não trazem trimestre, mês nem data de coleta. O consumo só informa o dia da semana (DIA_SEMANA)."
+    },
+    "uso": "se existir, serve só para checar sazonalidade na EDA; nenhuma variável é criada aqui."
+  },
+  "definicoes": {
+    "local": {
+      "2008-2009": "V9018 é a fonte do alimento: 1 dentro e 2 fora do domicílio. Não é o local da refeição.",
+      "2017-2018": "V9018 é o local da refeição: 1 em casa e 2 a 7 fora de casa; 9 é não determinado, contado como exclusão.",
+      "consequencia": "as duas edições são mapeadas para em_casa e fora_de_casa, mas a medida não é a mesma; parte da diferença entre as edições pode vir daí."
+    },
+    "ocasiao": "dia + hora nas duas edições (decisão R12 do autor).",
+    "refrigerante": "definido pelo produto, genérico ou de marca, com a mesma regra nas duas edições (decisão R13 do autor, documentada em config.CODIGOS)."
+  }
+}
