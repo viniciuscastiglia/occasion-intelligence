@@ -5,6 +5,6 @@ __pycache__/
 data/raw/
 .impeccable/
 data/
-models/
+/models/
 reports/*
 !reports/auditoria*.json
