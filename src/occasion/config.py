@@ -50,20 +50,47 @@ def _faixa(inicio: int, fim: int) -> frozenset[int]:
 
 
 # Códigos de alimento por edição. `refri` é a união de guarana, cola e outros_refri.
-# `8200308` e `8500608` (2017-2018) são refresco de guaraná natural e ficam fora.
 #
-# 2017-2018: lista do CLAUDE.md, fixa.
+# Regra (decisão R13 do autor): "refrigerante" é definido pelo produto, com a mesma regra nas
+# duas edições. `guarana` e `cola` são os refrigerantes desses sabores, genéricos ou de marca.
+# `outros_refri` é todo refrigerante que não é cola nem guaraná, genérico ou de marca (Fanta,
+# Crush, Sukita, Sprite, Minuano, Bidu, Jaó, Aloa, Xodó da Bahia, Tubaína, Paraguai, laranja,
+# uva, limão, não especificado), mais água tônica e refrigerante de quinino (todas as versões)
+# e a "bebida refrigerante tipo H2O" (só em 2017-2018). Ficam fora nas duas edições: mate (é
+# chá), Q-Refresko, energéticos, isotônicos, águas, chocomilk, refrescos (`8200308`, `8500608`)
+# e chás. Bidu (possivelmente cola) e Jaó, Aloa e Xodó (sabor não informado no cadastro)
+# ficam em `outros_refri` porque o cadastro não dá o sabor.
+# Pizza: a mini pizza semipronta (`6502403`, `6506003`) só existe no cadastro de 2008-2009 e
+# fica fora, para manter as duas edições coerentes.
 #
-# 2008-2009: montada a partir do `Cadastro de Produtos do Consumo Alimentar.xls` da edição.
-# A lista é a que reproduz as três contagens de referência (1.149 dias com pizza, 635 com
-# pizza e refrigerante na mesma hora, 101 com pizza e guaraná na mesma hora).
-#   - Pizza: pizza e pizza light (8500903, 8500914-17, 8508003, 8508014-17). Os dois
-#     códigos em dúvida, `6502403` e `6506003` (mini pizza semipronta), ficaram FORA:
-#     com eles os dias com pizza passam de 1.149 para 1.249.
-#   - Outros refrigerantes: só os seis códigos do cadastro cuja descrição é refrigerante
-#     (8200407, 8203501, 8205402, 8207601, 8209102, 8212906). Os sabores sem a palavra
-#     "refrigerante" no nome (Fanta, Crush, Sukita, Bidu, Jaó, Tubaína etc.) ficaram FORA:
-#     com eles os dias com pizza e refrigerante passam de 635 para 651.
+# 2017-2018, `outros_refri` (código -> nome do cadastro):
+#   8200202 FANTA LARANJA TRADICIONAL; 8200208 SUKITA TRADICIONAL; 8200211 REFRIGERANTE DE
+#   LARANJA TRADICIONAL; 8200407 SPRITE REFRIGERANTE TRADICIONAL; 8200411 REFRIGERANTE DE LIMAO
+#   TRADICIONAL; 8200505 FANTA UVA TRADICIONAL; 8200507 REFRIGERANTE DE UVA TRADICIONAL;
+#   8200902 MINUANO TRADICIONAL; 8201017 BEBIDA REFRIGERANTE, TIPO H2O; 8201202 BIDU
+#   TRADICIONAL; 8201502 FANTA LARANJA LIGHT; 8201511 REFRIGERANTE DE LARANJA DIET; 8201802
+#   TUBAINA TRADICIONAL; 8201902 TUBAINA LIGHT; 8203501 REFRIGERANTE NAO ESPECIFICADO; 8204902
+#   AGUA TONICA TRADICIONAL; 8205402 PARAGUAI REFRIGERANTE TRADICIONAL; 8207501 REFRIGERANTE DE
+#   LIMAO LIGHT; 8207601 REFRIGERANTE DE LIMAO DIET; 8207701 REFRIGERANTE DE UVA DIET / LIGHT;
+#   8207705 FANTA UVA LIGHT; 8209002 AGUA TONICA LIGHT; 8209102 PARAGUAI REFRIGERANTE LIGHT;
+#   8212902 AGUA TONICA DIET; 8212906 REFRIGERANTE DE QUININO DIETETICO.
+#   Fora (limite): 8201104 MATE TRADICIONAL; 8208104 MATE LIGHT; 8212802 MATE DIET;
+#   8202403 Q-REFRESKO; 8211003 Q-REFRESKO LIGHT; 8200308 REFRESCO DE GUARANA NATURAL.
+# 2008-2009, `outros_refri` (código -> nome do cadastro):
+#   8200202 FANTA LARANJA TRADICIONAL; 8200204 CRUSH TRADICIONAL; 8200208 SUKITA TRADICIONAL;
+#   8200407 SPRIT REFRIGERANTE TRADICIONAL; 8200505 FANTA UVA TRADICIONAL; 8200902 MINUANO
+#   TRADICIONAL; 8201202 BIDU TRADICIONAL; 8201302 JAO TRADICIONAL; 8201402 ALOA TRADICIONAL;
+#   8201502 FANTA LARANJA LIGHT; 8201504 CRUSH LIGHT; 8201508 SUKITA LIGHT; 8201702 XODO DA
+#   BAHIA TRADICIONAL; 8201802 TUBAINA TRADICIONAL; 8201902 TUBAINA LIGHT; 8203501 REFRIGERANTE
+#   NAO ESPECIFICADO; 8204902 AGUA TONICA TRADICIONAL; 8205402 PARAGUAI REFRIGERANTE
+#   TRADICIONAL; 8207601 REFRIGERANTE DE LIMAO DIET; 8207705 FANTA UVA LIGHT; 8207902 MINUANO
+#   LIGHT; 8208202 BIDU LIGHT; 8208302 JAO LIGHT; 8208402 ALOA LIGHT; 8208502 XODO DA BAHIA
+#   LIGHT; 8209002 AGUA TONICA LIGHT; 8209102 PARAGUAI REFRIGERANTE LIGHT; 8212902 AGUA TONICA
+#   DIET; 8212906 REFRIGERANTE DE QUININO DIETETICO.
+#   Fora (limite): 8201104 MATE TRADICIONAL; 8208104 MATE LIGHT; 8202403 Q-REFRESKO;
+#   8211003 Q-REFRESKO LIGHT; 8211103 Q-REFRESKO DIET.
+#
+# Pizza 2017-2018 e as listas de guaraná e cola: do CLAUDE.md / cadastro, sem mudança.
 CODIGOS: dict[str, dict[str, frozenset[int]]] = {
     "2017-2018": {
         "pizza": frozenset({8500903, 8500924, 8500932, 8508017})
@@ -74,17 +101,30 @@ CODIGOS: dict[str, dict[str, frozenset[int]]] = {
         "cola": frozenset({8200101, 8200102, 8200701, 8200702, 8200801}),
         "outros_refri": frozenset(
             {
+                8200202,
+                8200208,
                 8200211,
                 8200407,
                 8200411,
+                8200505,
                 8200507,
+                8200902,
+                8201017,
+                8201202,
+                8201502,
                 8201511,
+                8201802,
+                8201902,
                 8203501,
+                8204902,
                 8205402,
                 8207501,
                 8207601,
                 8207701,
+                8207705,
+                8209002,
                 8209102,
+                8212902,
                 8212906,
             }
         ),
@@ -95,6 +135,38 @@ CODIGOS: dict[str, dict[str, frozenset[int]]] = {
         | _faixa(8508014, 8508017),
         "guarana": frozenset({8200301, 8200302, 8201601, 8201602, 8207401, 8207402}),
         "cola": frozenset({8200101, 8200102, 8200701, 8200702, 8200801}),
-        "outros_refri": frozenset({8200407, 8203501, 8205402, 8207601, 8209102, 8212906}),
+        "outros_refri": frozenset(
+            {
+                8200202,
+                8200204,
+                8200208,
+                8200407,
+                8200505,
+                8200902,
+                8201202,
+                8201302,
+                8201402,
+                8201502,
+                8201504,
+                8201508,
+                8201702,
+                8201802,
+                8201902,
+                8203501,
+                8204902,
+                8205402,
+                8207601,
+                8207705,
+                8207902,
+                8208202,
+                8208302,
+                8208402,
+                8208502,
+                8209002,
+                8209102,
+                8212902,
+                8212906,
+            }
+        ),
     },
 }

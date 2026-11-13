@@ -172,9 +172,12 @@ def test_listas_de_codigos_sao_disjuntas_e_cobrem_as_duas_edicoes():
 
 # A tabela antiga do CLAUDE.md trazia 783/176 para 2017-2018 porque aquelas contagens usaram a chave
 # dia+hora+refeicao (V9017), que nao existe em 2008-2009. A ocasiao aqui e dia+hora nas duas edicoes.
-# A tabela antiga do CLAUDE.md trazia 783/176 para 2017-2018 porque aquelas contagens usaram a chave
-# dia+hora+refeicao (V9017), que nao existe em 2008-2009. A ocasiao aqui e dia+hora nas duas edicoes.
-REFERENCIA = {"2017-2018": (85_018, 1_681, 793, 180), "2008-2009": (66_903, 1_149, 635, 101)}
+# (a) As listas antigas do CLAUDE.md (refrigerante so com os codigos genericos) reproduzem 635/101
+#     (2008-2009) e 793/180/15.863 (2017-2018), o que conferiu o parser.
+# (b) As listas atuais seguem a regra R13, aprovada pelo autor (refrigerante definido pelo produto,
+#     incluindo as marcas de sabor): os valores de pizza+refrigerante (651 e 797) e de ocasioes com
+#     refrigerante (16.122) sao trava de regressao dessa regra, nao referencia externa.
+REFERENCIA = {"2017-2018": (85_018, 1_681, 797, 180), "2008-2009": (66_903, 1_149, 651, 101)}
 
 
 @pytest.mark.dados
@@ -193,4 +196,4 @@ def test_numeros_de_referencia(edicao):
 @pytest.mark.dados
 def test_ocasioes_com_refrigerante_2017():
     oc = pd.read_parquet(DADOS_PROCESSADOS / "ocasioes_2017-2018.parquet")
-    assert oc.tem_refri.sum() == 15_863
+    assert oc.tem_refri.sum() == 16_122
