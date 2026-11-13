@@ -3,7 +3,9 @@
 import argparse
 import json
 import subprocess
+import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 import pandas as pd
 
@@ -79,12 +81,35 @@ def _modelagem(edicao: str) -> None:
     )
 
 
+def commit_da_receita(raiz: Path) -> str:
+    """Saída de `git describe --always --dirty --abbrev=12`; `"desconhecido"` se o git falhar.
+
+    O sufixo `-dirty` indica alterações não commitadas: o commit sozinho não contém a receita.
+    """
+    try:
+        saida = subprocess.run(
+            ["git", "describe", "--always", "--dirty", "--abbrev=12"],
+            cwd=raiz,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        saida = ""
+    if not saida:
+        print(
+            "aviso: não foi possível obter o commit da receita (git ausente ou fora de um "
+            "repositório); gravando 'desconhecido'",
+            file=sys.stderr,
+        )
+        return "desconhecido"
+    return saida
+
+
 def _baseline() -> None:
     celulas = pd.read_parquet(DADOS_PROCESSADOS / f"celulas_{EDICAO_TREINO}.parquet")
     ocasioes_refri = pd.read_parquet(DADOS_PROCESSADOS / f"ocasioes_refri_{EDICAO_TREINO}.parquet")
-    commit = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=RAIZ, capture_output=True, text=True, check=True
-    ).stdout.strip()
+    commit = commit_da_receita(RAIZ)
     artefato = treinar_baseline(celulas, ocasioes_refri, commit)
     destino = salvar_artefato(artefato, MODELOS / "avaliado")
     print(f"gravado: {destino}")
