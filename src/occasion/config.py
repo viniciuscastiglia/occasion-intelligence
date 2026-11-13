@@ -42,3 +42,59 @@ def faixa_da_hora(hora: int) -> str:
         if hora in faixa:
             return nome
     raise ValueError(f"hora fora do intervalo de 0 a 23: {hora}")
+
+
+def _faixa(inicio: int, fim: int) -> frozenset[int]:
+    """Códigos de inicio a fim, inclusive."""
+    return frozenset(range(inicio, fim + 1))
+
+
+# Códigos de alimento por edição. `refri` é a união de guarana, cola e outros_refri.
+# `8200308` e `8500608` (2017-2018) são refresco de guaraná natural e ficam fora.
+#
+# 2017-2018: lista do CLAUDE.md, fixa.
+#
+# 2008-2009: montada a partir do `Cadastro de Produtos do Consumo Alimentar.xls` da edição.
+# A lista é a que reproduz as três contagens de referência (1.149 dias com pizza, 635 com
+# pizza e refrigerante na mesma hora, 101 com pizza e guaraná na mesma hora).
+#   - Pizza: pizza e pizza light (8500903, 8500914-17, 8508003, 8508014-17). Os dois
+#     códigos em dúvida, `6502403` e `6506003` (mini pizza semipronta), ficaram FORA:
+#     com eles os dias com pizza passam de 1.149 para 1.249.
+#   - Outros refrigerantes: só os seis códigos do cadastro cuja descrição é refrigerante
+#     (8200407, 8203501, 8205402, 8207601, 8209102, 8212906). Os sabores sem a palavra
+#     "refrigerante" no nome (Fanta, Crush, Sukita, Bidu, Jaó, Tubaína etc.) ficaram FORA:
+#     com eles os dias com pizza e refrigerante passam de 635 para 651.
+CODIGOS: dict[str, dict[str, frozenset[int]]] = {
+    "2017-2018": {
+        "pizza": frozenset({8500903, 8500924, 8500932, 8508017})
+        | _faixa(8500914, 8500917)
+        | _faixa(8500927, 8500930)
+        | _faixa(8500934, 8500939),
+        "guarana": frozenset({8200301, 8200302, 8201601, 8201602, 8207401, 8207402}),
+        "cola": frozenset({8200101, 8200102, 8200701, 8200702, 8200801}),
+        "outros_refri": frozenset(
+            {
+                8200211,
+                8200407,
+                8200411,
+                8200507,
+                8201511,
+                8203501,
+                8205402,
+                8207501,
+                8207601,
+                8207701,
+                8209102,
+                8212906,
+            }
+        ),
+    },
+    "2008-2009": {
+        "pizza": frozenset({8500903, 8508003})
+        | _faixa(8500914, 8500917)
+        | _faixa(8508014, 8508017),
+        "guarana": frozenset({8200301, 8200302, 8201601, 8201602, 8207401, 8207402}),
+        "cola": frozenset({8200101, 8200102, 8200701, 8200702, 8200801}),
+        "outros_refri": frozenset({8200407, 8203501, 8205402, 8207601, 8209102, 8212906}),
+    },
+}
