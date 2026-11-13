@@ -194,6 +194,7 @@ def test_numeros_de_referencia(edicao):
 
 
 @pytest.mark.dados
-def test_ocasioes_com_refrigerante_2017():
-    oc = pd.read_parquet(DADOS_PROCESSADOS / "ocasioes_2017-2018.parquet")
-    assert oc.tem_refri.sum() == 16_122
+@pytest.mark.parametrize(("edicao", "esperado"), [("2008-2009", 19_182), ("2017-2018", 16_122)])
+def test_ocasioes_com_refrigerante(edicao, esperado):
+    oc = pd.read_parquet(DADOS_PROCESSADOS / f"ocasioes_{edicao}.parquet")
+    assert oc.tem_refri.sum() == esperado

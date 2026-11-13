@@ -2,7 +2,8 @@
 
 Parte 1: uma linha por dia-pessoa x faixa de horário x local (5 x 2 = 10 células por dia). O alvo
 é 1 se alguma ocasião do dia naquela faixa e local tem o evento (máximo, nunca soma). Ocasiões com
-local `indeterminado` não pertencem a nenhuma célula e são contadas.
+local `indeterminado` não pertencem a nenhuma célula; só os dias positivos que ficam sem célula
+positiva por isso são contados.
 Parte 2: uma linha por ocasião com refrigerante e local determinado.
 """
 

@@ -42,6 +42,12 @@ class TabelaDeTaxas:
         if faltam:
             raise ValueError(f"faltam dimensões em X: {faltam}")
 
+    def _recusar_nan(self, X: pd.DataFrame) -> None:
+        """Valor ausente nas dimensões é erro de montagem; valor não visto é outra coisa."""
+        com_nan = [d for d in self.dimensoes if bool(X[d].isna().any())]
+        if com_nan:
+            raise ValueError(f"NaN nas dimensões {com_nan}: o contexto está incompleto")
+
     def _taxas(
         self, chaves: pd.DataFrame, y: pd.Series, w: pd.Series, colunas: list[str]
     ) -> pd.Series:
@@ -70,6 +76,7 @@ class TabelaDeTaxas:
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         """Probabilidade por linha (vetor 1-D); combinação não vista recebe a taxa geral."""
         self._checar_colunas(X)
+        self._recusar_nan(X)
         indice = pd.MultiIndex.from_frame(
             cast(pd.DataFrame, X[self.dimensoes]).reset_index(drop=True)
         )
@@ -79,6 +86,7 @@ class TabelaDeTaxas:
     def contribuicoes(self, X: pd.DataFrame) -> pd.DataFrame:
         """Contribuição de cada dimensão em log-chances; valor não visto contribui 0."""
         self._checar_colunas(X)
+        self._recusar_nan(X)
         base = float(_log_chances(self.taxa_geral_))
         saida: dict[str, np.ndarray] = {}
         for d in self.dimensoes:

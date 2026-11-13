@@ -25,35 +25,20 @@ from occasion.inference.contract import (
     Situacao,
 )
 from occasion.inference.predict import ArtefatoAusente, ArtefatoModelo, carregar_artefato, prever
+from occasion.rotulos import (
+    ROTULOS_DIA,
+    ROTULOS_HORARIO,
+    ROTULOS_LOCAL,
+    ROTULOS_RENDA,
+    ROTULOS_SEXO,
+    ROTULOS_SITUACAO,
+    rotulo_da_parte,
+    rotulo_da_variavel,
+    valor_legivel,
+)
 
 COR_AUMENTA = "#2a78d6"
 COR_DIMINUI = "#eb6834"
-
-ROTULOS_DIA = {
-    "segunda": "Segunda", "terca": "Terça", "quarta": "Quarta", "quinta": "Quinta",
-    "sexta": "Sexta", "sabado": "Sábado", "domingo": "Domingo",
-}  # fmt: skip
-ROTULOS_HORARIO = {
-    "madrugada": "Madrugada", "manha": "Manhã", "almoco": "Almoço", "tarde": "Tarde",
-    "noite": "Noite",
-}  # fmt: skip
-ROTULOS_LOCAL = {"em_casa": "Em casa", "fora_de_casa": "Fora de casa"}
-ROTULOS_SITUACAO = {"urbano": "Urbano", "rural": "Rural"}
-ROTULOS_SEXO = {"masculino": "Masculino", "feminino": "Feminino"}
-ROTULOS_RENDA = {
-    "ate_meio_sm": "Até 1/2 salário mínimo por pessoa",
-    "meio_a_1_sm": "De 1/2 a 1 salário mínimo",
-    "de_1_a_2_sm": "De 1 a 2 salários mínimos",
-    "de_2_a_5_sm": "De 2 a 5 salários mínimos",
-    "mais_de_5_sm": "Mais de 5 salários mínimos",
-}
-ROTULOS_PARTE = {"ocasiao": "ocasião", "preferencia": "preferência", "direto": "direto"}
-ROTULOS_VARIAVEL = {
-    "dia_semana": "dia da semana", "faixa_horario": "faixa de horário", "local": "local",
-    "uf": "UF", "regiao": "região", "situacao": "situação", "idade": "idade", "sexo": "sexo",
-    "renda_pc_sm": "renda", "n_moradores_uc": "moradores", "tem_pizza": "tem pizza",
-}  # fmt: skip
-COR_CLASSIFICACAO = {"alta": "green", "média": "orange", "baixa": "red"}
 
 
 def _formatar_opcao(rotulos: dict[str, str]) -> Any:
@@ -65,8 +50,8 @@ def _carregar(pasta: str) -> ArtefatoModelo:
     return carregar_artefato(Path(pasta))
 
 
-def formulario() -> Contexto | None:
-    """Barra lateral com os campos de `Contexto`; devolve o contexto ao clicar em Calcular."""
+def formulario() -> tuple[Contexto, bool]:
+    """Barra lateral com os campos de `Contexto`; devolve o contexto atual e se Calcular foi clicado."""
     with st.sidebar:
         st.header("Contexto")
         uf = st.selectbox("UF", get_args(UF), index=get_args(UF).index("SP"))
@@ -108,9 +93,8 @@ def formulario() -> Contexto | None:
             format_func=_formatar_opcao(ROTULOS_RENDA),
         )
         moradores = st.number_input("Moradores no domicílio", 1, 20, 3, step=1)
-        if not st.button("Calcular", type="primary"):
-            return None
-    return Contexto(
+        calculado = st.button("Calcular", type="primary")
+    contexto = Contexto(
         uf=cast(UF, uf),
         situacao=cast(Situacao, situacao),
         dia_semana=cast(DiaSemana, dia),
@@ -121,37 +105,15 @@ def formulario() -> Contexto | None:
         faixa_renda=cast(FaixaRenda, renda),
         numero_moradores=int(moradores),
     )
+    return contexto, calculado
 
 
-ROTULOS_REGIAO = {
-    "norte": "Norte", "nordeste": "Nordeste", "sudeste": "Sudeste", "sul": "Sul",
-    "centro_oeste": "Centro-Oeste",
-}  # fmt: skip
-_ROTULOS_DO_VALOR: dict[str, dict[str, str]] = {
-    "dia_semana": ROTULOS_DIA,
-    "faixa_horario": {c: r.lower() for c, r in ROTULOS_HORARIO.items()},
-    "local": {c: r.lower() for c, r in ROTULOS_LOCAL.items()},
-    "situacao": {c: r.lower() for c, r in ROTULOS_SITUACAO.items()},
-    "sexo": {c: r.lower() for c, r in ROTULOS_SEXO.items()},
-    "regiao": ROTULOS_REGIAO,
-}
 ALTURA_POR_FATOR = 36
 
 
-def valor_legivel(variavel: str, valor: str) -> str:
-    """Valor do fator em texto legível: sem códigos com sublinhado."""
-    if variavel == "renda_pc_sm":
-        try:
-            return f"{float(valor):.1f} salário mínimo por pessoa".replace(".", ",")
-        except ValueError:
-            pass
-    rotulos = _ROTULOS_DO_VALOR.get(variavel, {})
-    return rotulos.get(valor, valor.replace("_", " "))
-
-
 def rotulo_do_fator(f: Fator) -> str:
-    variavel = ROTULOS_VARIAVEL.get(f.variavel, f.variavel)
-    return f"{variavel}: {valor_legivel(f.variavel, f.valor)} ({ROTULOS_PARTE[f.parte]})"
+    variavel = rotulo_da_variavel(f.variavel)
+    return f"{variavel}: {valor_legivel(f.variavel, f.valor)} ({rotulo_da_parte(f.parte)})"
 
 
 def tabela_fatores(fatores: list[Fator]) -> pd.DataFrame:
@@ -201,7 +163,8 @@ def mostrar_resultado(r: Resultado) -> None:
     c1, c2, c3 = st.columns(3)
     c1.metric("Score (0 a 100)", f"{r.occasion_score:.0f}")
     c2.metric("Classificação", r.classification.capitalize())
-    c3.metric("Probabilidade conjunta", f"{r.occasion_probability:.2%}")
+    c3.metric("Probabilidade conjunta", f"{r.occasion_probability:.2%}".replace(".", ","))
+    c3.caption("Chance estimada de pizza com refrigerante de guaraná na célula.")
     st.markdown(
         f"Posição entre os contextos da população de referência: "
         f"**ocasião** {r.score_components['ocasiao'].posicao:.0f}/100 "
@@ -237,6 +200,11 @@ def sobre_o_modelo(r: Resultado) -> None:
         "- Guaraná é o sabor registrado na pesquisa, não uma marca.\n"
         "- Não há data de calendário: só o dia da semana.\n"
         "- Não há canal: a base só distingue em casa de fora de casa.\n"
+        "- A base é anterior à expansão do delivery.\n"
+        "- O método de coleta difere entre as edições: registro alimentar em 2008-2009 e "
+        "recordatório de 24 horas em 2017-2018.\n"
+        "- O local de 2008-2009 é a fonte do alimento (dentro ou fora do domicílio), e não o "
+        "local de refeição de 2017-2018.\n"
         "- As edições são 2008-2009 (treino) e 2017-2018 (teste); o score descreve "
         "associação nos dados, não efeito de nenhuma ativação."
     )
@@ -252,13 +220,16 @@ def main() -> None:
     except ArtefatoAusente as erro:
         st.error(str(erro))
         st.stop()
-    contexto = formulario()
-    if contexto is not None:
+    contexto, calculado = formulario()
+    if calculado:
         st.session_state["resultado"] = prever(contexto, artefato)
+        st.session_state["contexto_usado"] = contexto
     resultado: Resultado | None = st.session_state.get("resultado")
     if resultado is None:
         st.info("Preencha o contexto na barra lateral e clique em Calcular.")
         return
+    if st.session_state.get("contexto_usado") != contexto:
+        st.warning("O contexto mudou desde o último cálculo. Clique em Calcular de novo.")
     mostrar_resultado(resultado)
     sobre_o_modelo(resultado)
     with st.expander("JSON do contrato"):

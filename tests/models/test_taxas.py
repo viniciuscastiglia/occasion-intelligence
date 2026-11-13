@@ -109,3 +109,17 @@ def test_pesos_invalidos_levantam_erro(pesos: list[float]):
     X, y, _ = _treino_so_em_casa()
     with pytest.raises(ValueError, match="peso"):
         TabelaDeTaxas(["local"]).fit(X, y, pd.Series(pesos))
+
+
+def test_nan_nas_dimensoes_e_recusado_mas_valor_nao_visto_vai_para_a_taxa_geral():
+    X = pd.DataFrame({"a": ["x", "y", "x", "y"], "b": [1, 1, 2, 2]})
+    y = pd.Series([1, 0, 0, 0])
+    w = pd.Series([1.0, 1.0, 1.0, 1.0])
+    modelo = TabelaDeTaxas(["a", "b"]).fit(X, y, w)
+    com_nan = pd.DataFrame({"a": ["x"], "b": [float("nan")]})
+    with pytest.raises(ValueError, match="NaN"):
+        modelo.predict_proba(com_nan)
+    with pytest.raises(ValueError, match="NaN"):
+        modelo.contribuicoes(com_nan)
+    nao_visto = pd.DataFrame({"a": ["z"], "b": [9]})
+    assert modelo.predict_proba(nao_visto)[0] == pytest.approx(modelo.taxa_geral_)

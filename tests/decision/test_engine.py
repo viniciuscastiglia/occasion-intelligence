@@ -112,7 +112,8 @@ def test_justificar_cita_objetivo_regra_e_ate_tres_fatores_na_ordem():
         for i in range(5)
     ]
     texto = justificar(d, fatores)
-    assert "Sustentar" in texto and "canal-4" in texto
+    assert "Sustentar" in texto and "regra: em casa e área urbana" in texto
+    assert "canal-" not in texto and "_" not in texto
     assert "v0" in texto and "v1" in texto and "v2" in texto
     assert "v3" not in texto and "v4" not in texto
     assert texto.index("v0") < texto.index("v1") < texto.index("v2")
@@ -173,4 +174,29 @@ def test_justificativa_nao_usa_termos_proibidos(oc, pref, local, situacao, idade
     d = decidir(oc, pref, local, situacao, idade, uf, frozenset({"BA", "PE"}))
     texto = justificar(d, fatores)
     assert not any(t in texto.lower() for t in TERMOS_PROIBIDOS)
+    assert "_" not in texto and "canal-" not in texto
     assert texto.endswith(FRASE_FINAL)
+
+
+def test_justificar_escreve_cada_fator_com_rotulo_valor_e_parte():
+    d = decidir(90, 80, "em_casa", "urbano", 40, "SP", frozenset())
+    fatores = [
+        Fator(
+            parte="ocasiao",
+            variavel="faixa_horario",
+            valor="noite",
+            direcao="aumenta",
+            contribuicao=1.0,
+        ),
+        Fator(
+            parte="preferencia",
+            variavel="regiao",
+            valor="centro_oeste",
+            direcao="diminui",
+            contribuicao=-0.5,
+        ),
+    ]
+    texto = justificar(d, fatores)
+    assert "faixa de horário: noite (ocasião, puxa para cima)" in texto
+    assert "região: Centro-Oeste (preferência, puxa para baixo)" in texto
+    assert "_" not in texto and "canal-" not in texto

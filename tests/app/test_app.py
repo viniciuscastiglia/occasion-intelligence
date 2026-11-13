@@ -71,3 +71,31 @@ def test_grafico_tem_um_rotulo_legivel_por_fator() -> None:
     assert not any("_" in rotulo for rotulo in tabela["fator"])
     assert "centro-oeste" in " ".join(tabela["fator"]).lower()
     assert grafico_fatores(fatores).to_dict()["height"] == {"step": ALTURA_POR_FATOR}
+
+
+def test_tela_mostra_probabilidade_com_virgula_e_limites_completos(
+    artefato_em_disco: ArtefatoModelo,
+) -> None:
+    at = AppTest.from_file(CAMINHO_APP).run()
+    at.sidebar.button[0].click().run()
+    probabilidade = next(m for m in at.metric if m.label == "Probabilidade conjunta")
+    assert "," in probabilidade.value and "." not in probabilidade.value
+    texto = " ".join(m.value for m in at.markdown)
+    assert "expansão do delivery" in texto
+    assert "registro alimentar" in texto and "recordatório de 24 horas" in texto
+    assert "fonte do alimento" in texto
+    justificativa = next(m.value for m in at.markdown if m.value.startswith("**Categoria"))
+    assert justificativa
+    assert not at.warning
+
+
+def test_tela_avisa_quando_o_contexto_mudou_depois_do_calculo(
+    artefato_em_disco: ArtefatoModelo,
+) -> None:
+    at = AppTest.from_file(CAMINHO_APP).run()
+    at.sidebar.button[0].click().run()
+    assert not at.warning
+    at.sidebar.number_input[0].set_value(45).run()
+    assert any("Calcular" in w.value for w in at.warning)
+    at.sidebar.button[0].click().run()
+    assert not at.warning

@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from occasion.inference.contract import UF, Fator, Local, Situacao
+from occasion.rotulos import rotulo_da_parte, rotulo_da_regra, rotulo_da_variavel, valor_legivel
 
 CORTE_OCASIAO = 75.0
 CORTE_PREFERENCIA = 50.0
@@ -88,16 +89,19 @@ def decidir(
 
 def _descrever_fator(fator: Fator) -> str:
     verbo = "puxa para cima" if fator.direcao == "aumenta" else "puxa para baixo"
-    return f"{fator.variavel} = {fator.valor} ({verbo})"
+    return (
+        f"{rotulo_da_variavel(fator.variavel)}: {valor_legivel(fator.variavel, fator.valor)} "
+        f"({rotulo_da_parte(fator.parte)}, {verbo})"
+    )
 
 
 def justificar(decisao: Decisao, fatores: list[Fator]) -> str:
-    """Texto por modelo fixo: objetivo, regra, canais e até três fatores, na ordem recebida."""
+    """Texto por modelo fixo: objetivo, regra em palavras, canais e até três fatores, na ordem recebida."""
     if decisao.canal_principal is None:
-        partes = [f"Objetivo: {decisao.objetivo} (regra {decisao.regra})."]
+        partes = [f"Objetivo: {decisao.objetivo} (regra: {rotulo_da_regra(decisao.regra)})."]
     else:
         partes = [
-            f"Objetivo: {decisao.objetivo}; canal principal: {decisao.canal_principal} (regra {decisao.regra})."
+            f"Objetivo: {decisao.objetivo}; canal principal: {decisao.canal_principal} (regra: {rotulo_da_regra(decisao.regra)})."
         ]
     if decisao.canais_complementares:
         partes.append(f"Canal complementar: {', '.join(decisao.canais_complementares)}.")

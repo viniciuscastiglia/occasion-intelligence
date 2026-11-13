@@ -351,7 +351,9 @@ name = "occasion"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "altair" },
     { name = "joblib" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pandera" },
     { name = "pyarrow" },
@@ -370,7 +372,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "altair", specifier = ">=6.3.0" },
     { name = "joblib" },
+    { name = "numpy", specifier = ">=2.5.4" },
     { name = "pandas" },
     { name = "pandera" },
     { name = "pyarrow" },

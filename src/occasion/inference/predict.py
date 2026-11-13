@@ -163,6 +163,12 @@ def contexto_para_linha(contexto: Contexto) -> pd.DataFrame:
         "renda_pc_sm": PONTO_MEDIO_RENDA[contexto.faixa_renda],
         "n_moradores_uc": contexto.numero_moradores,
     }
+    if set(linha) != set(COLUNAS_CONTEXTO):
+        raise ValueError(
+            "contexto_para_linha fora de paridade com COLUNAS_CONTEXTO: "
+            f"faltam {sorted(set(COLUNAS_CONTEXTO) - set(linha))}, "
+            f"sobram {sorted(set(linha) - set(COLUNAS_CONTEXTO))}"
+        )
     return pd.DataFrame([linha], columns=COLUNAS_CONTEXTO)
 
 
