@@ -4,14 +4,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Estado do repositório
 
-Ainda não há código nem comandos de build, lint ou teste. Quando o código existir, registrar aqui os comandos reais; não inventar comandos antes disso.
+O Plano 1 foi executado na branch `plano-1`: ingestão, bases, auditoria, tabela de taxas, score, Decision Engine, inferência e tela Streamlit. Comandos reais do `Makefile` (rodar da raiz):
+
+- `make ambiente`: instala as dependências (`uv sync`).
+- `make dados-brutos`: baixa, confere os checksums e extrai os microdados em `data/raw` (não baixa de novo o que já existe).
+- `make bases`: gera os parquets de `data/interim` e `data/processed` (consumo, ocasiões, pessoa x dia, células e ocasiões com refrigerante).
+- `make auditoria`: grava `reports/auditoria.json` (disponibilidade, tamanho de amostra, validação adversarial).
+- `make baseline`: ajusta a tabela de taxas em 2008-2009 e grava o artefato em `models/avaliado/artefato.joblib`.
+- `make tudo`: `dados-brutos`, `bases`, `auditoria` e `baseline` em sequência (cerca de 34 s com os zips já baixados).
+- `make app`: abre a tela (`streamlit run app/streamlit_app.py`).
+- `make teste`: testes que não precisam dos microdados (`pytest -m "not dados"`).
+- `make teste-dados`: todos os testes, inclusive os que leem `data/` e conferem os números de referência.
+- `make qualidade`: `ruff check .` e `pyright`.
+
+Formatar só `src/`, `tests/` e `app/`; nunca `ruff format .` na raiz (ver "Armadilhas").
 
 O que existe:
 
 - `Occasion_Intelligence_Pizza_Guarana.md`: o TAPI, enunciado do case.
 - `docs/superpowers/specs/2026-11-12-occasion-intelligence-design.md`: o design aprovado pelo autor em 12/11/2026. Ele prevalece sobre os resumos deste arquivo.
 - `docs/registro-de-decisoes.md`: como cada decisão foi tomada, com as alternativas descartadas e os motivos.
-- `docs/superpowers/plans/2026-11-12-plano-1-dados-e-caminho-inteiro.md`: o Plano 1, aprovado e ainda não executado. Vai dos microdados até a tela funcionando com a tabela de taxas. Os planos 2 (modelos, teste final e Trends) e 3 (tela completa, briefing e documentação) são escritos depois que o Plano 1 rodar.
+- `docs/superpowers/plans/2026-11-12-plano-1-dados-e-caminho-inteiro.md`: o Plano 1, executado na branch `plano-1`. Vai dos microdados até a tela funcionando com a tabela de taxas. Os planos 2 (modelos, teste final e Trends) e 3 (tela completa, briefing e documentação) são escritos agora que o Plano 1 rodou.
 
 A stack está definida na seção 16 do design: Python 3.12 fixado pelo `uv`, pandas, pandera, scikit-learn, LightGBM, SHAP, pytest, Hypothesis, Pydantic, Streamlit e FastAPI.
 
@@ -102,18 +115,32 @@ Arquivo de largura fixa, codificação latin1. Posições iniciais em base 1:
 - **Chave do dia:** chave da pessoa + `QUADRO`.
 - **Ocasião:** chave do dia + `V9015`. "Pizza com refrigerante" significa os dois na mesma ocasião.
 
-### Códigos de alimento (2017-2018)
+### Códigos de alimento
+
+A fonte de verdade é `src/occasion/config.py` (`CODIGOS`), com a regra R13 comentada lá: "refrigerante" é definido pelo produto, com a mesma regra nas duas edições, incluindo as marcas de cada sabor. Abaixo, o resumo.
+
+#### 2017-2018
 
 - **Pizza:** `8500903`, `8500914` a `8500917`, `8500924`, `8500927` a `8500930`, `8500932`, `8500934` a `8500939`, `8508017`.
 - **Guaraná:** `8200301`, `8200302`, `8201601`, `8201602`, `8207401`, `8207402`.
 - **Cola:** `8200101`, `8200102`, `8200701`, `8200702`, `8200801`.
-- **Outros refrigerantes:** `8200211`, `8200407`, `8200411`, `8200507`, `8201511`, `8203501`, `8205402`, `8207501`, `8207601`, `8207701`, `8209102`, `8212906`.
+- **Outros refrigerantes:** `8200202`, `8200208`, `8200211`, `8200407`, `8200411`, `8200505`, `8200507`, `8200902`, `8201017`, `8201202`, `8201502`, `8201511`, `8201802`, `8201902`, `8203501`, `8204902`, `8205402`, `8207501`, `8207601`, `8207701`, `8207705`, `8209002`, `8209102`, `8212902`, `8212906`. Inclui refrigerantes de marca (Fanta, Sukita, Sprite, Minuano, Bidu, Tubaína, Paraguai), água tônica, quinino e a bebida refrigerante tipo H2O.
 
-`8200308` e `8500608` são refresco de guaraná natural, não refrigerante.
+#### 2008-2009
+
+- **Pizza:** `8500903`, `8508003`, `8500914` a `8500917`, `8508014` a `8508017`. A mini pizza semipronta (`6502403`, `6506003`) fica fora, para manter as duas edições coerentes.
+- **Guaraná e cola:** as mesmas listas de 2017-2018.
+- **Outros refrigerantes:** `8200202`, `8200204`, `8200208`, `8200407`, `8200505`, `8200902`, `8201202`, `8201302`, `8201402`, `8201502`, `8201504`, `8201508`, `8201702`, `8201802`, `8201902`, `8203501`, `8204902`, `8205402`, `8207601`, `8207705`, `8207902`, `8208202`, `8208302`, `8208402`, `8208502`, `8209002`, `8209102`, `8212902`, `8212906`.
+
+`8200308` e `8500608` são refresco de guaraná natural, não refrigerante. Mate (`8201104`, `8208104`, `8212802`) é chá e fica fora, assim como Q-Refresko, energéticos, isotônicos e águas.
 
 ### Diferenças da edição 2008-2009
 
-O arquivo é `T_CONSUMO_S.txt` e o layout é outro (conferir no dicionário da edição). Tem horário, dia da semana como código numérico, UF, renda e peso, mas não tem o tipo de refeição, e o local só distingue dentro e fora do domicílio. Os quadros são 71 e 72, e há menos códigos de pizza.
+O arquivo é `T_CONSUMO_S.txt` e o layout é outro. As posições, conferidas no dicionário da edição, estão em `src/occasion/ingest/layouts.py`. Tem horário, dia da semana como código numérico, UF, renda e peso, mas não tem o tipo de refeição. Os quadros são 71 e 72, e há menos códigos de pizza.
+
+- **Moradores:** `T_MORADOR_S.txt` (idade em `IDADE_ANOS`, sexo em `V0405`).
+- **Local:** `V9018` é a "fonte do alimento", e só os valores 1 (dentro) e 2 (fora do domicílio) valem como local. Não é o "local de refeição" de 2017-2018.
+- **Dia da semana:** 1 é segunda e 7 é domingo. Conferido por sinal externo: o consumo de cerveja tem pico em 6 e 7.
 
 ### Números de referência
 
@@ -123,10 +150,13 @@ Contagens já conferidas nos microdados, úteis para validar o pipeline:
 |---|---|---|
 | Dias-pessoa | 85.018 | 66.903 |
 | Dias com pizza | 1.681 | 1.149 |
-| Dias com pizza e refrigerante no mesmo horário | 783 | 635 |
-| Dias com pizza e guaraná no mesmo horário | 176 | 101 |
+| Dias com pizza e refrigerante no mesmo horário | 797 | 651 |
+| Dias com pizza e guaraná no mesmo horário | 180 | 101 |
+| Ocasiões com refrigerante | 16.122 | 19.182 |
 
-Em 2017-2018 há 15.863 ocasiões com refrigerante: 27% com guaraná e 56% com cola (ponderado). Quando há pizza, o guaraná cai para 23% e a cola sobe para 64%.
+A ocasião é dia + hora nas duas edições, e "refrigerante" é definido pelo produto (decisões R12 e R13, aprovadas pelo autor em 12/11/2026). A tabela antiga (783/176 e 635/101, com 15.863 ocasiões com refrigerante em 2017-2018) misturava a chave dia + hora + refeição (`V9017`, que só existe em 2017-2018) e listas de refrigerante sem os sabores registrados por marca. As listas antigas continuam reproduzindo os números antigos, e foi isso que conferiu o parser. Na base da parte 2, 10 ocasiões com refrigerante de 2017-2018 saem por local indeterminado (16.112 linhas).
+
+Antes da mudança de lista, em 2017-2018: 27% das ocasiões com refrigerante eram com guaraná e 56% com cola (ponderado). Quando há pizza, o guaraná caía para 23% e a cola subia para 64%. Esses percentuais foram calculados com a lista antiga e não são recalculados antes do teste final.
 
 Esses percentuais são da edição de teste e já foram vistos. Eles não orientam o modelo sem serem refeitos em 2008-2009. Até a abertura do teste final, nenhuma outra estatística do target de 2017-2018 é calculada; as contagens da tabela continuam valendo como teste do parser.
 
@@ -136,6 +166,9 @@ Esses percentuais são da edição de teste e já foram vistos. Eles não orient
 - **Sem data de calendário:** o registro só tem dia da semana. Não dá para cruzar com clima, feriado ou Google Trends no nível do dia.
 - **Sem canal:** não há delivery, só em casa ou fora.
 - **Dias desbalanceados:** a amostra tem muito mais domingos (16.585) que sábados (3.862). Usar `PESO_FINAL` e não comparar contagens brutas entre dias.
+- **Dias da semana diferentes entre as edições:** por desenho de coleta, 2008-2009 tem muito mais terças (14.699) e quintas (17.383) e poucos domingos (4.378). Isso domina a validação adversarial (AUC ≈ 0,70) em `reports/auditoria.json`.
+- **`ruff format .` na raiz:** reformata os blocos de código dos `.md` em `docs/`. Formatar só `src/`, `tests/` e `app/`.
+- **`.gitignore`:** a regra `models/` ignorava também `src/occasion/models/`. Agora é `/models/`.
 - **Nomes no zip da documentação:** os arquivos têm acentos em codificação antiga, e o `unzip` do macOS falha. Extrair com `zipfile` do Python.
 - **Base antiga:** a edição mais recente é de 2017-2018, anterior à expansão do delivery.
 - **Método de coleta diferente:** 2008-2009 usou registro alimentar preenchido pelo morador; 2017-2018 usou recordatório de 24 horas. A queda de desempenho no teste mistura mudança de hábito com mudança de método.
@@ -217,8 +250,14 @@ Usar `superpowers:systematic-debugging`. Se uma contagem divergir da tabela de r
 
 As decisões de stack, formato da aplicação e Decision Engine estão fechadas no design. Falta conferir nos dados:
 
-- Posições dos campos e listas de códigos de alimento da edição 2008-2009.
-- Se algum registro informa o trimestre da coleta.
-- Datas de referência e de coleta de cada edição, para a renda em salários mínimos e para as janelas do Google Trends.
+Resolvido no Plano 1:
+
+- Posições dos campos e códigos de alimento de 2008-2009 (`src/occasion/ingest/layouts.py` e `src/occasion/config.py`).
+- Trimestre da coleta: 2008-2009 tem `PERIODO_REAL` (semana da pesquisa) no registro de domicílio; 2017-2018 não tem campo de período.
+- Salário mínimo das datas de referência: R$ 415 em 15/01/2009 e R$ 954 em 15/01/2018, conferidos.
+
+Continua em aberto:
+
+- Datas de coleta de cada edição para as janelas do Google Trends (a data de referência já está resolvida; falta a janela de coleta).
 
 Fora do escopo, citados no README como próximos passos: a "mesa" (moradores do mesmo domicílio comendo pizza no mesmo horário), o coletor de cardápios de delivery e a POF 2024-2025.
