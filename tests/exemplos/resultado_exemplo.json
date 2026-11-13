@@ -1,0 +1,27 @@
+{
+  "occasion_score": 84.0,
+  "classification": "alta",
+  "occasion_probability": 0.00504,
+  "score_components": {
+    "ocasiao": {"posicao": 92.0, "probabilidade": 0.012},
+    "preferencia": {"posicao": 88.0, "probabilidade": 0.42}
+  },
+  "top_factors": [
+    {"parte": "ocasiao", "variavel": "faixa_horario", "valor": "noite", "direcao": "aumenta", "contribuicao": 1.4},
+    {"parte": "ocasiao", "variavel": "local", "valor": "fora_de_casa", "direcao": "aumenta", "contribuicao": 0.8},
+    {"parte": "preferencia", "variavel": "grande_regiao", "valor": "Sudeste", "direcao": "aumenta", "contribuicao": 0.6}
+  ],
+  "recommendation_category": "Converter, via combo em app de delivery",
+  "recommendation_reason": "Neste contexto, a pizza com refrigerante aparece com frequência acima da média nos dados da POF, e o refrigerante de guaraná (sabor registrado na POF) tem preferência acima da média. Trata-se de uma associação observada, e nenhuma estimativa aqui mede o efeito de uma ativação.",
+  "model_metadata": {
+    "modelo": "servido",
+    "degrau": "A (tabela de taxas)",
+    "treinado_em": ["2008-2009", "2017-2018"],
+    "receita_commit": "exemplo ilustrativo, sem commit",
+    "metricas_da_receita": null,
+    "descricao_metricas": "exemplo sem métricas; as métricas reais são lidas do arquivo gerado pelo código",
+    "instante_de_previsao": "planejamento, antes da ocasião",
+    "aviso": "guaraná é o sabor registrado na POF, não a marca; o resultado descreve associação, não efeito causal",
+    "versao_contrato": "1.0"
+  }
+}
