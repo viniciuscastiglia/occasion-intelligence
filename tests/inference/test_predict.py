@@ -256,3 +256,53 @@ def test_carregar_artefato_acha_o_baseline_sem_servido_nem_avaliado(
 ) -> None:
     salvar_artefato(artefato_sintetico, tmp_path / "baseline")
     assert carregar_artefato(tmp_path).metadados.modelo == "avaliado"
+
+
+def _artefato_logistico(artefato_base: ArtefatoModelo) -> ArtefatoModelo:
+    from tests.models.bases_sinteticas import base_sintetica
+
+    from occasion.experimentos.especificacao import INTERACOES
+    from occasion.models.logistica import ModeloLogistico
+    from occasion.score.score import construir_referencia
+
+    X1, y1, w1 = base_sintetica(2000, semente=0)
+    X2, y2, w2 = base_sintetica(2000, semente=10, com_pizza=True)
+    p1 = ModeloLogistico("ocasiao", C=1.0, interacoes=INTERACOES["ocasiao"]["fim_de_semana"]).fit(
+        X1, y1, w1
+    )
+    p2 = ModeloLogistico("preferencia", C=1.0).fit(X2, y2, w2)
+    celulas = X1.assign(peso_final=w1)
+    return ArtefatoModelo(
+        modelo_p1=p1,
+        modelo_p2=p2,
+        referencia=construir_referencia(celulas, p1, p2),
+        ufs_midia_regional=frozenset({"SP"}),
+        metadados=artefato_base.metadados,
+    )
+
+
+def test_top_fatores_nao_mostra_tem_pizza(artefato_sintetico: ArtefatoModelo) -> None:
+    artefato = _artefato_logistico(artefato_sintetico)
+    r = prever(Contexto(**CONTEXTO_VALIDO), artefato)  # type: ignore[arg-type]
+    assert "tem_pizza" not in {f.variavel for f in r.top_factors}
+    assert len(r.top_factors) == 5
+    assert "fim_de_semana" not in {f.variavel for f in r.top_factors}
+
+
+def test_fator_fim_de_semana_aparece_como_dia_da_semana(
+    artefato_sintetico: ArtefatoModelo,
+) -> None:
+    from occasion.models.taxas import TabelaDeTaxas
+
+    X = contexto_para_linha(Contexto(**CONTEXTO_VALIDO))  # type: ignore[arg-type]
+    base = pd.concat([X] * 4, ignore_index=True)
+    base["dia_semana"] = [1, 5, 6, 7]
+    tabela = TabelaDeTaxas(["fim_de_semana", "local"], 0.0).fit(
+        base, pd.Series([0, 1, 1, 0]), pd.Series([1.0] * 4)
+    )
+    artefato = artefato_sintetico
+    artefato.modelo_p1 = tabela
+    r = prever(Contexto(**CONTEXTO_VALIDO), artefato)  # type: ignore[arg-type]
+    fatores = [f for f in r.top_factors if f.parte == "ocasiao" and f.variavel == "dia_semana"]
+    assert len(fatores) == 1
+    assert fatores[0].valor == "sabado"

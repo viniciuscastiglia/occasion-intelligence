@@ -123,3 +123,38 @@ def test_nan_nas_dimensoes_e_recusado_mas_valor_nao_visto_vai_para_a_taxa_geral(
         modelo.contribuicoes(com_nan)
     nao_visto = pd.DataFrame({"a": ["z"], "b": [9]})
     assert modelo.predict_proba(nao_visto)[0] == pytest.approx(modelo.taxa_geral_)
+
+
+def test_variaveis_e_base_da_interface() -> None:
+    X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 2})
+    t = TabelaDeTaxas(["local"], 0.0).fit(X, pd.Series([1, 0, 0, 0]), pd.Series([1.0] * 4))
+    assert t.variaveis == ["local"]
+    assert t.base_ == pytest.approx(float(np.log(0.25 / 0.75)))
+
+
+def test_variaveis_e_base_funcionam_em_objeto_carregado(tmp_path) -> None:
+    import joblib
+
+    X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 2})
+    t = TabelaDeTaxas(["local"]).fit(X, pd.Series([1, 0, 0, 0]), pd.Series([1.0] * 4))
+    joblib.dump(t, tmp_path / "t.joblib")
+    carregada = joblib.load(tmp_path / "t.joblib")
+    assert carregada.variaveis == ["local"]
+    assert carregada.base_ == pytest.approx(t.base_)
+
+
+def test_fit_sem_peso_da_o_mesmo_que_pesos_iguais() -> None:
+    X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 3})
+    y = pd.Series([1, 0, 0, 1, 1, 0])
+    sem = TabelaDeTaxas(["local"], 5.0).fit(X, y)
+    com = TabelaDeTaxas(["local"], 5.0).fit(X, y, pd.Series([2.0] * 6))
+    np.testing.assert_allclose(sem.predict_proba(X), com.predict_proba(X))
+
+
+def test_dimensao_fim_de_semana_deriva_de_dia_semana() -> None:
+    X = pd.DataFrame({"dia_semana": [1, 2, 5, 6, 7, 7], "x": 0})
+    y = pd.Series([0, 0, 1, 1, 1, 0])
+    t = TabelaDeTaxas(["fim_de_semana"], 0.0).fit(X, y)
+    p = t.predict_proba(pd.DataFrame({"dia_semana": [3, 6]}))
+    assert p.tolist() == pytest.approx([0.0, 0.75])
+    assert list(t.contribuicoes(pd.DataFrame({"dia_semana": [3, 6]})).columns) == ["fim_de_semana"]

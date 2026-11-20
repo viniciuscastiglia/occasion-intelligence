@@ -11,20 +11,21 @@ from typing import Self, cast
 import numpy as np
 import pandas as pd
 
+from occasion.features.variaveis import adicionar_derivadas
+from occasion.models.base import logit
+
 DIMENSOES_PARTE_1: list[str] = ["dia_semana", "faixa_horario", "local"]
 # A parte 2 não usa `tem_pizza` na tabela: com poucos casos de pizza ela ficaria vazia.
 DIMENSOES_PARTE_2: list[str] = ["regiao", "local"]
 
-_EPS = 1e-12
-
-
-def _log_chances(p: float | np.ndarray) -> np.ndarray:
-    p = np.clip(np.asarray(p, dtype=float), _EPS, 1 - _EPS)
-    return np.log(p / (1 - p))
-
 
 class TabelaDeTaxas:
-    """Tabela de taxas ponderadas e suavizadas por combinação de dimensões."""
+    """Tabela de taxas ponderadas e suavizadas por combinação de dimensões.
+
+    Segue a interface `ModeloParte`, com uma exceção: `contribuicoes(X).sum(axis=1) + base_` não é
+    o logit de `predict_proba(X)`. A previsão vem da tabela conjunta e cada contribuição é a taxa
+    marginal da dimensão em log-chances menos a `base_`, então a soma é uma aproximação aditiva.
+    """
 
     def __init__(self, dimensoes: list[str], forca_suavizacao: float = 50.0) -> None:
         if not dimensoes:
@@ -36,6 +37,16 @@ class TabelaDeTaxas:
         self.taxa_geral_: float = float("nan")
         self._conjunta: pd.Series = pd.Series(dtype=float)
         self._marginais: dict[str, pd.Series] = {}
+
+    @property
+    def variaveis(self) -> list[str]:
+        """As dimensões da tabela, que são os fatores que ela explica."""
+        return list(self.dimensoes)
+
+    @property
+    def base_(self) -> float:
+        """Log-chances da taxa geral do treino."""
+        return float(logit(self.taxa_geral_))
 
     def _checar_colunas(self, X: pd.DataFrame) -> None:
         faltam = [d for d in self.dimensoes if d not in X.columns]
@@ -58,8 +69,12 @@ class TabelaDeTaxas:
         m = self.forca_suavizacao
         return (soma_wy + m * self.taxa_geral_) / (soma_w + m)
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, sample_weight: pd.Series) -> Self:
+    def fit(self, X: pd.DataFrame, y: pd.Series, sample_weight: pd.Series | None = None) -> Self:
+        """Ajusta a tabela; sem `sample_weight`, todas as linhas pesam o mesmo."""
+        X = adicionar_derivadas(X)
         self._checar_colunas(X)
+        if sample_weight is None:
+            sample_weight = pd.Series(np.ones(len(X)))
         if not (len(X) == len(y) == len(sample_weight)):
             raise ValueError("X, y e sample_weight precisam ter o mesmo tamanho")
         pesos = pd.Series(np.asarray(sample_weight, dtype=float))
@@ -75,6 +90,7 @@ class TabelaDeTaxas:
 
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         """Probabilidade por linha (vetor 1-D); combinação não vista recebe a taxa geral."""
+        X = adicionar_derivadas(X)
         self._checar_colunas(X)
         self._recusar_nan(X)
         indice = pd.MultiIndex.from_frame(
@@ -85,13 +101,14 @@ class TabelaDeTaxas:
 
     def contribuicoes(self, X: pd.DataFrame) -> pd.DataFrame:
         """Contribuição de cada dimensão em log-chances; valor não visto contribui 0."""
+        X = adicionar_derivadas(X)
         self._checar_colunas(X)
         self._recusar_nan(X)
-        base = float(_log_chances(self.taxa_geral_))
+        base = self.base_
         saida: dict[str, np.ndarray] = {}
         for d in self.dimensoes:
             valores = cast(pd.Series, X[d]).reset_index(drop=True)
             taxas = self._marginais[d].reindex(valores).to_numpy(dtype=float)
             taxas = np.where(np.isnan(taxas), self.taxa_geral_, taxas)
-            saida[d] = _log_chances(taxas) - base
+            saida[d] = logit(taxas) - base
         return pd.DataFrame(saida, index=X.index)

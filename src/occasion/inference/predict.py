@@ -202,13 +202,17 @@ def _top_fatores(linha: pd.DataFrame, artefato: ArtefatoModelo) -> list[Fator]:
     )
     for parte, modelo, X in partes:
         contribuicoes = modelo.contribuicoes(X)
-        for variavel in modelo.dimensoes:
+        for variavel in modelo.variaveis:
+            if variavel == "tem_pizza":  # fixada em "sim" na inferência: não é fator do contexto
+                continue
             valor = float(contribuicoes[variavel].iloc[0])
+            # `fim_de_semana` deriva de `dia_semana`: a tela e os rótulos continuam com o dia
+            nome = "dia_semana" if variavel == "fim_de_semana" else variavel
             candidatos.append(
                 Fator(
                     parte=parte,  # type: ignore[arg-type]
-                    variavel=variavel,
-                    valor=_texto_do_valor(variavel, linha[variavel].iloc[0]),
+                    variavel=nome,
+                    valor=_texto_do_valor(nome, linha[nome].iloc[0]),
                     direcao="aumenta" if valor > 0 else "diminui",
                     contribuicao=valor,
                 )
