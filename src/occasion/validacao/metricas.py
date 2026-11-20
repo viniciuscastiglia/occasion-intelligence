@@ -48,20 +48,21 @@ def brier_ponderado(y: np.ndarray, p: np.ndarray, w: np.ndarray) -> float:
     return float(np.sum(w * (p - y) ** 2) / np.sum(w))
 
 
-def _duas_classes(y: np.ndarray) -> bool:
-    return np.unique(np.asarray(y)).size == 2
+def _duas_classes(y: np.ndarray, w: np.ndarray) -> bool:
+    """Há as duas classes entre as linhas de peso positivo."""
+    return np.unique(np.asarray(y)[np.asarray(w) > 0]).size == 2
 
 
 def pr_auc_ponderada(y: np.ndarray, p: np.ndarray, w: np.ndarray) -> float | None:
     """Precisão média ponderada; `None` quando só há uma classe."""
-    if not _duas_classes(y):
+    if not _duas_classes(y, w):
         return None
     return float(average_precision_score(y, p, sample_weight=w))
 
 
 def roc_auc_ponderada(y: np.ndarray, p: np.ndarray, w: np.ndarray) -> float | None:
     """AUC ROC ponderada; `None` quando só há uma classe."""
-    if not _duas_classes(y):
+    if not _duas_classes(y, w):
         return None
     return float(roc_auc_score(y, p, sample_weight=w))
 
@@ -123,6 +124,8 @@ def calibracao(y: np.ndarray, p: np.ndarray, w: np.ndarray, n_faixas: int = 10) 
         if not dentro.any():
             continue
         wk = w[dentro]
+        if np.sum(wk) <= 0:  # faixa só com linhas de peso zero (réplica de bootstrap)
+            continue
         curva.append(
             {
                 "p_media": float(np.sum(wk * p[dentro]) / np.sum(wk)),
@@ -190,7 +193,9 @@ def concentracao_topo(
         return None
     antes = np.cumsum(peso_grupo) - peso_grupo
     orcamento = fracao * float(peso_grupo.sum())
-    cabe = np.clip((orcamento - antes) / peso_grupo, 0.0, 1.0)
+    com_peso = peso_grupo > 0  # grupo de peso zero não ocupa fatia nem tem positivos ponderados
+    cabe = np.zeros_like(peso_grupo)
+    cabe[com_peso] = np.clip((orcamento - antes[com_peso]) / peso_grupo[com_peso], 0.0, 1.0)
     return float(np.sum(cabe * positivos_grupo) / total_positivos)
 
 

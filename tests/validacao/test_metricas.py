@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import pytest
 from sklearn.metrics import average_precision_score, brier_score_loss, log_loss, roc_auc_score
@@ -198,3 +200,44 @@ def test_resumo_vai_para_json(dados):
 
     y, p, w = dados
     json.dumps(resumo(y, p, w, posicao=posicoes_ponderadas(p, w)))
+
+
+def _pesos_com_zeros(w: np.ndarray) -> np.ndarray:
+    w = w.copy()
+    w[::3] = 0.0
+    w[[0, 1, 2, 3]] = 0.0
+    return w
+
+
+def test_concentracao_topo_aceita_grupo_de_peso_zero():
+    y = np.array([1, 0, 1, 0, 1])
+    score = np.array([0.9, 0.9, 0.5, 0.5, 0.1])
+    w = np.array([0.0, 0.0, 1.0, 1.0, 2.0])  # o grupo de maior score tem peso zero
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        topo = concentracao_topo(y, score, w, fracao=0.25)
+    assert topo is not None and np.isfinite(topo)
+    # orçamento 1,0 de 4,0: metade do grupo 0,5, que tem 1 de 2 positivos ponderados (1 de 3)
+    assert topo == pytest.approx(0.5 * 1.0 / 3.0)
+
+
+def test_resumo_aceita_pesos_zero_sem_aviso(dados):
+    y, p, w = dados
+    w = _pesos_com_zeros(w)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        saida = resumo(y, p, w, posicao=posicoes_ponderadas(p, w))
+    for chave in ("log_loss", "brier", "pr_auc", "roc_auc", "prevalencia", "concentracao_topo"):
+        assert saida[chave] is None or np.isfinite(saida[chave])
+    for faixa in saida["calibracao"]["curva"]:
+        assert np.isfinite(faixa["p_media"]) and np.isfinite(faixa["taxa_observada"])
+
+
+def test_auc_sem_positivo_com_peso_devolve_none():
+    y = np.array([1, 0, 0, 1])
+    p = np.array([0.8, 0.2, 0.3, 0.6])
+    w = np.array([0.0, 1.0, 1.0, 0.0])  # os positivos têm peso zero
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        assert pr_auc_ponderada(y, p, w) is None
+        assert roc_auc_ponderada(y, p, w) is None
