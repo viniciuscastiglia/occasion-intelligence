@@ -25,7 +25,8 @@ FRACAO_MAX = 0.30
 
 def tabela_de_upas(base: pd.DataFrame) -> pd.DataFrame:
     """Uma linha por setor, com as colunas `cod_upa` e `estrato`."""
-    return base[["cod_upa", "estrato"]].drop_duplicates("cod_upa")  # pyright: ignore[reportCallIssue].reset_index(drop=True)
+    unicos = base[["cod_upa", "estrato"]].drop_duplicates("cod_upa")  # pyright: ignore[reportCallIssue]
+    return unicos.reset_index(drop=True)
 
 
 def atribuir_dobras(upas: pd.DataFrame, k: int, semente: int) -> pd.DataFrame:

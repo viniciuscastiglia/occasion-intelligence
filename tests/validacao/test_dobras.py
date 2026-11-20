@@ -38,6 +38,7 @@ def test_tabela_de_upas_uma_linha_por_setor(base_sintetica, upas_com_estratos):
     upas = tabela_de_upas(base_sintetica)
     assert list(upas.columns) == ["cod_upa", "estrato"]
     assert upas["cod_upa"].is_unique
+    assert list(upas.index) == list(range(len(upas)))
     assert set(upas["cod_upa"]) == set(upas_com_estratos["cod_upa"])
 
 
