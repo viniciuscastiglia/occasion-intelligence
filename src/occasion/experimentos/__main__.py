@@ -2,6 +2,7 @@
 
 import argparse
 from collections.abc import Callable
+from typing import cast
 
 from occasion.experimentos import etapas
 
@@ -9,10 +10,11 @@ from occasion.experimentos import etapas
 def _escada(parte: str) -> Callable[[], None]:
     def rodar() -> None:
         if parte == "ambas":
-            etapas.etapa_escada("ocasiao")
+            # a preferência (curta) primeiro: uma falha na ocasião (longa) não a impede
             etapas.etapa_escada("preferencia")
+            etapas.etapa_escada("ocasiao")
         else:
-            etapas.etapa_escada(parte)  # type: ignore[arg-type]
+            etapas.etapa_escada(cast(etapas.Parte, parte))
 
     return rodar
 
