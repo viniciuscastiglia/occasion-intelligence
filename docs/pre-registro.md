@@ -1,6 +1,6 @@
 # Pré-registro: receita e hipóteses antes dos modelos
 
-**Status:** rascunho para aprovação do autor, 20/11/2026. Nenhum modelo da escada rodou até este commit.
+**Status:** aprovado pelo autor em 20/11/2026, inclusive a decisão sobre o tamanho do modelo direto de H6. Nenhum modelo da escada rodou até este commit.
 
 Este documento fixa, antes de qualquer experimento, tudo o que a seção 8.3 do design manda fixar na EDA e os detalhes operacionais das hipóteses H1 a H10. Depois da aprovação, nada daqui muda sem uma nova entrada no registro de decisões, feita antes da etapa afetada rodar.
 
@@ -319,7 +319,7 @@ H4 mede associação, não efeito causal da pizza sobre a escolha.
 - **Métrica:** ganho do direto sobre o produto no log loss ponderado, com intervalo de 95%. A PR-AUC ponderada é relatada ao lado.
 - **Regra:** `padrao`, e o padrão é o produto.
 - **Se refutada:** o modelo direto assume o cálculo do score, e as duas partes ficam só como componentes do Decision Engine.
-- **Tamanho de amostra do direto (decisão proposta pelo controlador, sujeita à aprovação do autor):**
+- **Tamanho de amostra do direto (proposta do controlador, aprovada pelo autor em 20/11/2026):**
   - **O número:** pelo critério (i) de Riley, com o mesmo cálculo da auditoria, 101 eventos em 669.030 células sustentam 32 parâmetros. O direto tem 46 graus de liberdade nominais em B, e 63 ou 83 em C. Ele passa do limite nos dois degraus.
   - **A decisão:** o direto é mantido em H6 como está, sem cortar variáveis.
   - **Por quê:** todos os modelos logísticos e o LightGBM são regularizados, com a força escolhida na validação interna, então o número efetivo de parâmetros fica abaixo da contagem nominal. Além disso, H6 compara fora da dobra: um direto que superajusta perde para o produto, que é o padrão.
@@ -453,7 +453,7 @@ O JSON só relata. Os cortes ficam estes.
   - **Por que não elimina:** os candidatos foram montados olhando 2008-2009 inteiro, inclusive as linhas que depois ficam fora de cada dobra.
   - **Direção do viés:** as alternativas do degrau A deixam a referência mais forte, o que é conservador para H1 e H8, porque fica mais difícil superar a tabela. O conjunto `fim_de_semana` favorece o degrau C, e por isso H2 pode sair otimista.
 - **Modelo direto de H6 acima do limite de Riley:** o limite do direto é de 32 parâmetros (101 eventos em 669.030 células, mesmo cálculo da auditoria). O direto tem 46 graus nominais em B, e 63 ou 83 em C.
-  - **Decisão proposta pelo controlador, sujeita à aprovação do autor:** manter o direto como está. A regularização, com força escolhida na validação interna, deixa o número efetivo de parâmetros abaixo do nominal, e a comparação de H6 é fora da dobra. Um direto que superajusta perde para o produto, que é o padrão.
+  - **Decisão (proposta do controlador, aprovada pelo autor em 20/11/2026):** manter o direto como está. A regularização, com força escolhida na validação interna, deixa o número efetivo de parâmetros abaixo do nominal, e a comparação de H6 é fora da dobra. Um direto que superajusta perde para o produto, que é o padrão.
   - **Se o direto vencer:** terá vencido fora da amostra, e o relatório traz a contagem nominal e o limite ao lado do resultado.
 - **Nós das curvas:** saem sem peso amostral.
 - **Sabor, não marca:** toda conclusão é sobre o sabor guaraná. A POF não registra marca.

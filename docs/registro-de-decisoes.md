@@ -752,6 +752,14 @@ Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/
 
 **Alternativa descartada:** mover a fronteira entre almoço e tarde para juntar 14h e 15h. Mudaria as bases, a auditoria e o contrato por uma série que não é o alvo.
 
+### Tamanho do modelo direto de H6
+
+**Decisão (proposta do controlador, aprovada pelo autor em 20/11/2026).** O modelo direto de H6 usa o mesmo degrau do vencedor da ocasião, mesmo passando do limite de Riley: 32 parâmetros para 101 eventos em 669.030 células, contra 46 graus nominais em B e 63 ou 83 em C.
+
+**Motivo.** Todos os modelos são regularizados, com a força escolhida na validação interna, o que deixa o número efetivo de parâmetros abaixo do nominal. H6 compara fora da dobra, então um direto que superajusta perde para o produto, que é o padrão. Se o direto vencer, o relatório traz a contagem nominal e o limite ao lado do resultado.
+
+**Alternativa descartada:** restringir o direto a um modelo menor que o da ocasião. A comparação de H6 ficaria desigual, a favor do produto.
+
 ### Corte do bloco do Google Trends (H10)
 
 **Decisão (decidido pelo autor).** O bloco do Google Trends foi cortado em 20/11/2026, antes de qualquer cálculo com a POF. H10 sai como "não executada" no relatório de hipóteses. Os três CSV exportados e o `LEIAME.md` ficam em `dados_externos/google_trends/` como registro; nenhum número deles entra no score, na recomendação ou nos resultados.
