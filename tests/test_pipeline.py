@@ -3,8 +3,10 @@
 import subprocess
 from pathlib import Path
 
+import pandas as pd
 import pytest
 
+from occasion import pipeline
 from occasion.pipeline import commit_da_receita
 
 
@@ -51,3 +53,26 @@ def test_sem_binario_do_git_devolve_desconhecido(
 ) -> None:
     monkeypatch.setenv("PATH", str(tmp_path))
     assert commit_da_receita(tmp_path) == "desconhecido"
+
+
+def test_baseline_grava_em_models_baseline(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    gravados: list[Path] = []
+
+    class _Taxa:
+        taxa_geral_ = 0.5
+
+    class _Artefato:
+        modelo_p1 = _Taxa()
+        modelo_p2 = _Taxa()
+        ufs_midia_regional: frozenset[str] = frozenset()
+
+    pasta_dados = tmp_path / "dados"
+    pasta_dados.mkdir()
+    for nome in ("celulas", "ocasioes_refri"):
+        pd.DataFrame({"x": [1]}).to_parquet(pasta_dados / f"{nome}_2008-2009.parquet")
+    monkeypatch.setattr(pipeline, "treinar_baseline", lambda *a, **k: _Artefato())
+    monkeypatch.setattr(
+        pipeline, "salvar_artefato", lambda artefato, pasta: gravados.append(pasta) or pasta
+    )
+    pipeline._baseline(pasta_dados, tmp_path / "models")
+    assert gravados == [tmp_path / "models" / "baseline"]

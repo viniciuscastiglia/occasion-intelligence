@@ -106,12 +106,13 @@ def commit_da_receita(raiz: Path) -> str:
     return saida
 
 
-def _baseline() -> None:
-    celulas = pd.read_parquet(DADOS_PROCESSADOS / f"celulas_{EDICAO_TREINO}.parquet")
-    ocasioes_refri = pd.read_parquet(DADOS_PROCESSADOS / f"ocasioes_refri_{EDICAO_TREINO}.parquet")
+def _baseline(pasta_dados: Path = DADOS_PROCESSADOS, pasta_modelos: Path = MODELOS) -> None:
+    """Ajusta o degrau A e grava em `<modelos>/baseline`, nunca no lugar do modelo avaliado."""
+    celulas = pd.read_parquet(pasta_dados / f"celulas_{EDICAO_TREINO}.parquet")
+    ocasioes_refri = pd.read_parquet(pasta_dados / f"ocasioes_refri_{EDICAO_TREINO}.parquet")
     commit = commit_da_receita(RAIZ)
     artefato = treinar_baseline(celulas, ocasioes_refri, commit)
-    destino = salvar_artefato(artefato, MODELOS / "avaliado")
+    destino = salvar_artefato(artefato, pasta_modelos / "baseline")
     print(f"gravado: {destino}")
     print(f"taxa geral, parte 1: {artefato.modelo_p1.taxa_geral_:.6f}")
     print(f"taxa geral, parte 2: {artefato.modelo_p2.taxa_geral_:.6f}")

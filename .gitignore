@@ -7,5 +7,5 @@ data/raw/
 data/
 /models/
 reports/*
-!reports/auditoria*.json
-!reports/investigacao_datas.json
+!reports/*.json
+!reports/experimentos/

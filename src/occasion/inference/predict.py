@@ -139,9 +139,9 @@ def salvar_artefato(artefato: ArtefatoModelo, pasta: Path) -> Path:
 
 
 def carregar_artefato(pasta: Path | None = None) -> ArtefatoModelo:
-    """Carrega `servido/artefato.joblib` da raiz dos modelos; senão `avaliado/artefato.joblib`."""
+    """Carrega `servido/artefato.joblib` da raiz dos modelos; depois `avaliado` e `baseline`."""
     raiz = MODELOS if pasta is None else pasta
-    for subpasta in ("servido", "avaliado"):
+    for subpasta in ("servido", "avaliado", "baseline"):
         caminho = raiz / subpasta / NOME_ARQUIVO
         if caminho.exists():
             return cast(ArtefatoModelo, joblib.load(caminho))

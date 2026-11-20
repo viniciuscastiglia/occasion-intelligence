@@ -249,3 +249,10 @@ def test_contexto_para_linha_converte_campos() -> None:
 def test_qualquer_contexto_valido_gera_resultado_valido(ctx: Contexto) -> None:
     r = prever(ctx, _artefato_unico())
     assert Resultado.model_validate(r.model_dump()) == r
+
+
+def test_carregar_artefato_acha_o_baseline_sem_servido_nem_avaliado(
+    artefato_sintetico: ArtefatoModelo, tmp_path: Path
+) -> None:
+    salvar_artefato(artefato_sintetico, tmp_path / "baseline")
+    assert carregar_artefato(tmp_path).metadados.modelo == "avaliado"

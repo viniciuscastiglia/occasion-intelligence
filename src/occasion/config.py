@@ -6,6 +6,7 @@ RAIZ: Path = Path(__file__).resolve().parents[2]
 DADOS_BRUTOS: Path = RAIZ / "data" / "raw"
 DADOS_INTERIM: Path = RAIZ / "data" / "interim"
 DADOS_PROCESSADOS: Path = RAIZ / "data" / "processed"
+DADOS_EXPERIMENTOS: Path = RAIZ / "data" / "experimentos"
 MODELOS: Path = RAIZ / "models"
 RELATORIOS: Path = RAIZ / "reports"
 
@@ -14,6 +15,9 @@ EDICAO_TREINO: str = "2008-2009"
 EDICAO_TESTE: str = "2017-2018"
 
 SEMENTE: int = 20261112
+
+# Tag git que marca a receita congelada; só depois dela o alvo da edição de teste pode ser lido.
+TAG_RECEITA: str = "receita-congelada"
 
 # Faixas de horário (hora cheia, 0 a 23). Juntas cobrem as 24 horas sem sobreposição.
 FAIXAS_HORARIO: dict[str, range] = {
