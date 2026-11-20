@@ -708,7 +708,7 @@ Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/
 
 **Decisão (escolha do executor, aprovada pelo autor, para as interações por argumento; decidido pelo autor, para o conjunto escolhido na validação).** As interações do degrau C saem do enunciado do TAPI ("sexta a domingo, à noite e em casa") e das perguntas do projeto (a pizza muda a preferência dentro e fora de casa, e por região?), não do tamanho do efeito na EDA, embora o design diga "definidas na EDA". Depois da EDA, o autor acrescentou à ocasião o conjunto `fim_de_semana` (o dia agrupado como no TAPI) e decidiu que o conjunto é hiperparâmetro do degrau C, escolhido na validação aninhada junto com a regularização.
 
-**Motivo.** Escolher interações pelo alvo de 2008-2009 inteiro e depois medir C contra B na mesma base deixaria H2 otimista. A EDA mostrou que dia × faixa só tem positivos à noite, e o conjunto original gasta 24 graus de liberdade nisso; o alternativo gasta 4. Como essa alternativa foi pensada depois de ver a EDA, ela não pode ser imposta: é escolhida nas dobras internas, e a comparação confirmatória continua fora da dobra.
+**Motivo.** Escolher interações pelo alvo de 2008-2009 inteiro e depois medir C contra B na mesma base deixaria H2 otimista. A EDA mostrou que dia × faixa só tem 10 ou mais positivos à noite, além do almoço de domingo, e o conjunto original gasta 24 graus de liberdade nisso; o alternativo gasta 4. Como essa alternativa foi pensada depois de ver a EDA, ela não pode ser imposta: é escolhida nas dobras internas, e a comparação confirmatória continua fora da dobra. Isso atenua o problema, mas não o elimina, porque o candidato foi montado olhando 2008-2009 inteiro. O viés possível favorece o degrau C, e H2 pode sair otimista.
 
 **Alternativas descartadas:** escolher as interações pelo desvio na EDA (H2 otimista); trocar o conjunto original pelo `fim_de_semana` sem teste (decisão tomada olhando o alvo, sem validação).
 
@@ -740,7 +740,7 @@ Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/
 
 **Decisão (decidido pelo autor).** O baseline deve ser o mais forte possível, escolhido por teste. O degrau A tem 12 configurações por parte (4 conjuntos de dimensões vezes 3 forças de suavização, 10, 100 e 1000), escolhidas nas dobras internas como os hiperparâmetros dos outros degraus. A configuração que `selecao_final` escolher em 2008-2009 é a referência de H8.
 
-**Motivo.** A tabela do Plano 1 tem 21 das 70 combinações sem nenhum positivo e 50 com menos de 5 (`reports/eda.json`). Comparar B, C e D com uma tabela que perde por ruído faria H1 e H8 dizerem pouco.
+**Motivo.** A tabela do Plano 1 tem 21 das 70 combinações sem nenhum positivo e 50 com menos de 5 (`reports/eda.json`). Comparar B, C e D com uma tabela que perde por ruído faria H1 e H8 dizerem pouco. As alternativas foram montadas olhando a EDA de 2008-2009 inteira. Escolhê-las nas dobras internas atenua isso, mas não elimina. O viés possível deixa a referência mais forte, o que é conservador para H1 e H8.
 
 **Alternativa descartada:** manter a tabela do Plano 1 como degrau A fixo, ou trocá-la por outra escolhida olhando a EDA.
 

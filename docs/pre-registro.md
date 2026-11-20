@@ -134,13 +134,13 @@ As 12 configurações de cada parte seguem a ordem da tabela, das dimensões com
   - das perguntas do projeto: a pizza muda a preferência dentro e fora de casa, e por região?
 - **O papel da EDA:** só as descreveu (`eda.json`, `interacoes`). Dos 50 desvios calculados, 16 têm intervalo que exclui zero, contra 2,5 esperados por acaso.
 
-**O conjunto `fim_de_semana`** foi acrescentado depois da EDA, que mostrou que dia × faixa só tem positivos à noite.
+**O conjunto `fim_de_semana`** foi acrescentado depois da EDA, que mostrou que dia × faixa só tem 10 ou mais positivos à noite, além do almoço de domingo.
 
 - **O que a EDA mostrou:** na tabela dia × faixa, 8 das 35 combinações têm 10 ou mais positivos: as 7 noites e o almoço de domingo (10 positivos).
 - **O custo do conjunto original:** gasta 24 graus de liberdade nessa interação.
 - **A alternativa:** agrupa o dia como o TAPI, e a interação passa a gastar 4 graus.
 
-Como a escolha olhou a EDA, ela não é cega ao alvo. O que protege H2 é que o conjunto é escolhido dentro das dobras internas, como qualquer hiperparâmetro. A comparação C contra B continua sendo feita fora da dobra.
+Como a escolha olhou a EDA, ela não é cega ao alvo. Escolher o conjunto dentro das dobras internas, como qualquer hiperparâmetro, atenua o problema, mas não o elimina: o candidato foi montado olhando 2008-2009 inteiro, inclusive as linhas que depois ficam fora da dobra. O viés possível é a favor do degrau C, então H2 pode sair otimista. A comparação C contra B continua sendo feita fora da dobra.
 
 **Graus de liberdade contra o tamanho de amostra.** Os limites vêm do critério (i) de Riley e colegas, em `reports/auditoria.json`. Cada parâmetro conta assim:
 
@@ -157,8 +157,12 @@ Como a escolha olhou a EDA, ela não é cega ao alvo. O que protege H2 é que o 
 | Preferência | B | | 47 | 227 |
 | Preferência | C | `pre_declarado` | 47 − 2 + 10 + 13 = 68 | 227 |
 | Preferência, parâmetros de pizza | C | `pre_declarado` | 1 + 1 + 4 = 6 | 6 (recorte de pizza) |
+| Direto (H6) | B | | 46 | **32** |
+| Direto (H6) | C | `pre_declarado` / `fim_de_semana` | 83 / 63 | **32** |
 
 O recorte de pizza fica exatamente no limite: `tem_pizza`, mais tem pizza × local (1) e tem pizza × região (4). Uma interação a mais envolvendo a pizza passaria do limite.
+
+O limite do direto (32) não está em `auditoria.json`. Ele foi calculado com o mesmo código da auditoria e as contagens simples das células de 2008-2009: 669.030 células, 101 com pizza e guaraná (`LIMITE_RILEY_DIRETO` em `especificacao.py`). O direto passa do limite em B e em C; a decisão sobre isso está em H6.
 
 ### 3.4 Degrau D: LightGBM
 
@@ -308,19 +312,27 @@ H4 mede associação, não efeito causal da pizza sobre a escolha.
 ### H6. A decomposição em duas partes compensa
 
 - **Enunciado:** o produto das duas partes prevê pizza com guaraná melhor que um modelo treinado direto nesse evento.
-- **Motivo:** o evento direto tem 101 dias positivos em 2008-2009; as duas partes têm mais casos cada.
+- **Motivo:** o evento direto tem 101 células positivas em 2008-2009 (os 101 dias com pizza e guaraná no mesmo horário); as duas partes têm mais casos cada.
 - **Teste:** o produto fora da dobra contra o modelo direto, os dois contra `y_pizza_guarana` nas células.
   - **Produto:** a ocasião prevista nas células vezes a preferência prevista nas mesmas células com `tem_pizza = 1`, cada parte com a calibração decidida.
   - **Modelo direto:** do mesmo degrau do vencedor da ocasião, com o espaço de busca desse degrau na parte "direto". Usa o peso decidido em H5 para a ocasião e a calibração decidida para a ocasião, na mesma validação aninhada.
 - **Métrica:** ganho do direto sobre o produto no log loss ponderado, com intervalo de 95%. A PR-AUC ponderada é relatada ao lado.
 - **Regra:** `padrao`, e o padrão é o produto.
 - **Se refutada:** o modelo direto assume o cálculo do score, e as duas partes ficam só como componentes do Decision Engine.
+- **Tamanho de amostra do direto (decisão proposta pelo controlador, sujeita à aprovação do autor):**
+  - **O número:** pelo critério (i) de Riley, com o mesmo cálculo da auditoria, 101 eventos em 669.030 células sustentam 32 parâmetros. O direto tem 46 graus de liberdade nominais em B, e 63 ou 83 em C. Ele passa do limite nos dois degraus.
+  - **A decisão:** o direto é mantido em H6 como está, sem cortar variáveis.
+  - **Por quê:** todos os modelos logísticos e o LightGBM são regularizados, com a força escolhida na validação interna, então o número efetivo de parâmetros fica abaixo da contagem nominal. Além disso, H6 compara fora da dobra: um direto que superajusta perde para o produto, que é o padrão.
+  - **Se o direto vencer H6:** terá vencido fora da amostra. O relatório informa, ao lado do resultado, a contagem nominal de graus de liberdade e o limite de 32.
 
 ### H7. O produto está calibrado contra o fato observado
 
 - **Enunciado:** o produto das duas partes corresponde à frequência observada de pizza com guaraná.
+- **Motivo:** duas partes calibradas em separado não garantem que o produto fique calibrado contra o evento conjunto, e a probabilidade exibida na tela é a do produto.
 - **Teste:** sobre o que calcula o score (o produto, ou o direto se H6 o promover):
-  1. Em cada dobra externa `k`, uma sigmoide é ajustada no produto das previsões internas: a ocasião interna vezes a preferência interna prevista nas células. As duas estão nas mesmas linhas, porque as dobras internas são as mesmas nas duas partes. Quando a calibração de uma parte entrou, essa parte já vai calibrada.
+  1. Em cada dobra externa `k`, uma sigmoide é ajustada nas previsões internas daquela dobra.
+     - **Produto:** a ocasião interna vezes a preferência interna prevista nas células. As duas estão nas mesmas linhas, porque as dobras internas são as mesmas nas duas partes. Quando a calibração de uma parte entrou, essa parte já vai calibrada.
+     - **Direto, se H6 o promover:** as previsões internas do próprio modelo direto, já com a calibração decidida para ele.
   2. A sigmoide é aplicada às previsões fora da dobra `k`.
   3. A avaliação usa só as previsões fora da dobra externa.
 - **Métrica:**
@@ -355,6 +367,11 @@ A queda em relação à validação é descrita como efeito conjunto de dez anos
 - **Teste:** depois de o teste final estar commitado, validação cruzada dentro de 2017-2018, com dobras pelo mesmo critério de 10% a 30%. A receita é a congelada, com os parâmetros fixos e sem nova busca. Ela é treinada em dois braços:
   - **recente:** só as dobras de treino de 2017-2018;
   - **base inteira:** as mesmas mais toda 2008-2009, cujas linhas ficam sempre no treino e nunca são avaliadas.
+
+  Os detalhes:
+  - **Chave das dobras:** é `(edicao, cod_upa)`. As linhas de 2008-2009 ficam sempre no treino, nas dobras externas e nas internas.
+  - **Calibração:** quando a receita a usa, é ajustada nas previsões fora da dobra interna só das linhas de 2017-2018, nos dois braços. É a mesma regra do modelo servido (seção 12 do design).
+  - **Modelo direto:** se H6 o promover, ele passa pelos mesmos dois braços.
 - **Métrica:** ganho do braço recente sobre a base inteira no log loss ponderado, em três comparações: ocasião, preferência e recorte de pizza.
 - **Regra:** `padrao` em cada comparação, com a base inteira como padrão.
   - **Agregação:** a base inteira é recusada se **qualquer uma** das três comparações a recusar. Nesse caso, as duas partes do modelo servido usam só 2017-2018. Senão, as duas usam a base inteira.
@@ -363,9 +380,17 @@ A queda em relação à validação é descrita como efeito conjunto de dez anos
 
 ### H10. O interesse de busca acompanha a preferência por UF
 
+**Status: não executada.** O bloco do Google Trends foi cortado pelo autor em 20/11/2026, antes de qualquer cálculo com a POF (`dados_externos/google_trends/LEIAME.md` e seção 27 do registro). A hipótese fica registrada inteira, como estava no design, para o relatório dizer o que deixou de ser testado.
+
 - **Enunciado:** por UF, a participação do guaraná no interesse de busca (guaraná contra cola) tem correlação positiva com a participação do guaraná nas ocasiões com refrigerante da POF, no período de cada edição.
-- **Regra prevista:** `correlacao_positiva` sobre a correlação de postos nas 27 UFs, uma vez por edição.
-- **Status: não executada.** O bloco do Google Trends foi cortado pelo autor em 20/11/2026, antes de qualquer cálculo com a POF (`dados_externos/google_trends/LEIAME.md` e seção 27 do registro). Os três motivos foram:
+- **Motivo:** saber se esse proxy de interesse acompanha a medida real quando os dois cobrem o mesmo período e a mesma unidade geográfica.
+- **Teste:** correlação de postos (Spearman) entre as 27 UFs, uma vez por edição. A participação na POF é ponderada por `peso_final`. A janela do Trends é o período de coleta de cada edição.
+- **Métrica:** a correlação de postos de cada edição, com intervalo de 95% por reamostragem de UFs (`intervalo_por_unidades`, `B = 1000`).
+- **Regra:** `correlacao_positiva`: confirmada se o intervalo de 95% excluir zero, a favor de correlação positiva, **nas duas edições**.
+- **Se refutada:** o relatório diz que o interesse de busca não acompanha a POF por UF.
+- **O que o resultado não autoriza:** mesmo confirmada, a hipótese não transforma busca em consumo. O Trends recente seria mostrado só como interesse de busca, e nenhum texto o usaria para afirmar que o consumo atual segue o padrão da POF.
+- **Ordem:** a metade de 2017-2018 só rodaria depois do teste final, porque usa o alvo daquela edição.
+- **Por que não foi executada:**
   1. **Resolução:** a comparação por estado dá a participação em porcentagem inteira. A do guaraná fica entre 1% e 11% em 2008-2009 e quase toda em 2% em 2017-2018, o que não permite ordenar os estados.
   2. **Ruído de marca:** os tópicos juntam buscas que não são sobre a bebida, como bonés e maquiagem licenciada, mesmo com o filtro "Alimentos e bebidas".
   3. **Volume em 2008-2009:** 15 dos 27 estados vêm sem valor para o guaraná.
@@ -423,7 +448,12 @@ O JSON só relata. Os cortes ficam estes.
 
 ## 9. Limites declarados deste pré-registro
 
-- **Escolhas que olharam o alvo de 2008-2009:** o conjunto de interações `fim_de_semana` e as alternativas do degrau A vieram depois de ver o alvo na EDA. A proteção é que as duas escolhas são feitas dentro das dobras internas, como hiperparâmetros, e as comparações confirmatórias são fora da dobra.
-- **Modelo direto de H6:** a conta de Riley da auditoria não cobre o direto, cujo evento tem 101 dias positivos. No degrau C, o direto tem 63 ou 83 graus de liberdade. Ele depende da regularização escolhida na validação. Isso favorece o produto, que é o padrão de H6, e fica dito no relatório.
+- **Escolhas que olharam o alvo de 2008-2009:** o conjunto de interações `fim_de_semana` e as alternativas do degrau A vieram depois de ver o alvo na EDA.
+  - **O que atenua:** as duas escolhas são feitas dentro das dobras internas, como hiperparâmetros, e as comparações confirmatórias são fora da dobra.
+  - **Por que não elimina:** os candidatos foram montados olhando 2008-2009 inteiro, inclusive as linhas que depois ficam fora de cada dobra.
+  - **Direção do viés:** as alternativas do degrau A deixam a referência mais forte, o que é conservador para H1 e H8, porque fica mais difícil superar a tabela. O conjunto `fim_de_semana` favorece o degrau C, e por isso H2 pode sair otimista.
+- **Modelo direto de H6 acima do limite de Riley:** o limite do direto é de 32 parâmetros (101 eventos em 669.030 células, mesmo cálculo da auditoria). O direto tem 46 graus nominais em B, e 63 ou 83 em C.
+  - **Decisão proposta pelo controlador, sujeita à aprovação do autor:** manter o direto como está. A regularização, com força escolhida na validação interna, deixa o número efetivo de parâmetros abaixo do nominal, e a comparação de H6 é fora da dobra. Um direto que superajusta perde para o produto, que é o padrão.
+  - **Se o direto vencer:** terá vencido fora da amostra, e o relatório traz a contagem nominal e o limite ao lado do resultado.
 - **Nós das curvas:** saem sem peso amostral.
 - **Sabor, não marca:** toda conclusão é sobre o sabor guaraná. A POF não registra marca.

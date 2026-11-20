@@ -9,13 +9,17 @@ import pandas as pd
 import pytest
 from sklearn.preprocessing import SplineTransformer
 
+from occasion.audit.auditoria import tamanho_de_amostra
 from occasion.bases.acesso import carregar_base
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.config import EDICOES, RELATORIOS, SEMENTE
 from occasion.experimentos.especificacao import (
     ESPACO_A,
+    EVENTOS_DIRETO_2008,
     GRADE_C_LOGISTICA,
     INTERACOES,
+    LIMITE_RILEY_DIRETO,
+    N_CELULAS_2008,
     N_CONFIGS_LIGHTGBM,
     SPLINE,
     ParteModelo,
@@ -133,6 +137,24 @@ def test_degrau_c_cabe_no_tamanho_de_amostra():
         )
     assert graus_de_liberdade("preferencia", "C") <= riley["parte2"]["parametros_sustentados"]
     assert parametros_de_pizza() <= riley["parte2_recorte_pizza"]["parametros_sustentados"]
+
+
+def test_limite_riley_do_direto_sai_do_calculo_da_auditoria():
+    # Não exige que o direto caiba no limite: ele não cabe, e a decisão está no pré-registro.
+    conta = tamanho_de_amostra(N_CELULAS_2008, EVENTOS_DIRETO_2008)
+    assert conta["parametros_sustentados"] == LIMITE_RILEY_DIRETO
+
+
+def test_celulas_do_direto_sao_as_da_parte_1_da_auditoria():
+    riley = json.loads((RELATORIOS / "auditoria.json").read_text())["tamanho_de_amostra"]
+    assert riley["parte1"]["n"] == N_CELULAS_2008
+
+
+@pytest.mark.dados
+def test_contagens_do_direto_batem_com_as_celulas_de_2008():
+    celulas = carregar_base("celulas", "2008-2009")
+    assert len(celulas) == N_CELULAS_2008
+    assert int(celulas["y_pizza_guarana"].to_numpy().sum()) == EVENTOS_DIRETO_2008
 
 
 # ---------------------------------------------------------------- LightGBM

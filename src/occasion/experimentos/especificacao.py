@@ -47,8 +47,9 @@ _INTERACOES_OCASIAO: dict[str, list[tuple[str, str]]] = {
         ("faixa_horario", "local"),
         ("local", "situacao"),
     ],
-    # Mesma pergunta com o dia agrupado como no TAPI: a EDA mostrou que dia x faixa só tem
-    # positivos à noite, e 24 graus de liberdade gastos nisso seriam quase todos ruído.
+    # Mesma pergunta com o dia agrupado como no TAPI: a EDA mostrou que dia x faixa só tem 10 ou
+    # mais positivos à noite, além do almoço de domingo, e 24 graus de liberdade gastos nisso
+    # seriam quase todos ruído.
     "fim_de_semana": [
         ("fim_de_semana", "faixa_horario"),
         ("faixa_horario", "local"),
@@ -125,6 +126,19 @@ def parametros_de_pizza(parte: ParteModelo = "preferencia", conjunto: str = "pre
         if "tem_pizza" in (a, b)
     )
     return _graus_categorica("tem_pizza") + interacoes
+
+
+# ---------------------------------------------------------------- tamanho de amostra do direto
+
+# O modelo direto de H6 (alvo `y_pizza_guarana` nas células) não tem conta de Riley em
+# `reports/auditoria.json`. Ela foi feita com o mesmo código da auditoria
+# (`occasion.audit.auditoria.tamanho_de_amostra`: critério i de Riley, 15% do R² de Cox-Snell
+# máximo, encolhimento 0,9) e as contagens simples de `carregar_base("celulas", "2008-2009")`
+# em 20/11/2026: 669.030 células e 101 com `y_pizza_guarana = 1`. O direto passa desse limite
+# já no degrau B (46 graus); a decisão sobre isso está no pré-registro (H6 e item 9).
+N_CELULAS_2008: int = 669_030
+EVENTOS_DIRETO_2008: int = 101
+LIMITE_RILEY_DIRETO: int = 32
 
 
 # ---------------------------------------------------------------- degrau D (LightGBM)
