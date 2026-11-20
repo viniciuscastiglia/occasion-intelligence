@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas
 
 ambiente:
 	uv sync
@@ -28,6 +28,9 @@ baseline:
 	uv run python -m occasion.pipeline baseline
 
 tudo: dados-brutos bases auditoria baseline
+
+investigacao-datas:
+	uv run python scripts/investigacao_datas.py
 
 app:
 	uv run streamlit run app/streamlit_app.py

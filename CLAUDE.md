@@ -12,12 +12,13 @@ O Plano 1 foi executado na branch `plano-1`: ingestão, bases, auditoria, tabela
 - `make auditoria`: grava `reports/auditoria.json` (disponibilidade, tamanho de amostra, validação adversarial).
 - `make baseline`: ajusta a tabela de taxas em 2008-2009 e grava o artefato em `models/avaliado/artefato.joblib`.
 - `make tudo`: `dados-brutos`, `bases`, `auditoria` e `baseline` em sequência (cerca de 34 s com os zips já baixados).
+- `make investigacao-datas`: grava `reports/investigacao_datas.json` (reconstrução da data de calendário e amostra em feriados; seção 26 do registro de decisões). Precisa de `make bases`.
 - `make app`: abre a tela (`streamlit run app/streamlit_app.py`).
 - `make teste`: testes que não precisam dos microdados (`pytest -m "not dados"`).
 - `make teste-dados`: todos os testes, inclusive os que leem `data/` e conferem os números de referência.
 - `make qualidade`: `ruff check .` e `pyright`.
 
-Formatar só `src/`, `tests/` e `app/`; nunca `ruff format .` na raiz (ver "Armadilhas").
+Formatar só `src/`, `tests/`, `app/` e `scripts/`; nunca `ruff format .` na raiz (ver "Armadilhas").
 
 O que existe:
 
@@ -163,11 +164,11 @@ Esses percentuais são da edição de teste e já foram vistos. Eles não orient
 ### Armadilhas
 
 - **Sabor, não marca:** a POF registra "refrigerante de guaraná", nunca Guaraná Antarctica. Toda conclusão é sobre o sabor.
-- **Sem data de calendário:** o registro só tem dia da semana. Não dá para cruzar com clima, feriado ou Google Trends no nível do dia.
+- **Sem data de calendário no registro de consumo:** ele só tem dia da semana. Em 2008-2009 a data exata é reconstruível (data de nascimento + `IDADE_DIA` do morador dá o início da caderneta; os dois dias de consumo caem nessa semana, e o dia da semana fixa a data). Em 2017-2018 não: nascimento + idade erram cerca de um mês. Por isso clima e feriados ficaram fora do score (seção 26 do registro de decisões). Não reabrir sem fato novo.
 - **Sem canal:** não há delivery, só em casa ou fora.
 - **Dias desbalanceados:** a amostra tem muito mais domingos (16.585) que sábados (3.862). Usar `PESO_FINAL` e não comparar contagens brutas entre dias.
-- **Dias da semana diferentes entre as edições:** por desenho de coleta, 2008-2009 tem muito mais terças (14.699) e quintas (17.383) e poucos domingos (4.378). Isso domina a validação adversarial (AUC ≈ 0,70) em `reports/auditoria.json`.
-- **`ruff format .` na raiz:** reformata os blocos de código dos `.md` em `docs/`. Formatar só `src/`, `tests/` e `app/`.
+- **Dias da semana diferentes entre as edições:** por desenho de coleta, 2008-2009 tem muito mais terças (14.699) e quintas (17.383) e poucos domingos (4.378). O motivo: a caderneta começa quase sempre numa terça, e os dois dias de registro caem no dia 0 e no dia 2 dela. Isso domina a validação adversarial (AUC ≈ 0,70) em `reports/auditoria.json`.
+- **`ruff format .` na raiz:** reformata os blocos de código dos `.md` em `docs/`. Formatar só `src/`, `tests/`, `app/` e `scripts/`.
 - **`.gitignore`:** a regra `models/` ignorava também `src/occasion/models/`. Agora é `/models/`.
 - **Nomes no zip da documentação:** os arquivos têm acentos em codificação antiga, e o `unzip` do macOS falha. Extrair com `zipfile` do Python.
 - **Base antiga:** a edição mais recente é de 2017-2018, anterior à expansão do delivery.
@@ -256,8 +257,8 @@ Resolvido no Plano 1:
 - Trimestre da coleta: 2008-2009 tem `PERIODO_REAL` (semana da pesquisa) no registro de domicílio; 2017-2018 não tem campo de período.
 - Salário mínimo das datas de referência: R$ 415 em 15/01/2009 e R$ 954 em 15/01/2018, conferidos.
 
-Continua em aberto:
+Resolvido em 20/11/2026:
 
-- Datas de coleta de cada edição para as janelas do Google Trends (a data de referência já está resolvida; falta a janela de coleta).
+- Janelas de coleta para o Google Trends: em 2008-2009, os dias de consumo vão de 20/05/2008 a 22/05/2009 (`reports/investigacao_datas.json`); em 2017-2018, a coleta foi de junho de 2017 a julho de 2018 (IBGE).
 
-Fora do escopo, citados no README como próximos passos: a "mesa" (moradores do mesmo domicílio comendo pizza no mesmo horário), o coletor de cardápios de delivery e a POF 2024-2025.
+Fora do escopo, citados no README como próximos passos: a "mesa" (moradores do mesmo domicílio comendo pizza no mesmo horário), o coletor de cardápios de delivery, a POF 2024-2025 e o bloco de clima nas capitais em 2008-2009 (seção 26 do registro de decisões). A explicação do excesso de terças e quintas em 2008-2009 vai para o Data Card.

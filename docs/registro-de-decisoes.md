@@ -37,6 +37,7 @@ Os assuntos estão na ordem em que apareceram. Cada um indica quem decidiu: o au
 | 23 | Ajustes feitos ao escrever o design | Três correções e as escolhas do redator |
 | 24 | Revisão independente do design | Sete perguntas respondidas e nove inconsistências corrigidas |
 | 25 | Decisões durante a execução do Plano 1 | R12 e R13 (target), R9, R11 e R14 (escolhas do executor) |
+| 26 | Clima e feriados casados com a POF | Fora do score; data exata existe só em 2008-2009; bloco de clima vira próximo passo |
 
 ---
 
@@ -626,6 +627,55 @@ Duas decisões mudaram a definição do target e foram aprovadas pelo autor em 1
 
 ---
 
+## 26. Clima e feriados casados com a POF
+
+**A pergunta do autor (20/11/2026).** Se haveria uma forma boa, que contribuísse de fato para o case e para a inovação que a Ambev procura, de juntar clima e feriados à POF; e se isso ajudaria ou prejudicaria os resultados. O autor pediu uma resposta pesquisada, não de cabeça.
+
+**O que foi verificado.** Os números estão em `reports/investigacao_datas.json`, gerado por `make investigacao-datas` (`scripts/investigacao_datas.py`). O script só faz contagens: nenhuma taxa do target foi calculada contra data, clima ou feriado, para não contaminar hipóteses futuras. De 2017-2018 só foram lidas data de nascimento e idade.
+
+### O que os dados permitem
+
+**2008-2009 tem data de calendário exata,** o que a auditoria não tinha visto (ela anotou só a semana, `PERIODO_REAL`).
+
+- No dicionário, `IDADE_DIA` (registro de morador) é a idade em dias calculada entre a data de nascimento (`V04041`, `V04042`, `V04043`) e a data de início da caderneta de despesa coletiva (POF3). Nascimento + `IDADE_DIA` dá essa data.
+- Nos 55.917 domicílios, todos os moradores dão a mesma data, sem divergência. As datas vão de 20/05/2008 a 18/05/2009 e batem com as semanas de `PERIODO_REAL`.
+- O registro alimentar foi feito em dois dias não consecutivos durante a semana da caderneta. Dentro de uma semana cada dia da semana aparece uma vez só, então `DIA_SEMANA` fixa a data de cada dia-pessoa. Conferência: 66.885 dos 66.903 dias-pessoa recebem data; em 99,8% das pessoas o quadro 71 vem antes do 72; só 0,1% têm dias consecutivos; o padrão mais comum é o dia 0 e o dia 2 da semana.
+- Isso explica a armadilha dos dias da semana: a caderneta começa quase sempre numa terça (30.677 de 55.917 domicílios), o primeiro dia de registro cai no dia 0 (terça) e o segundo no dia 2 (quinta). Daí o excesso de terças e quintas em 2008-2009.
+
+**2017-2018 não tem data, e a reconstrução é grosseira.**
+
+- A coleta foi de junho de 2017 a julho de 2018, por recordatório de 24 horas em dois dias não consecutivos (IBGE).
+- A idade em anos (`V0403`) foi calculada na data da entrevista, não numa data fixa: só 75% dos moradores são compatíveis com 15/01/2018, e quase todos os domicílios (99,95%) têm uma janela de datas comum. Nascimento + idade limitam a data a uma janela de 202 dias de mediana por domicílio.
+- Cruzar os moradores do mesmo setor não chega à semana. Em 2008-2009 as datas de um setor se espalham por 75 a 90 dias. O mesmo método, aplicado a 2008-2009 sem `IDADE_DIA` e comparado com a data verdadeira, erra 24 dias na mediana e 50 no 9º decil, e acerta o trimestre em 52% dos domicílios e o mês em 32%.
+
+**Feriados não têm amostra.** Em 2008-2009 caem 12 dias com pizza e refrigerante em feriado nacional e 1 com pizza e guaraná; nas datas comerciais (Namorados, Pais, Crianças, véspera de Natal, Réveillon, Mães), 12 e 5; de 24/12 a 01/01, 11 e 0; no Carnaval, 3 e 0.
+
+### Decisão
+
+**Decisão (decidido pelo autor):** clima e feriados ficam fora do Occasion Score e fora do Plano 2. O achado fica registrado aqui, no Data Card e no README.
+
+**Motivos para ficar fora do score:**
+
+1. A seção 5.4 do design exige que toda variável exista nas duas edições. Clima diário e feriado existiriam no treino e não no teste final.
+2. Uma data estimada no teste, com erro de cerca de um mês contra a data exata do treino, mudaria a medida entre treino e teste, e a queda de desempenho seria lida como mudança de hábito.
+3. O modelo servido é reajustado com 2017-2018 (seção 12), que não tem data.
+4. A POF só informa UF e estrato, sem município. O clima só seria bem localizado no estrato da capital.
+
+**Motivo para ficar fora do Plano 2:** prazo. Em 20/11 o Plano 1 acabou de terminar, e EDA, escada de modelos, teste final e vídeo, todos obrigatórios, ainda estão pela frente.
+
+**Alternativas descartadas:**
+
+| Alternativa | Por que foi descartada |
+|---|---|
+| Clima diário como variável do score | Não existe em 2017-2018; quebra a seção 5.4 e o teste temporal |
+| Estação estimada em 2017-2018 como variável | Erro de cerca de um mês, com medida diferente entre treino e teste |
+| Feriados e datas comerciais como variável | 12 e 1 positivos em feriado nacional em 2008-2009 |
+| Validação temporal dentro de 2008-2009 com a data exata | Possível, mas o desenho já tem o teste entre edições; fica como ideia |
+
+**O que vira próximo passo no README:** um bloco analítico só em 2008-2009 e só nas capitais, com a pergunta "em dia mais quente que o normal para aquela capital, a participação do guaraná entre as ocasiões com refrigerante muda?". Ele usaria temperatura e chuva diárias do Open-Meteo (reanálise ERA5, desde 1940), a anomalia em relação à média da própria capital para não confundir clima com região, e a parte 2 (19.182 ocasiões com refrigerante). Seria uma associação, nunca efeito causal, registrada como hipótese antes de ser testada. Se entrar no projeto, entra no lugar do bloco do Trends, não somada a ele: o clima é comparado com consumo real, e o Trends só com interesse de busca. Um indício externo de que o tema importa: um estudo da Scanntech divulgado em 2026 associa cada 1 °C a mais a 2,9% a mais de volume de refrigerante no varejo; só a divulgação na imprensa foi encontrada, sem o relatório técnico.
+
+---
+
 ## Fontes consultadas
 
 **Dados e POF**
@@ -638,6 +688,17 @@ Duas decisões mudaram a definição do target e foram aprovadas pelo autor em 1
 - [Fatos e perspectivas do primeiro Inquérito Nacional de Alimentação](https://www.scielo.br/j/rsp/a/3XsQD7ph8jzXN6kDG9XQ8Vk/?lang=pt)
 - [Catálogo da FAO: POF, consumo alimentar pessoal](https://microdata.fao.org/index.php/catalog/2869)
 - [Estudo com microdados do Vigitel sobre refrigerante](https://scielosp.org/pdf/csc/2020.v25n7/2529-2540/pt)
+- [IBGE: POF 2008-2009, consumo alimentar](https://www.ibge.gov.br/estatisticas/sociais/saude/24786)
+- [Bezerra e colegas, Revista de Nutrição: registro alimentar da POF 2008-2009](https://periodicos.puc-campinas.edu.br/nutricao/article/download/9304/6682/35393)
+- [Release do IBGE sobre a POF 2017-2018](https://agenciadenoticias.ibge.gov.br/agencia-sala-de-imprensa/2013-agencia-de-noticias/releases/28646-pof-2017-2018)
+- [Recordatório de 24 horas da POF 2017-2018 (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8969488)
+
+**Clima e feriados**
+
+- [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api)
+- [ERA5 no Copernicus](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels)
+- [Estudo da Scanntech sobre temperatura e bebidas (Mundo do Marketing)](https://mundodomarketing.com.br/cada-1-c-a-mais-eleva-em-4-1-vendas-de-bebidas-sensiveis-ao-calor-aponta-estudo)
+- [python-holidays: Brasil](https://python-holidays.readthedocs.io/en/latest/_autosummary/holidays.countries.brazil.html)
 
 **Delivery**
 

@@ -1,0 +1,107 @@
+{
+  "pergunta": "a POF pode ser casada com clima e feriados no nível do dia?",
+  "2008-2009": {
+    "moradores": 190159,
+    "moradores_com_nascimento_valido": 189108,
+    "domicilios": 55917,
+    "domicilios_com_moradores_divergentes": 0,
+    "data_ini_minima": "2008-05-20",
+    "data_ini_maxima": "2009-05-18",
+    "amplitude_da_semana_PERIODO_REAL_dias": {
+      "q50": 6.0,
+      "q90": 8.699999999999996,
+      "q100": 13.0
+    },
+    "amplitude_no_setor_dias": {
+      "q50": 75.0,
+      "q90": 90.0
+    },
+    "dias_pessoa": 66903,
+    "dias_pessoa_com_data": 66885,
+    "data_consumo_minima": "2008-05-20",
+    "data_consumo_maxima": "2009-05-22",
+    "pessoas_com_dois_dias": 32892,
+    "fracao_quadro71_antes_do_72": 0.9976,
+    "fracao_dias_consecutivos": 0.0014,
+    "deslocamento_mais_comum": {
+      "quadro_71": 0,
+      "quadro_72": 2
+    },
+    "dia_da_semana_do_inicio_da_caderneta": {
+      "1": 2630,
+      "2": 30677,
+      "3": 9415,
+      "4": 6097,
+      "5": 4254,
+      "6": 1956,
+      "7": 888
+    },
+    "validacao_do_metodo_de_2017": {
+      "descricao": "centro do setor estimado só com nascimento + idade em anos",
+      "erro_absoluto_dias": {
+        "q50": 24.0,
+        "q75": 37.0,
+        "q90": 50.0
+      },
+      "fracao_mesmo_trimestre": 0.525,
+      "fracao_mesmo_mes": 0.323
+    },
+    "amostra_feriados": {
+      "feriado_nacional": {
+        "dias_pessoa": 2002,
+        "datas": 12,
+        "pizza_refri": 12,
+        "pizza_guarana": 1
+      },
+      "datas_comerciais": {
+        "dias_pessoa": 797,
+        "datas": 6,
+        "pizza_refri": 12,
+        "pizza_guarana": 5
+      },
+      "24_dez_a_1_jan": {
+        "dias_pessoa": 1324,
+        "datas": 9,
+        "pizza_refri": 11,
+        "pizza_guarana": 0
+      },
+      "carnaval_sabado_a_terca": {
+        "dias_pessoa": 403,
+        "datas": 4,
+        "pizza_refri": 3,
+        "pizza_guarana": 0
+      },
+      "total": {
+        "dias_pessoa": 66885,
+        "datas": 368,
+        "pizza_refri": 651,
+        "pizza_guarana": 101
+      }
+    }
+  },
+  "2017-2018": {
+    "moradores": 178431,
+    "moradores_com_nascimento_valido": 174884,
+    "fracao_compativel_com_data_fixa": {
+      "2017-07-01": 0.4847,
+      "2018-01-15": 0.7493,
+      "2018-07-01": 0.5147
+    },
+    "domicilios": 57678,
+    "fracao_domicilios_sem_data_comum": 0.0005,
+    "largura_da_janela_por_domicilio_dias": {
+      "q25": 118.0,
+      "q50": 202.0,
+      "q75": 306.0
+    },
+    "setores": 5501,
+    "centro_do_setor_por_trimestre": {
+      "2017Q3": 1337,
+      "2017Q4": 1382,
+      "2018Q1": 1356,
+      "2018Q2": 1391,
+      "2018Q3": 35
+    }
+  },
+  "observacao": "só contagens; nenhuma taxa do target contra data, clima ou feriado."
+}
