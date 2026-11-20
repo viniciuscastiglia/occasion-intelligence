@@ -332,17 +332,21 @@ Fixa, antes de qualquer modelo, tudo o que a seção 8.3 manda fixar na EDA, mai
 - Modificar: `src/occasion/features/variaveis.py`, `tests/features/test_variaveis.py`, `docs/registro-de-decisoes.md` (seção 27)
 
 **Interfaces:**
-- Produz em `occasion.features.variaveis`: `CATEGORICAS: list[str] = ["dia_semana", "faixa_horario", "local", "uf", "regiao", "situacao", "sexo"]`, `NUMERICAS: list[str] = ["idade", "renda_pc_sm", "n_moradores_uc"]` e `DOMINIOS: dict[str, list]` com os valores possíveis de cada categórica, montados a partir de constantes (`range(1, 8)`, `FAIXAS_HORARIO`, `LOCAIS`, `CODIGO_UF.values()`, as cinco regiões, `urbano`/`rural`, `masculino`/`feminino`, e `tem_pizza` em `[0, 1]`), nunca dos dados. E `checar_dominios(X: pd.DataFrame) -> None`, que levanta `ValueError` nomeando a coluna e o valor quando uma categórica presente em `X` tem valor fora de `DOMINIOS`.
+- Produz em `occasion.features.variaveis`: `CATEGORICAS: list[str] = ["dia_semana", "faixa_horario", "local", "uf", "regiao", "situacao", "sexo"]`, `NUMERICAS: list[str] = ["idade", "renda_pc_sm", "n_moradores_uc"]` e `DOMINIOS: dict[str, list]` com os valores possíveis de cada categórica, montados a partir de constantes (`range(1, 8)`, `FAIXAS_HORARIO`, `LOCAIS`, `CODIGO_UF.values()`, as cinco regiões, `urbano`/`rural`, `masculino`/`feminino`, `tem_pizza` em `[0, 1]` e `fim_de_semana` em `[0, 1]`), nunca dos dados. E `adicionar_derivadas(X: pd.DataFrame) -> pd.DataFrame`, que devolve uma cópia com `fim_de_semana = dia_semana in {5, 6, 7}` (sexta a domingo, o agrupamento do TAPI usado na EDA); os modelos da escada a chamam no `fit` e no `predict_proba`, então nem as bases nem o contrato mudam. E `checar_dominios(X: pd.DataFrame) -> None`, que levanta `ValueError` nomeando a coluna e o valor quando uma categórica presente em `X` tem valor fora de `DOMINIOS`.
 - Produz em `occasion.experimentos.especificacao`:
   - `ParteModelo = Literal["ocasiao", "preferencia", "direto"]` e `variaveis_da_parte(parte: ParteModelo) -> list[str]`: `COLUNAS_CONTEXTO`, mais `tem_pizza` na preferência.
   - `GRADE_C_LOGISTICA: list[float] = list(np.logspace(-3, 2, 8))`, em ordem crescente (a primeira é a mais regularizada, isto é, a mais simples).
   - `SPLINE = {"n_knots": 4, "degree": 3, "knots": "quantile", "include_bias": False}`, aplicada a `idade` e a `log1p(renda_pc_sm)`: 5 colunas por curva, igual aos graus de liberdade.
-  - `INTERACOES: dict[ParteModelo, list[tuple[str, str]]]`:
-    - ocasião e direto: `("dia_semana", "faixa_horario")`, `("faixa_horario", "local")`, `("local", "situacao")`;
-    - preferência: `("tem_pizza", "local")`, `("tem_pizza", "regiao")`, `("regiao", "local")`, `("faixa_horario", "local")`.
+  - `INTERACOES: dict[ParteModelo, dict[str, list[tuple[str, str]]]]`, conjuntos nomeados de interações; o conjunto é hiperparâmetro do degrau C, escolhido dentro da validação aninhada junto com `C` (decisão do autor em 20/11/2026, depois da EDA):
+    - ocasião e direto, `"pre_declarado"`: `("dia_semana", "faixa_horario")`, `("faixa_horario", "local")`, `("local", "situacao")`;
+    - ocasião e direto, `"fim_de_semana"`: `("fim_de_semana", "faixa_horario")`, `("faixa_horario", "local")`, `("local", "situacao")` (a EDA mostrou que dia × faixa só tem positivos à noite);
+    - preferência, `"pre_declarado"` (único): `("tem_pizza", "local")`, `("tem_pizza", "regiao")`, `("regiao", "local")`, `("faixa_horario", "local")`.
   - `N_CONFIGS_LIGHTGBM = 30` e `espaco_lightgbm(semente: int = SEMENTE) -> list[dict]`: `ParameterSampler` com `learning_rate` log-uniforme em [0,01; 0,2], `n_estimators` inteiro em [100, 800], `max_depth` em {2, 3, 4} (com `num_leaves = 2 ** max_depth`), `min_child_samples` em {200, 500, 1000, 2000}, `reg_lambda` log-uniforme em [0,01; 10], `subsample` em {0,7; 1,0} com `subsample_freq = 1`, `colsample_bytree` em {0,7; 1,0}. Fixos: `objective="binary"`, `deterministic=True`, `force_row_wise=True`, `n_jobs=4`, `random_state=SEMENTE`, `verbose=-1`. Ordenada da configuração mais simples para a mais complexa por `(max_depth, n_estimators)`, para o desempate.
-  - `FORCA_SUAVIZACAO_A = 50.0` e as dimensões do degrau A de `models/taxas.py`, sem busca.
-  - `graus_de_liberdade(parte: ParteModelo, degrau: Literal["B", "C"]) -> int`: categórica com `L` níveis conta `L - 1`; numérica conta 1; curva conta `n_knots + degree - 2`; interação `a × b` conta `(La - 1)(Lb - 1)`.
+  - `ESPACO_A: dict[ParteModelo, list[dict]]`: o degrau A também é escolhido dentro da validação aninhada (decisão do autor em 20/11/2026: o baseline é o mais forte possível, escolhido por teste). Cada configuração é `{"dimensoes": [...], "suavizacao": m}`, com `m` em {10, 100, 1000} e as dimensões:
+    - ocasião e direto: `["dia_semana", "faixa_horario", "local"]` (Plano 1), `["fim_de_semana", "faixa_horario", "local"]`, `["faixa_horario", "local"]`, `["dia_semana", "faixa_horario"]` (exemplo literal do TAPI);
+    - preferência: `["regiao", "local"]` (Plano 1), `["regiao"]`, `["uf"]`, `["uf", "local"]`.
+    São 12 configurações por parte, ordenadas da mais simples (menos combinações, mais suavização) para a mais complexa, para o desempate. A EDA (`reports/eda.json`, `degrau_a`) mostrou que a tabela do Plano 1 tem 21 de 70 combinações sem positivo; o motivo da busca é não comparar os modelos com um baseline fraco por ruído.
+  - `graus_de_liberdade(parte: ParteModelo, degrau: Literal["B", "C"], conjunto: str = "pre_declarado") -> int`: categórica com `L` níveis conta `L - 1`; numérica conta 1; curva conta `n_knots + degree - 2`; interação `a × b` conta `(La - 1)(Lb - 1)`.
   - `parametros_de_pizza(parte: ParteModelo = "preferencia") -> int`: `tem_pizza` mais os graus das interações que a envolvem.
 
 **Por que as interações vêm de argumento e não do tamanho do efeito na EDA:** escolher interações olhando o alvo de 2008-2009 inteiro e depois medir C contra B na mesma base deixaria H2 otimista. As candidatas saem do enunciado do TAPI ("sexta a domingo, à noite e em casa") e das perguntas do projeto (a pizza muda a preferência dentro e fora de casa, e por região). A EDA as descreve; o autor pode vetar ou trocar neste ponto de parada, antes de qualquer modelo.
@@ -352,7 +356,8 @@ Fixa, antes de qualquer modelo, tudo o que a seção 8.3 manda fixar na EDA, mai
 ```python
 def test_degrau_c_cabe_no_tamanho_de_amostra():
     riley = json.loads((RELATORIOS / "auditoria.json").read_text())["tamanho_de_amostra"]
-    assert graus_de_liberdade("ocasiao", "C") <= riley["parte1"]["parametros_sustentados"]
+    for conjunto in INTERACOES["ocasiao"]:
+        assert graus_de_liberdade("ocasiao", "C", conjunto) <= riley["parte1"]["parametros_sustentados"]
     assert graus_de_liberdade("preferencia", "C") <= riley["parte2"]["parametros_sustentados"]
     assert parametros_de_pizza() <= riley["parte2_recorte_pizza"]["parametros_sustentados"]
 
@@ -369,17 +374,17 @@ def test_dominios_cobrem_as_duas_edicoes():
             checar_dominios(carregar_base(nome, edicao, so_contexto=True))
 ```
 
-- [ ] **Passo 2: rodar, ver falhar, implementar, rodar.** Passam. Com as interações acima: a ocasião B tem 46 graus; a C troca os dois termos lineares de idade e renda por duas curvas de 5 graus e soma 29 de interações, 46 − 2 + 10 + 29 = 83 (limite 171); `parametros_de_pizza()` dá 1 + 1 + 4 = 6 (limite 6). Se a conta der outro número, conferir a fórmula antes de mexer na lista.
+- [ ] **Passo 2: rodar, ver falhar, implementar, rodar.** Passam. Com as interações acima: a ocasião B tem 46 graus; a C troca os dois termos lineares de idade e renda por duas curvas de 5 graus e soma 29 de interações, 46 − 2 + 10 + 29 = 83 no conjunto "pre_declarado" e 46 − 2 + 10 + 9 = 63 no "fim_de_semana" (limite 171); `parametros_de_pizza()` dá 1 + 1 + 4 = 6 (limite 6). Se a conta der outro número, conferir a fórmula antes de mexer na lista.
 - [ ] **Passo 2b: só se a EDA levar a mudar as faixas de horário.** Alterar `config.FAIXAS_HORARIO` e `contract.FaixaHorario` (e os rótulos), rodar `make bases auditoria baseline`, ajustar os testes de modelagem e de paridade que dependem do número de faixas e só então rodar de novo os testes do passo 1 (a conta de Riley em `auditoria.json` muda junto). Se as faixas ficarem como estão, pular.
 - [ ] **Passo 3: escrever `docs/pre-registro.md`.** Para cada item, o valor e a origem (design, EDA ou este plano):
   - faixas de horário (mantidas ou alteradas pela seção 1 da EDA, com o número de `reports/eda.json` que sustenta);
-  - dimensões e suavização do degrau A;
-  - variáveis de cada parte e as interações do degrau C, com o argumento acima;
+  - as 12 configurações do degrau A de cada parte e por que ele é escolhido na validação aninhada;
+  - variáveis de cada parte e os conjuntos de interações do degrau C, com o argumento acima e a decisão de escolher o conjunto dentro da validação aninhada;
   - espaços de busca, dobras (`K_EXTERNO`, `K_INTERNO`, critério de 10% a 30%), bootstrap (setor dentro da UF, `B = 1000`);
   - para cada hipótese H1 a H10: enunciado, motivo, teste, métrica, regra (a função de `regras.py` que a aplica) e o que muda se for refutada, copiados da seção 7 do design e completados com os detalhes operacionais deste plano: a regra do campeão e o `melhor_logistico` de H3 (tarefa 4); H4 com o peso decidido em H5 (tarefa 10); o detalhe de H7 (tarefa 11); e a agregação de H9: a base inteira é o padrão e é recusada se qualquer uma das três comparações (ocasião, preferência, recorte de pizza) a recusar, e aí as duas partes do modelo servido usam só 2017-2018;
   - cortes de `classification` (80 e 50) e do Decision Engine (75 e 50), mantidos, com a análise de sensibilidade da tarefa 11;
   - segmentos da avaliação: dia, faixa de horário, região, faixa etária, sexo, faixa de renda e local, com mínimo de 10 positivos para relatar métrica.
-- [ ] **Passo 3b: seção 27 em `docs/registro-de-decisoes.md`** ("Decisões do Plano 2"), no formato das anteriores, com decisão, motivo e alternativa descartada: bootstrap de setores dentro da UF; regra do campeão; calibração ajustada nas previsões internas; interações do degrau C por argumento, antes da EDA, embora o design diga "definidas na EDA"; critério de 10% a 30% de positivos por dobra; contribuições do LightGBM pelo TreeSHAP do próprio LightGBM; e a pasta separada do degrau A (`models/baseline/`). Marcar como escolha do executor, aprovada no passo 4.
+- [ ] **Passo 3b: seção 27 em `docs/registro-de-decisoes.md`** ("Decisões do Plano 2"), no formato das anteriores, com decisão, motivo e alternativa descartada: bootstrap de setores dentro da UF; regra do campeão; calibração ajustada nas previsões internas; interações do degrau C por argumento, antes da EDA, embora o design diga "definidas na EDA"; critério de 10% a 30% de positivos por dobra; contribuições do LightGBM pelo TreeSHAP do próprio LightGBM; a pasta separada do degrau A (`models/baseline/`); o degrau A e o conjunto de interações do C escolhidos dentro da validação aninhada (decisão do autor depois da EDA); e o corte do bloco do Google Trends (H10), com os três motivos de `dados_externos/google_trends/LEIAME.md` (decisão do autor). Marcar como escolha do executor, aprovada no passo 4.
 - [ ] **Passo 4: parar e pedir a aprovação do autor.** Mostrar o pré-registro e os pontos de `reports/eda.json` que ele usa. Só seguir depois do "aprovado"; mudanças pedidas entram aqui, com os testes do passo 1 rodando de novo.
 - [ ] **Passo 5: commit** com a mensagem "Pré-registro: receita e hipóteses antes dos modelos".
 
@@ -397,22 +402,22 @@ def test_dominios_cobrem_as_duas_edicoes():
   - `logit(p) -> np.ndarray` (com corte em `EPS`) e `sigmoide(z) -> np.ndarray`
   - `class ModeloParte(Protocol)`: `variaveis: list[str]`; `base_: float`; `fit(X: pd.DataFrame, y: pd.Series, sample_weight: pd.Series | None) -> Self`; `predict_proba(X) -> np.ndarray` (1-D); `contribuicoes(X) -> pd.DataFrame` (uma coluna por item de `variaveis`, em log-chances, em relação ao contexto médio).
   - Nos degraus B, C e D, `contribuicoes(X).sum(axis=1) + base_ == logit(predict_proba(X))`. Na tabela de taxas não: a previsão vem da tabela conjunta e as contribuições são marginais (seção 10 do design), e isso fica dito na docstring.
-- Modifica `TabelaDeTaxas`: propriedades `variaveis` (devolve `dimensoes`) e `base_` (`logit(taxa_geral_)`), que funcionam também em objetos carregados de artefatos antigos; `fit` aceita `sample_weight=None` (pesos iguais).
+- Modifica `TabelaDeTaxas`: chama `adicionar_derivadas` em `fit`, `predict_proba` e `contribuicoes`; propriedades `variaveis` (devolve `dimensoes`) e `base_` (`logit(taxa_geral_)`), que funcionam também em objetos carregados de artefatos antigos; `fit` aceita `sample_weight=None` (pesos iguais).
 - Produz em `occasion.models.logistica`:
-  - `ModeloLogistico(parte: ParteModelo, C: float, com_curvas: bool = False, interacoes: Sequence[tuple[str, str]] = ())`
-  - `fit` e `predict_proba` chamam `checar_dominios` antes de tudo. `ColumnTransformer` com `OneHotEncoder(categories=[DOMINIOS[c] ...])` em todas as categóricas, sem descartar nível (a regularização puxa cada UF para perto da média, e `regiao` e `uf` juntas dão o efeito de "UF perto da média da região"); numéricas com `StandardScaler`, renda como `log1p`; com `com_curvas`, `SplineTransformer(**SPLINE)` em idade e renda; cada interação vira uma coluna categórica cruzada (`"6|noite"`) codificada em one-hot; `tem_pizza` passa sem escala, para o coeficiente ficar em log-chances.
+  - `ModeloLogistico(parte: ParteModelo, C: float, com_curvas: bool = False, interacoes: Sequence[tuple[str, str]] = ())`; `fim_de_semana` só entra no modelo como parte de uma interação, e a contribuição dessa interação é atribuída meio a meio a `dia_semana` (de onde ela deriva) e à outra variável.
+  - `fit` e `predict_proba` chamam `adicionar_derivadas` e `checar_dominios` antes de tudo. `ColumnTransformer` com `OneHotEncoder(categories=[DOMINIOS[c] ...])` em todas as categóricas, sem descartar nível (a regularização puxa cada UF para perto da média, e `regiao` e `uf` juntas dão o efeito de "UF perto da média da região"); numéricas com `StandardScaler`, renda como `log1p`; com `com_curvas`, `SplineTransformer(**SPLINE)` em idade e renda; cada interação vira uma coluna categórica cruzada (`"6|noite"`) codificada em one-hot; `tem_pizza` passa sem escala, para o coeficiente ficar em log-chances.
   - `LogisticRegression` com regularização L2 e `solver="newton-cholesky"` (aceita `sample_weight`, converge rápido com muito mais linhas que colunas); conferir no `context7` se ele aceita a matriz esparsa do `ColumnTransformer` e, se não aceitar, densificar.
   - atributos depois do `fit`: `base_: float` (log-chances do contexto médio ponderado do treino) e `n_parametros: int`, calculado a partir do que foi ajustado (`categories_` do encoder: `L − 1` por categórica e `(La − 1)(Lb − 1)` por interação; 1 por numérica; colunas de cada curva), e não do número de colunas, porque o one-hot guarda todos os níveis.
   - `coeficiente(nome: str) -> float` (usado em H4 com `"tem_pizza"`).
   - `contribuicoes(X)`: para cada variável, a soma de `coef · (x − média ponderada do treino)` nas colunas que vêm dela; a coluna de uma interação é dividida meio a meio entre as duas variáveis.
-- Modifica `_top_fatores`: itera `modelo.variaveis` e pula `tem_pizza`, que é fixada em "sim" e não é um fator do contexto.
+- Modifica `_top_fatores`: itera `modelo.variaveis` e pula `tem_pizza`, que é fixada em "sim" e não é um fator do contexto. Um fator `fim_de_semana` (tabela vencedora com essa dimensão) aparece como `dia_semana` com o valor do contexto, para a tela e os rótulos não mudarem.
 
 - [ ] **Passo 1: testes que falham.**
 
 ```python
 def test_contribuicoes_somam_o_logit(base_sintetica_p1):
     m = ModeloLogistico("ocasiao", C=1.0, com_curvas=True,
-                        interacoes=INTERACOES["ocasiao"]).fit(X, y, w)
+                        interacoes=INTERACOES["ocasiao"]["pre_declarado"]).fit(X, y, w)
     soma = m.contribuicoes(X).sum(axis=1).to_numpy() + m.base_
     np.testing.assert_allclose(soma, logit(m.predict_proba(X)), atol=1e-8)
 
@@ -423,7 +428,7 @@ def test_categoria_ausente_no_treino_da_previsao_finita(base_sem_uf_13):
 
 def test_graus_de_liberdade_batem_com_a_especificacao():
     m = ModeloLogistico("preferencia", C=1.0, com_curvas=True,
-                        interacoes=INTERACOES["preferencia"]).fit(X2, y2, w2)
+                        interacoes=INTERACOES["preferencia"]["pre_declarado"]).fit(X2, y2, w2)
     assert m.n_parametros == graus_de_liberdade("preferencia", "C")
 
 def test_tabela_antiga_tem_variaveis(tmp_path):
@@ -450,8 +455,8 @@ def test_fit_sem_peso(): ...
 - Produz em `occasion.models.calibracao`: `ModeloCalibrado(base: ModeloParte, inclinacao: float, intercepto: float)`: `variaveis` delega ao base; `predict_proba = sigmoide(inclinacao · logit(p_base) + intercepto)`; `contribuicoes = inclinacao · base.contribuicoes`; `base_ = inclinacao · base.base_ + intercepto`.
 - Produz em `occasion.models.escada`:
   - `Degrau = Literal["A", "B", "C", "D"]`
-  - `construir(degrau: Degrau, parte: ParteModelo, params: dict) -> ModeloParte`: A é `TabelaDeTaxas` com as dimensões da parte (direto usa as da ocasião) e `FORCA_SUAVIZACAO_A`; B é `ModeloLogistico(parte, **params)`; C é `ModeloLogistico(parte, com_curvas=True, interacoes=INTERACOES[parte], **params)`; D é `ModeloLightGBM(parte, **params)`.
-  - `espaco(degrau: Degrau) -> list[dict]`: `[{}]` para A; `[{"C": c} for c in GRADE_C_LOGISTICA]` para B e C; `espaco_lightgbm()` para D.
+  - `construir(degrau: Degrau, parte: ParteModelo, params: dict) -> ModeloParte`: A é `TabelaDeTaxas(params["dimensoes"], params["suavizacao"])`; B é `ModeloLogistico(parte, C=params["C"])`; C é `ModeloLogistico(parte, C=params["C"], com_curvas=True, interacoes=INTERACOES[parte][params["interacoes"]])`; D é `ModeloLightGBM(parte, **params)`.
+  - `espaco(degrau: Degrau, parte: ParteModelo) -> list[dict]`: `ESPACO_A[parte]` para A; `[{"C": c} for c in GRADE_C_LOGISTICA]` para B; para C, o produto de `INTERACOES[parte]` (na ordem em que aparecem) e `GRADE_C_LOGISTICA`, como `{"C": c, "interacoes": nome}`; `espaco_lightgbm()` para D.
 
 - [ ] **Passo 1: testes que falham.**
 
@@ -489,7 +494,7 @@ def test_construir_cobre_os_quatro_degraus_e_as_tres_partes(): ...
   - `previsao_fora_da_dobra(base, alvo, degrau, parte, params: dict, dobras, *, usar_peso, bases_extras={}, construtor=construir) -> tuple[np.ndarray, dict[str, np.ndarray]]`: validação simples nas dobras externas, com parâmetros fixos.
   - `selecao_final(base, alvo, degrau, parte, dobras, *, usar_peso, bases_extras={}, construtor=construir) -> tuple[dict, np.ndarray, dict[str, np.ndarray]]`: escolhe a configuração pelo log loss ponderado de `previsao_fora_da_dobra` nas 5 dobras externas e devolve os parâmetros e as previsões fora da dobra deles (base e extras). É o que fixa os hiperparâmetros do modelo final, treinado depois em 2008-2009 inteira; as previsões são salvas e reaproveitadas na calibração do artefato (tarefa 12), sem recalcular.
 
-**Algoritmo de `validacao_aninhada`:** para cada dobra externa `k`: treino são as linhas cujo setor tem `dobra != k`. As dobras internas vêm de `dobras_internas(dobras, k)`, isto é, da tabela de setores, e por isso são as mesmas para qualquer base que use a mesma tabela. Para cada configuração de `espaco(degrau)`, treina em cada dobra interna e prevê as linhas de validação interna da base, guardando os três modelos internos; escolhe a configuração de menor log loss ponderado na base (empate: a primeira da lista); só então prevê as bases extras com os três modelos internos da escolhida e descarta os outros. Retreina a escolhida no treino externo inteiro e prevê as linhas da dobra `k` da base e das bases extras. Bases extras são previstas com `tem_pizza = 1` quando a parte é a preferência (é o uso do produto: a parte 2 prevista nas células). Com `usar_peso`, o treino recebe `peso_final` normalizado para média 1; a seleção sempre usa a métrica ponderada.
+**Algoritmo de `validacao_aninhada`:** para cada dobra externa `k`: treino são as linhas cujo setor tem `dobra != k`. As dobras internas vêm de `dobras_internas(dobras, k)`, isto é, da tabela de setores, e por isso são as mesmas para qualquer base que use a mesma tabela. Para cada configuração de `espaco(degrau, parte)`, treina em cada dobra interna e prevê as linhas de validação interna da base, guardando os três modelos internos; escolhe a configuração de menor log loss ponderado na base (empate: a primeira da lista); só então prevê as bases extras com os três modelos internos da escolhida e descarta os outros. Retreina a escolhida no treino externo inteiro e prevê as linhas da dobra `k` da base e das bases extras. Bases extras são previstas com `tem_pizza = 1` quando a parte é a preferência (é o uso do produto: a parte 2 prevista nas células). Com `usar_peso`, o treino recebe `peso_final` normalizado para média 1; a seleção sempre usa a métrica ponderada.
 
 - Produz em `occasion.experimentos.registro`:
   - `registrar(nome: str, natureza: Literal["confirmatório", "exploratório"], configuracao: dict, metricas: dict, dados: dict, pasta: Path = RELATORIOS / "experimentos") -> Path`: grava `<nome>.json` com essas chaves mais `commit` (`commit_da_receita`), `semente`, `data_hora` e `versoes` (python, pandas, scikit-learn, lightgbm). Converte `Intervalo` e tipos do NumPy para JSON.
@@ -560,7 +565,7 @@ Experimento: sem teste antes; verificação por script reprodutível e JSON grav
 **Interfaces:**
 - Produz em `occasion.receita` (Pydantic):
   - `ReceitaParte`: `degrau: Degrau`, `parametros: dict[str, Any]`, `usar_peso: bool`, `calibrar: bool`
-  - `Receita`: `faixas_horario: dict[str, list[int]]`, `variaveis: dict[ParteModelo, list[str]]`, `interacoes: dict[ParteModelo, list[tuple[str, str]]]`, `ocasiao: ReceitaParte`, `preferencia: ReceitaParte`, `score: Literal["produto", "direto"]`, `direto: ReceitaParte | None`, `calibrar_score: bool`, `cortes: dict[str, float]` (`alta`, `media`, `ocasiao`, `preferencia`), `experimentos: list[str]` (os JSON que sustentam cada escolha)
+  - `Receita`: `faixas_horario: dict[str, list[int]]`, `variaveis: dict[ParteModelo, list[str]]`, `interacoes: dict[ParteModelo, list[tuple[str, str]]]`, `ocasiao: ReceitaParte`, `preferencia: ReceitaParte`, `score: Literal["produto", "direto"]`, `direto: ReceitaParte | None`, `calibrar_score: bool`, `referencia_a: dict[ParteModelo, dict[str, Any]]` (a configuração do degrau A escolhida por `selecao_final` em cada parte; é a referência de H8), `cortes: dict[str, float]` (`alta`, `media`, `ocasiao`, `preferencia`), `experimentos: list[str]` (os JSON que sustentam cada escolha)
   - `salvar_receita(receita: Receita, caminho: Path = RELATORIOS / "receita.json") -> Path` e `carregar_receita(caminho: Path = RELATORIOS / "receita.json") -> Receita`
   - A receita guarda escolhas, não valores ajustados: os coeficientes da sigmoide são do artefato, porque o modelo servido os reajusta.
 - Produz em `etapas`:
@@ -669,7 +674,7 @@ O teste final precisa existir, revisado e testado, antes de a receita ser congel
 - Modifica `inference/treino.py` e o comando `make avaliado`: o artefato avaliado guarda `assinatura_receita`.
 - Produz em `occasion.experimentos.teste_final`:
   - `rodar_teste_final(raiz: Path = RAIZ) -> Path`: chama `exigir_receita_intacta`; carrega explicitamente `MODELOS / "avaliado" / "artefato.joblib"` (não `carregar_artefato`, que prefere o servido) e confere que `assinatura_receita` do artefato é a assinatura da tag e que `metadados.degrau` corresponde aos degraus de `reports/receita.json`; lê `celulas` e `ocasioes_refri` de 2017-2018 por `carregar_base`; calcula, com posições em relação à referência de 2008-2009 do artefato:
-    - **H8:** PR-AUC ponderada do score contra `y_pizza_guarana` nas células, comparada ao produto das duas tabelas de taxas do degrau A da escada, ajustadas aqui mesmo em 2008-2009 com `construir("A", parte, {})` (dimensões do pré-registro) e o uso de peso decidido em H5; intervalo por `intervalo_ganho` com setores de 2017-2018 dentro da UF; veredito por `superioridade`. Se a receita for a tabela nas duas partes, compara com a constante igual à prevalência ponderada de 2008-2009 (seção 7, H8).
+    - **H8:** PR-AUC ponderada do score contra `y_pizza_guarana` nas células, comparada ao produto das duas tabelas de taxas do degrau A da escada, ajustadas aqui mesmo em 2008-2009 com `construir("A", parte, receita.referencia_a[parte])` e o uso de peso decidido em H5; intervalo por `intervalo_ganho` com setores de 2017-2018 dentro da UF; veredito por `superioridade`. Se a receita for a tabela nas duas partes, compara com a constante igual à prevalência ponderada de 2008-2009 (seção 7, H8).
     - relatadas à parte, sem entrar na regra (seção 7, H8): a mesma comparação em cada parte separada, com intervalo, e a concentração no décimo superior;
     - `resumo` do score, de cada parte (ocasião contra `y_pizza_refri`; preferência contra `y_guarana` em todas as ocasiões e no recorte de pizza) para a receita, para o degrau A e para a constante;
     - a queda em relação à validação: as mesmas métricas lidas de `escada_*.json`, `h6_h7_produto.json` e `cortes.json`, lado a lado, e por segmento lendo `avaliacao_2008.json`;
