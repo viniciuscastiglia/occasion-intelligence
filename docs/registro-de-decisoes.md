@@ -676,6 +676,98 @@ Duas decisões mudaram a definição do target e foram aprovadas pelo autor em 1
 
 ---
 
+## 27. Decisões do Plano 2
+
+Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/pre-registro.md`). As escolhas que vieram do plano estão marcadas como **escolha do executor, aprovada pelo autor**; as que o autor tomou em 20/11/2026, depois da EDA, como **decidido pelo autor**. A aprovação acontece no ponto de parada da tarefa 6.
+
+### Bootstrap de setores dentro da UF
+
+**Decisão (escolha do executor, aprovada pelo autor).** Toda incerteza vem de um bootstrap que sorteia setores (`cod_upa`) inteiros, com reposição, dentro de cada UF, com `B = 1000` e intervalo percentil de 95%. As duas previsões de uma comparação usam os mesmos sorteios (bootstrap pareado).
+
+**Motivo.** O setor é a unidade de sorteio da POF, e as linhas de um setor (a mesma pessoa, o mesmo domicílio, os vizinhos) não são independentes. Os 550 estratos de 2008-2009 têm mediana de 5 setores, e 7 têm um só. Com tão poucos setores, o bootstrap dentro do estrato subestima a variância pelo fator (n−1)/n, cerca de 20%. Por UF são dezenas a centenas de setores.
+
+**Alternativas descartadas:** sortear linhas (ignora a dependência dentro do setor e estreita os intervalos); sortear setores dentro do estrato (subestima a variância nos estratos pequenos).
+
+### Regra do campeão e `melhor_logistico`
+
+**Decisão (escolha do executor, aprovada pelo autor).** As hipóteses H1 a H3 são relatadas como a seção 7 do design as define: B contra A, C contra B, D contra o melhor logístico, que é C se H2 for confirmada e B se não for (`melhor_logistico`). O degrau vencedor de cada parte sai de outra regra, a do campeão (`vencedor_escada`): o campeão começa em A, e B, C e D, nessa ordem, só assumem se superarem o campeão do momento.
+
+**Motivo.** Se B não supera A, comparar C com B mede C contra um modelo que já perdeu. Pela regra do campeão, C e D precisam superar a tabela. Quando H1 é confirmada, as duas formas coincidem; quando não, o JSON da escada grava as duas comparações, para o relatório não se contradizer.
+
+**Alternativa descartada:** escolher o vencedor pela cadeia das hipóteses (o último degrau confirmado). Poderia declarar vencedor um modelo que não supera a tabela.
+
+### Calibração ajustada nas previsões internas
+
+**Decisão (escolha do executor, aprovada pelo autor).** A correção sigmoide de cada parte, e a do produto (H7), é ajustada em cada dobra externa nas previsões das dobras internas daquela dobra e aplicada às previsões fora da dobra externa. A avaliação usa só as previsões fora da dobra externa.
+
+**Motivo.** Ajustar a sigmoide nas próprias previsões fora da dobra externa e medir o ganho nelas faria a calibração ver as linhas em que é avaliada, e o ganho sairia otimista. As previsões internas já existem (a busca de hiperparâmetros as produz) e não tocam a dobra externa.
+
+**Alternativa descartada:** ajustar a sigmoide nas previsões fora da dobra externa e avaliar nelas mesmas.
+
+### Interações do degrau C por argumento, e o conjunto escolhido na validação
+
+**Decisão (escolha do executor, aprovada pelo autor, para as interações por argumento; decidido pelo autor, para o conjunto escolhido na validação).** As interações do degrau C saem do enunciado do TAPI ("sexta a domingo, à noite e em casa") e das perguntas do projeto (a pizza muda a preferência dentro e fora de casa, e por região?), não do tamanho do efeito na EDA, embora o design diga "definidas na EDA". Depois da EDA, o autor acrescentou à ocasião o conjunto `fim_de_semana` (o dia agrupado como no TAPI) e decidiu que o conjunto é hiperparâmetro do degrau C, escolhido na validação aninhada junto com a regularização.
+
+**Motivo.** Escolher interações pelo alvo de 2008-2009 inteiro e depois medir C contra B na mesma base deixaria H2 otimista. A EDA mostrou que dia × faixa só tem positivos à noite, e o conjunto original gasta 24 graus de liberdade nisso; o alternativo gasta 4. Como essa alternativa foi pensada depois de ver a EDA, ela não pode ser imposta: é escolhida nas dobras internas, e a comparação confirmatória continua fora da dobra.
+
+**Alternativas descartadas:** escolher as interações pelo desvio na EDA (H2 otimista); trocar o conjunto original pelo `fim_de_semana` sem teste (decisão tomada olhando o alvo, sem validação).
+
+### Critério de 10% a 30% de positivos por dobra
+
+**Decisão (escolha do executor, aprovada pelo autor).** Cada dobra externa precisa ter entre 10% e 30% dos positivos de cada alvo conferido (`y_pizza_refri` e `y_pizza_guarana` nas células; `y_guarana` nas ocasiões com refrigerante e no recorte de pizza). Se não tiver, a semente avança de 100 em 100, e a troca fica registrada.
+
+**Motivo.** O design (6.1) pede "positivos suficientes" sem dizer quanto. Com 5 dobras, a fração esperada é 20%; a faixa de 10% a 30% aceita a variação natural de sortear setores inteiros e recusa a dobra que deixaria uma comparação apoiada em poucas dezenas de casos de pizza com guaraná. O critério foi escrito no código antes de qualquer sorteio nos dados reais.
+
+**Alternativa descartada:** um mínimo absoluto de positivos por dobra. Exigiria um número diferente por alvo, e o de pizza com guaraná (101 no total) ficaria arbitrário.
+
+### Contribuições do LightGBM pelo TreeSHAP do próprio LightGBM
+
+**Decisão (escolha do executor, aprovada pelo autor).** As contribuições do degrau D saem de `predict(..., pred_contrib=True)` do LightGBM, que calcula os valores SHAP de árvore em log-chances. O pacote `shap` não entra.
+
+**Motivo.** O resultado é o mesmo (TreeSHAP exato), já na escala de log-chances que a seção 10 do design pede. O pacote `shap` traz `numba` e tem atrito conhecido com divisões categóricas.
+
+**Alternativa descartada:** o pacote `shap`, citado na stack da seção 16 do design.
+
+### Pasta separada para o degrau A do Plano 1
+
+**Decisão (escolha do executor, aprovada pelo autor).** O artefato do Plano 1 (tabela de taxas) passou para `models/baseline/`. `models/avaliado/` fica só para o modelo da receita, e `carregar_artefato` procura servido, avaliado e baseline, nessa ordem.
+
+**Motivo.** O teste final carrega `models/avaliado/` e confere que ele saiu da receita congelada. Se o degrau A do Plano 1 continuasse ali, um esquecimento faria o teste medir a tabela no lugar da receita.
+
+**Alternativa descartada:** deixar a tabela do Plano 1 em `models/avaliado/` até a tarefa 12 sobrescrevê-la. Se a tarefa 12 falhasse ou não rodasse, o arquivo no lugar do modelo avaliado seria a tabela, sem nada no nome que avisasse.
+
+### Degrau A escolhido na validação aninhada
+
+**Decisão (decidido pelo autor).** O baseline deve ser o mais forte possível, escolhido por teste. O degrau A tem 12 configurações por parte (4 conjuntos de dimensões vezes 3 forças de suavização, 10, 100 e 1000), escolhidas nas dobras internas como os hiperparâmetros dos outros degraus. A configuração que `selecao_final` escolher em 2008-2009 é a referência de H8.
+
+**Motivo.** A tabela do Plano 1 tem 21 das 70 combinações sem nenhum positivo e 50 com menos de 5 (`reports/eda.json`). Comparar B, C e D com uma tabela que perde por ruído faria H1 e H8 dizerem pouco.
+
+**Alternativa descartada:** manter a tabela do Plano 1 como degrau A fixo, ou trocá-la por outra escolhida olhando a EDA.
+
+### Faixas de horário e cortes mantidos
+
+**Decisão (decidido pelo autor).** As faixas de horário ficam como no Plano 1, e os cortes de `classification` (80 e 50) e do Decision Engine (75 e 50) ficam como no design, com a análise de sensibilidade da tarefa 11.
+
+**Motivo.** A EDA não mostrou fronteira cortando pico no alvo da parte 1: a noite reúne 87,5% das ocasiões de pizza com refrigerante, com pico às 20h. O único pico dividido é o das 15h na série de todas as ocasiões com refrigerante, que não é o alvo da parte 1. Os cortes não têm um custo de erro que justifique outro valor (seção 6.2 do design).
+
+**Alternativa descartada:** mover a fronteira entre almoço e tarde para juntar 14h e 15h. Mudaria as bases, a auditoria e o contrato por uma série que não é o alvo.
+
+### Corte do bloco do Google Trends (H10)
+
+**Decisão (decidido pelo autor).** O bloco do Google Trends foi cortado em 20/11/2026, antes de qualquer cálculo com a POF. H10 sai como "não executada" no relatório de hipóteses. Os três CSV exportados e o `LEIAME.md` ficam em `dados_externos/google_trends/` como registro; nenhum número deles entra no score, na recomendação ou nos resultados.
+
+**Motivo.** A extração mostrou que a medida não sustenta H10:
+
+1. **Resolução.** Na comparação por estado, o site dá a participação de cada tópico em porcentagem inteira. A do guaraná fica entre 1% e 11% em 2008-2009 e quase toda em 2% em 2017-2018, o que não permite ordenar os estados.
+2. **Ruído de marca.** Os tópicos juntam buscas que não são sobre a bebida, como bonés e coleções de maquiagem licenciadas, e o público delas tem geografia própria.
+3. **Volume em 2008-2009.** Na comparação, 15 dos 27 estados vêm sem valor para o guaraná.
+
+**Mudança de medida que chegou a ser cogitada antes do corte.** Para contornar o arredondamento, foram consideradas exportações individuais por tópico (índice de 0 a 100 por estado, um arquivo para guaraná e outro para cola em cada janela). A correlação de postos da razão guaraná/cola não depende da escala de cada tópico, então a comparação seguiria válida. Também foi testado o filtro de categoria "Alimentos e bebidas" no lugar de "Todas as categorias" (seção 13 do design), para tirar o ruído de marca. O filtro não removeu o ruído: as buscas de boné e maquiagem continuaram entre as mais frequentes. Com o ruído mantido, e com 15 estados vazios na comparação de 2008-2009, o autor preferiu cortar o bloco a trocar a medida.
+
+**Alternativas descartadas:** rodar H10 com a participação arredondada (sem variação para ordenar os estados); trocar a medida pelas exportações individuais com o filtro "Alimentos e bebidas" (o ruído de marca continuaria, e o volume de busca de 2008-2009 seguiria baixo); substituir o Trends pelo bloco de clima nas capitais (seção 26), que fica como próximo passo no README.
+
+---
+
 ## Fontes consultadas
 
 **Dados e POF**
