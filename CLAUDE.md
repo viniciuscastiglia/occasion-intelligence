@@ -20,6 +20,8 @@ O Plano 1 foi executado na branch `plano-1`: ingestão, bases, auditoria, tabela
 
 Formatar só `src/`, `tests/`, `app/` e `scripts/`; nunca `ruff format .` na raiz (ver "Armadilhas").
 
+**Plano 2 em execução** na branch `plano-2` (o `plano-1` já está na `main`): `docs/superpowers/plans/2026-11-20-plano-2-modelos-teste-e-servido.md`, executado com `superpowers:subagent-driven-development`. O progresso, as decisões de execução e o ponto de retomada ficam no ledger `.superpowers/sdd/2026-11-20-plano-2-modelos-teste-e-servido/progress.md` (fora do git): ler antes de continuar. O pré-registro aprovado está em `docs/pre-registro.md`; a seção 27 do registro de decisões traz as decisões do Plano 2. O bloco do Google Trends (H10) foi cortado em 20/11/2026.
+
 O que existe:
 
 - `Occasion_Intelligence_Pizza_Guarana.md`: o TAPI, enunciado do case.
