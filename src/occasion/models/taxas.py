@@ -83,8 +83,15 @@ class TabelaDeTaxas:
         if not (len(X) == len(y) == len(sample_weight)):
             raise ValueError("X, y e sample_weight precisam ter o mesmo tamanho")
         pesos = pd.Series(np.asarray(sample_weight, dtype=float))
-        if len(pesos) == 0 or not np.isfinite(pesos).all() or (pesos <= 0).any():
-            raise ValueError("peso inválido: todos os pesos devem ser finitos e positivos")
+        if (
+            len(pesos) == 0
+            or not np.isfinite(pesos).all()
+            or (pesos < 0).any()
+            or not pesos.sum() > 0
+        ):
+            raise ValueError(
+                "peso inválido: pesos finitos, não negativos e com soma positiva (zero é aceito)"
+            )
         pesos = pesos / pesos.mean()
         alvo = pd.Series(np.asarray(y, dtype=float))
         chaves = cast(pd.DataFrame, X[self.dimensoes]).reset_index(drop=True)

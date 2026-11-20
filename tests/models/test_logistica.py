@@ -194,3 +194,27 @@ def test_interacao_com_variavel_fora_da_parte_e_recusada(base_p1) -> None:
     X, y, w = base_p1
     with pytest.raises(ValueError, match="interação"):
         ModeloLogistico("ocasiao", C=1.0, interacoes=[("tem_pizza", "local")]).fit(X, y, w)
+
+
+def test_peso_zero_equivale_a_tirar_as_linhas(base_p1) -> None:
+    X, y, w = base_p1
+    zero = np.arange(len(X)) % 4 == 0
+    w0 = w.where(~zero, 0.0)
+    com_zero = ModeloLogistico("ocasiao", C=1.0).fit(X, y, w0)
+    # a média 1 é sobre todas as linhas (as de peso zero contam, como numa réplica de bootstrap de
+    # tamanho n): o termo de dados fica n / n_mantidas vezes maior, o que equivale a C maior
+    C = 1.0 * len(X) / (~zero).sum()
+    sem = ModeloLogistico("ocasiao", C=C).fit(X[~zero], y[~zero], w[~zero])
+    np.testing.assert_allclose(com_zero.predict_proba(X), sem.predict_proba(X), atol=1e-5)
+
+
+@pytest.mark.parametrize("pesos", [[-1.0], [np.nan], [np.inf], [0.0]])
+def test_pesos_invalidos_da_logistica(base_p1, pesos: list[float]) -> None:
+    X, y, w = base_p1
+    w = w.copy()
+    if len(pesos) == 1 and pesos[0] == 0.0:
+        w[:] = 0.0  # soma zero
+    else:
+        w.iloc[0] = pesos[0]
+    with pytest.raises(ValueError, match="peso"):
+        ModeloLogistico("ocasiao", C=1.0).fit(X, y, w)

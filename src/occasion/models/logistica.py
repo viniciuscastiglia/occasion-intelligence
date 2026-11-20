@@ -143,8 +143,10 @@ class ModeloLogistico:
             pesos = np.asarray(sample_weight, dtype=float)
         if not (len(Xp) == len(alvo) == len(pesos)) or len(Xp) == 0:
             raise ValueError("X, y e sample_weight precisam ter o mesmo tamanho (e não ser vazios)")
-        if not np.isfinite(pesos).all() or (pesos <= 0).any():
-            raise ValueError("peso inválido: todos os pesos devem ser finitos e positivos")
+        if not np.isfinite(pesos).all() or (pesos < 0).any() or not pesos.sum() > 0:
+            raise ValueError(
+                "peso inválido: pesos finitos, não negativos e com soma positiva (zero é aceito)"
+            )
         pesos = pesos / pesos.mean()
 
         self._ct = self._transformador()

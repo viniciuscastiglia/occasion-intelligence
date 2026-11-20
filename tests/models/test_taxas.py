@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+from tests.models.bases_sinteticas import base_sintetica
 
 from occasion.models.taxas import DIMENSOES_PARTE_1, DIMENSOES_PARTE_2, TabelaDeTaxas
 
@@ -104,7 +105,9 @@ def test_coluna_ausente_levanta_erro_e_coluna_a_mais_e_ignorada():
         t.contribuicoes(pd.DataFrame({"outra": [1]}))
 
 
-@pytest.mark.parametrize("pesos", [[1.0, -1.0, 1.0, 1.0], [1.0, 0.0, 1.0, 1.0], [0.0] * 4])
+@pytest.mark.parametrize(
+    "pesos", [[1.0, -1.0, 1.0, 1.0], [0.0] * 4, [1.0, np.nan, 1.0, 1.0], [1.0, np.inf, 1.0, 1.0]]
+)
 def test_pesos_invalidos_levantam_erro(pesos: list[float]):
     X, y, _ = _treino_so_em_casa()
     with pytest.raises(ValueError, match="peso"):
@@ -177,3 +180,19 @@ def test_dominio_nao_olha_colunas_fora_das_dimensoes() -> None:
     X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 2, "idade": 30})
     t = TabelaDeTaxas(["local"]).fit(X, pd.Series([1, 0, 0, 0]))
     assert t.predict_proba(X.assign(sexo="outro")).shape == (4,)
+
+
+def test_peso_zero_equivale_a_tirar_as_linhas() -> None:
+    X, y, _ = base_sintetica(600, semente=5)
+    zero = np.arange(len(X)) % 3 == 0
+    w = pd.Series(np.where(zero, 0.0, 1.5))
+    com_zero = TabelaDeTaxas(["faixa_horario", "local"], 20.0).fit(X, y, w)
+    # a média 1 é sobre todas as linhas (as de peso zero contam), então a escala da suavização
+    # muda com a fração mantida: m' = m * n_mantidas / n dá o mesmo ajuste
+    m = 20.0 * (~zero).sum() / len(X)
+    mantidas = pd.Series(~zero)
+    sem = TabelaDeTaxas(["faixa_horario", "local"], m).fit(
+        X.loc[mantidas.to_numpy()], y.loc[mantidas.to_numpy()], w.loc[mantidas]
+    )
+    np.testing.assert_allclose(com_zero.predict_proba(X), sem.predict_proba(X), atol=1e-12)
+    assert com_zero.base_ == pytest.approx(sem.base_)
