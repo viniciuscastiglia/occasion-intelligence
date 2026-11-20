@@ -11,7 +11,7 @@ from typing import Self, cast
 import numpy as np
 import pandas as pd
 
-from occasion.features.variaveis import adicionar_derivadas
+from occasion.features.variaveis import adicionar_derivadas, checar_dominios
 from occasion.models.base import logit
 
 DIMENSOES_PARTE_1: list[str] = ["dia_semana", "faixa_horario", "local"]
@@ -53,6 +53,10 @@ class TabelaDeTaxas:
         if faltam:
             raise ValueError(f"faltam dimensões em X: {faltam}")
 
+    def _checar_dominios(self, X: pd.DataFrame) -> None:
+        """Domínio fechado: valor fora de `DOMINIOS` nas dimensões da tabela é erro."""
+        checar_dominios(cast(pd.DataFrame, X[self.dimensoes]))
+
     def _recusar_nan(self, X: pd.DataFrame) -> None:
         """Valor ausente nas dimensões é erro de montagem; valor não visto é outra coisa."""
         com_nan = [d for d in self.dimensoes if bool(X[d].isna().any())]
@@ -73,6 +77,7 @@ class TabelaDeTaxas:
         """Ajusta a tabela; sem `sample_weight`, todas as linhas pesam o mesmo."""
         X = adicionar_derivadas(X)
         self._checar_colunas(X)
+        self._checar_dominios(X)
         if sample_weight is None:
             sample_weight = pd.Series(np.ones(len(X)))
         if not (len(X) == len(y) == len(sample_weight)):
@@ -93,6 +98,7 @@ class TabelaDeTaxas:
         X = adicionar_derivadas(X)
         self._checar_colunas(X)
         self._recusar_nan(X)
+        self._checar_dominios(X)
         indice = pd.MultiIndex.from_frame(
             cast(pd.DataFrame, X[self.dimensoes]).reset_index(drop=True)
         )
@@ -104,6 +110,7 @@ class TabelaDeTaxas:
         X = adicionar_derivadas(X)
         self._checar_colunas(X)
         self._recusar_nan(X)
+        self._checar_dominios(X)
         base = self.base_
         saida: dict[str, np.ndarray] = {}
         for d in self.dimensoes:

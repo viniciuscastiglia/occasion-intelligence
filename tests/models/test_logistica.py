@@ -22,9 +22,10 @@ def test_contribuicoes_somam_o_logit(base_p1) -> None:
     np.testing.assert_allclose(soma, logit(m.predict_proba(X)), atol=1e-8)
 
 
-def test_contribuicoes_somam_o_logit_com_fim_de_semana_e_preferencia(base_p2) -> None:
+def test_contribuicoes_somam_o_logit_na_preferencia_com_interacoes(base_p2) -> None:
     X, y, w = base_p2
-    m = ModeloLogistico("preferencia", C=0.5, com_curvas=True, interacoes=PRE_FDS[:0]).fit(X, y, w)
+    inter = INTERACOES["preferencia"]["pre_declarado"]
+    m = ModeloLogistico("preferencia", C=0.5, com_curvas=True, interacoes=inter).fit(X, y, w)
     c = m.contribuicoes(X)
     assert list(c.columns) == variaveis_da_parte("preferencia")
     np.testing.assert_allclose(
@@ -49,14 +50,34 @@ def test_interacao_com_fim_de_semana_atribui_a_dia_semana(base_p1) -> None:
 
 def test_interacao_dividida_meio_a_meio() -> None:
     X, y, w = base_sintetica(3000, semente=3)
-    sem = ModeloLogistico("ocasiao", C=1.0).fit(X, y, w)
-    com = ModeloLogistico("ocasiao", C=1.0, interacoes=[("faixa_horario", "local")]).fit(X, y, w)
-    # o modelo com interação difere do sem; a soma ainda fecha com o logit
-    assert not np.allclose(sem.predict_proba(X), com.predict_proba(X))
-    c = com.contribuicoes(X)
+    m = ModeloLogistico("ocasiao", C=1.0, interacoes=[("faixa_horario", "local")]).fit(X, y, w)
+    c = m.contribuicoes(X)
     np.testing.assert_allclose(
-        c.sum(axis=1).to_numpy() + com.base_, logit(com.predict_proba(X)), atol=1e-8
+        c.sum(axis=1).to_numpy() + m.base_, logit(m.predict_proba(X)), atol=1e-8
     )
+    # contribuição do bloco da interação, calculada à mão a partir do que foi ajustado
+    fatia = m._indices["inter:faixa_horario|local"]
+    coef = m._coef[fatia]
+    Xt = m._transformar(X).tocsc()
+    inter = np.asarray(Xt[:, fatia] @ coef).ravel() - float(m._media[fatia] @ coef)
+    assert np.abs(inter).max() > 1e-3
+
+    def principal(v: str) -> np.ndarray:
+        f = m._indices[f"cat:{v}"]
+        return np.asarray(Xt[:, f] @ m._coef[f]).ravel() - float(m._media[f] @ m._coef[f])
+
+    np.testing.assert_allclose(
+        c["faixa_horario"], principal("faixa_horario") + inter / 2, atol=1e-10
+    )
+    np.testing.assert_allclose(c["local"], principal("local") + inter / 2, atol=1e-10)
+
+
+def test_chave_da_interacao_nao_depende_do_dtype(base_p1) -> None:
+    X, y, w = base_p1
+    m = ModeloLogistico("ocasiao", C=1.0, interacoes=PRE).fit(X, y, w)
+    esperado = m.predict_proba(X.head(20))
+    com_float = X.head(20).assign(dia_semana=X.head(20)["dia_semana"].astype(float))
+    np.testing.assert_allclose(m.predict_proba(com_float), esperado, atol=1e-12)
 
 
 def test_categoria_ausente_no_treino_da_previsao_finita() -> None:

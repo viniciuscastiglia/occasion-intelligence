@@ -98,7 +98,10 @@ class ModeloLogistico:
         if bool((com["renda_pc_sm"] < 0).any()):
             raise ValueError("renda_pc_sm negativa")
         for a, b in self.interacoes:
-            com[_cruzada(a, b)] = com[a].astype(str) + "|" + com[b].astype(str)
+            # chave pelas posições no domínio, para não depender do dtype (6 e 6.0 dão a mesma)
+            ia = pd.Index(DOMINIOS[a]).get_indexer(cast(pd.Series, com[a]))
+            ib = pd.Index(DOMINIOS[b]).get_indexer(cast(pd.Series, com[b]))
+            com[_cruzada(a, b)] = [f"{i}|{j}" for i, j in zip(ia, ib, strict=True)]
         return cast(pd.DataFrame, com[[*usadas, *(_cruzada(a, b) for a, b in self.interacoes)]])
 
     def _transformador(self) -> ColumnTransformer:
@@ -118,7 +121,7 @@ class ModeloLogistico:
         if _PIZZA in self._variaveis:
             blocos.append((f"bin:{_PIZZA}", "passthrough", [_PIZZA]))
         for a, b in self.interacoes:
-            niveis = [f"{x}|{y}" for x in DOMINIOS[a] for y in DOMINIOS[b]]
+            niveis = [f"{i}|{j}" for i in range(len(DOMINIOS[a])) for j in range(len(DOMINIOS[b]))]
             blocos.append(
                 (
                     f"inter:{a}|{b}",

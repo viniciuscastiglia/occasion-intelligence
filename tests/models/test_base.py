@@ -23,7 +23,8 @@ def test_sigmoide_e_estavel_para_valores_grandes() -> None:
     assert p[0] == 0.0 and p[1] == 1.0
 
 
-def test_os_tres_tipos_de_modelo_seguem_a_interface() -> None:
+# O LightGBM entra na tarefa 8; a conformidade ao Protocol é checada pelo pyright.
+def test_tabela_e_logistica_expoem_variaveis_pela_interface() -> None:
     def aceita(modelo: ModeloParte) -> list[str]:
         return modelo.variaveis
 

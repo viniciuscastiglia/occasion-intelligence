@@ -158,3 +158,22 @@ def test_dimensao_fim_de_semana_deriva_de_dia_semana() -> None:
     p = t.predict_proba(pd.DataFrame({"dia_semana": [3, 6]}))
     assert p.tolist() == pytest.approx([0.0, 0.75])
     assert list(t.contribuicoes(pd.DataFrame({"dia_semana": [3, 6]})).columns) == ["fim_de_semana"]
+
+
+def test_valor_fora_do_dominio_e_recusado_pela_tabela() -> None:
+    X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 2})
+    t = TabelaDeTaxas(["local"]).fit(X, pd.Series([1, 0, 0, 0]))
+    with pytest.raises(ValueError, match="fora do domínio"):
+        t.predict_proba(pd.DataFrame({"local": ["na_lua"]}))
+    with pytest.raises(ValueError, match="fora do domínio"):
+        t.contribuicoes(pd.DataFrame({"local": ["na_lua"]}))
+    with pytest.raises(ValueError, match="fora do domínio"):
+        TabelaDeTaxas(["local"]).fit(
+            pd.DataFrame({"local": ["na_lua", "em_casa"]}), pd.Series([1, 0])
+        )
+
+
+def test_dominio_nao_olha_colunas_fora_das_dimensoes() -> None:
+    X = pd.DataFrame({"local": ["em_casa", "fora_de_casa"] * 2, "idade": 30})
+    t = TabelaDeTaxas(["local"]).fit(X, pd.Series([1, 0, 0, 0]))
+    assert t.predict_proba(X.assign(sexo="outro")).shape == (4,)
