@@ -60,3 +60,12 @@ def test_salvar_e_carregar_resultado(tmp_path: Path, monkeypatch: pytest.MonkeyP
     caminho = registro.salvar_resultado("r", {"a": np.arange(3)})
     assert caminho == tmp_path / "pasta_nova" / "r.joblib"
     np.testing.assert_array_equal(registro.carregar_resultado("r")["a"], np.arange(3))
+
+
+def test_registro_grava_a_semente_usada(tmp_path: Path) -> None:
+    padrao = registro.registrar("a", "exploratório", {}, {}, {}, pasta=tmp_path)
+    outra = registro.registrar(
+        "b", "exploratório", {}, {}, {}, pasta=tmp_path, semente=SEMENTE + 300
+    )
+    assert json.loads(padrao.read_text(encoding="utf-8"))["semente"] == SEMENTE
+    assert json.loads(outra.read_text(encoding="utf-8"))["semente"] == SEMENTE + 300

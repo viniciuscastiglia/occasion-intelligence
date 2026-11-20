@@ -45,6 +45,13 @@ class ResultadoAninhado:
     modelos: list[ModeloParte]  # um por dobra externa, treinado no treino externo inteiro
 
 
+def _perda_finita(perda: float, degrau: Degrau, params: dict[str, Any]) -> float:
+    """A perda da seleção precisa ser finita: NaN ou infinito é erro, nunca é escolhido em silêncio."""
+    if not np.isfinite(perda):
+        raise ValueError(f"perda não finita ({perda}) na seleção do degrau {degrau}: {params}")
+    return perda
+
+
 def _entrada(df: pd.DataFrame, parte: ParteModelo, *, extra: bool) -> pd.DataFrame:
     """Colunas do modelo mais `cod_upa`; numa base extra da preferência, `tem_pizza = 1`."""
     colunas = list(dict.fromkeys([*variaveis_da_parte(parte), "cod_upa"]))
@@ -118,8 +125,12 @@ def validacao_aninhada(
     bases_extras: Mapping[str, pd.DataFrame] | None = None,
     construtor: Construtor = construir,
     semente: int = SEMENTE,
+    progresso: Callable[[int], None] | None = None,
 ) -> ResultadoAninhado:
-    """Validação aninhada por setor; ver o cabeçalho do módulo."""
+    """Validação aninhada por setor; ver o cabeçalho do módulo.
+
+    `progresso`, se dado, é chamado com `k` ao começar cada dobra externa (só para acompanhar).
+    """
     X, y, w, extras = _preparar(base, alvo, parte, bases_extras or {})
     por_linha = dobra_das_linhas(base, dobras)
     por_linha_extras = {n: dobra_das_linhas(b, dobras) for n, b in (bases_extras or {}).items()}
@@ -133,6 +144,8 @@ def validacao_aninhada(
     modelos: list[ModeloParte] = []
 
     for k in range(k_externo):
+        if progresso is not None:
+            progresso(k)
         treino = np.flatnonzero(por_linha != k)
         internas = dobras_internas(dobras, k, semente=semente)
         j_base = dobra_das_linhas(base.iloc[treino], internas)
@@ -152,7 +165,9 @@ def validacao_aninhada(
                 )  # fmt: skip
                 p_int[va] = m.predict_proba(cast(pd.DataFrame, X.iloc[treino[va]]))
                 internos.append(m)
-            perda = log_loss_ponderado(y_t.to_numpy(), p_int, w_t.to_numpy())
+            perda = _perda_finita(
+                log_loss_ponderado(y_t.to_numpy(), p_int, w_t.to_numpy()), degrau, params
+            )
             if melhor is None or perda < melhor[0]:  # empate: fica a primeira
                 melhor = (perda, params, p_int, internos)
         assert melhor is not None
@@ -259,7 +274,7 @@ def selecao_final(
             X, y, w, extras, por_linha, por_linha_extras, params, degrau, parte,
             construtor, usar_peso,
         )  # fmt: skip
-        perda = log_loss_ponderado(y.to_numpy(), oof, w.to_numpy())
+        perda = _perda_finita(log_loss_ponderado(y.to_numpy(), oof, w.to_numpy()), degrau, params)
         if melhor is None or perda < melhor[0]:
             melhor = (perda, params, oof, oof_e)
     assert melhor is not None

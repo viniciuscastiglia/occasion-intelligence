@@ -49,9 +49,15 @@ def registrar(
     configuracao: dict[str, Any],
     metricas: dict[str, Any],
     dados: dict[str, Any],
-    pasta: Path = RELATORIOS / "experimentos",
+    pasta: Path | None = None,
+    semente: int = SEMENTE,
 ) -> Path:
-    """Grava `<pasta>/<nome>.json` com os campos recebidos, o commit, a semente e as versões."""
+    """Grava `<pasta>/<nome>.json` com os campos recebidos, o commit, a semente e as versões.
+
+    `semente` é a realmente usada pelo experimento; sem `pasta`, vale `RELATORIOS/experimentos`
+    (lido na hora da chamada).
+    """
+    pasta = RELATORIOS / "experimentos" if pasta is None else pasta
     registro = {
         "nome": nome,
         "natureza": natureza,
@@ -59,7 +65,7 @@ def registrar(
         "metricas": metricas,
         "dados": dados,
         "commit": commit_da_receita(RAIZ),
-        "semente": SEMENTE,
+        "semente": semente,
         "data_hora": datetime.now().astimezone().isoformat(timespec="seconds"),
         "versoes": {
             "python": sys.version.split()[0],

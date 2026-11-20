@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado
 
 ambiente:
 	uv sync
@@ -34,6 +34,21 @@ investigacao-datas:
 
 eda:
 	uv run jupyter nbconvert --to notebook --execute --inplace notebooks/eda_2008.ipynb
+
+dobras:
+	uv run python -m occasion.experimentos dobras
+
+peso:
+	uv run python -m occasion.experimentos peso
+
+escada:
+	uv run python -m occasion.experimentos escada
+
+h4:
+	uv run python -m occasion.experimentos h4
+
+embaralhado:
+	uv run python -m occasion.experimentos embaralhado
 
 app:
 	uv run streamlit run app/streamlit_app.py

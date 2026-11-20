@@ -249,3 +249,35 @@ def test_rotulos_embaralhados_nao_vencem_a_constante(dobras: pd.DataFrame) -> No
         b=200,  # B reduzido só para o teste ser rápido
     )
     assert superioridade(ic) == "refutada"
+
+
+class _ModeloNaN:
+    """Modelo cuja previsão é NaN: a seleção não pode escolher uma configuração assim."""
+
+    base_: float = float("nan")
+
+    @property
+    def variaveis(self) -> list[str]:
+        return []
+
+    def fit(self, X: pd.DataFrame, y: pd.Series, sample_weight: pd.Series | None) -> Self:
+        return self
+
+    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
+        return np.full(len(X), np.nan)
+
+    def contribuicoes(self, X: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(index=X.index)
+
+
+def _construtor_nan(degrau: Degrau, parte: ParteModelo, params: dict[str, Any]) -> ModeloParte:
+    return _ModeloNaN()
+
+
+def test_perda_nan_na_selecao_vira_erro(base: pd.DataFrame, dobras: pd.DataFrame) -> None:
+    with pytest.raises(ValueError, match="perda"):
+        validacao_aninhada(
+            base, "y", "B", "ocasiao", dobras, usar_peso=True, construtor=_construtor_nan
+        )
+    with pytest.raises(ValueError, match="perda"):
+        selecao_final(base, "y", "B", "ocasiao", dobras, usar_peso=True, construtor=_construtor_nan)
