@@ -1,0 +1,3880 @@
+{
+  "edicao": "2008-2009",
+  "semente": 20261112,
+  "replicas_bootstrap": 200,
+  "tamanhos": {
+    "células": {
+      "linhas": 669030,
+      "positivos": 654
+    },
+    "ocasiões com refrigerante": {
+      "linhas": 19182,
+      "positivos": 4684
+    },
+    "pessoa x dia": {
+      "linhas": 66903,
+      "positivos": 651
+    },
+    "ocasiões": {
+      "linhas": 287680,
+      "positivos": 655
+    }
+  },
+  "horario": {
+    "hora_pico": {
+      "pizza_refri": 20,
+      "refri": 12
+    },
+    "participacao_por_faixa": {
+      "pizza_refri": {
+        "madrugada": 0.0062,
+        "manha": 0.012,
+        "almoco": 0.0723,
+        "tarde": 0.0349,
+        "noite": 0.8747
+      },
+      "refri": {
+        "madrugada": 0.0035,
+        "manha": 0.0611,
+        "almoco": 0.3851,
+        "tarde": 0.1522,
+        "noite": 0.3981
+      }
+    },
+    "picos": {
+      "pizza_refri": [
+        {
+          "hora": 13,
+          "faixa": "almoco",
+          "participacao": 0.0366,
+          "vizinha_de_outra_faixa": [],
+          "maior_vizinha_de_outra_faixa": 0.0,
+          "cortado": false
+        },
+        {
+          "hora": 20,
+          "faixa": "noite",
+          "participacao": 0.344,
+          "vizinha_de_outra_faixa": [],
+          "maior_vizinha_de_outra_faixa": 0.0,
+          "cortado": false
+        }
+      ],
+      "refri": [
+        {
+          "hora": 12,
+          "faixa": "almoco",
+          "participacao": 0.1952,
+          "vizinha_de_outra_faixa": [],
+          "maior_vizinha_de_outra_faixa": 0.0,
+          "cortado": false
+        },
+        {
+          "hora": 15,
+          "faixa": "tarde",
+          "participacao": 0.0603,
+          "vizinha_de_outra_faixa": [
+            14
+          ],
+          "maior_vizinha_de_outra_faixa": 0.0438,
+          "cortado": true
+        },
+        {
+          "hora": 20,
+          "faixa": "noite",
+          "participacao": 0.1264,
+          "vizinha_de_outra_faixa": [],
+          "maior_vizinha_de_outra_faixa": 0.0,
+          "cortado": false
+        }
+      ]
+    },
+    "criterio_de_corte": "pico = hora com participação >= 0.03 e acima das duas vizinhas; cortado se a vizinha de outra faixa tem ao menos metade da participação do pico",
+    "alguma_fronteira_corta_pico": true,
+    "positivos_por_faixa": {
+      "y_pizza_refri_celulas": {
+        "madrugada": 1,
+        "manha": 17,
+        "almoco": 42,
+        "tarde": 38,
+        "noite": 556
+      },
+      "y_guarana_ocasioes_refri": {
+        "madrugada": 8,
+        "manha": 408,
+        "almoco": 1851,
+        "tarde": 752,
+        "noite": 1665
+      },
+      "ocasioes_refri_contagem": {
+        "madrugada": 49,
+        "manha": 1389,
+        "almoco": 7507,
+        "tarde": 3181,
+        "noite": 7056
+      }
+    },
+    "sugestao_de_fronteira": null,
+    "observacao": "Só a série de todas as ocasiões com refrigerante tem pico dividido entre faixas: 15h (0.0603) com a vizinha [14] (0.0438) em outra faixa. A série do alvo da parte 1 não tem pico cortado; nenhuma mudança é sugerida."
+  },
+  "taxas_por_variavel": {
+    "ocasiao": {
+      "taxa_geral": 0.0013,
+      "amplitude": [
+        {
+          "variavel": "faixa_horario",
+          "maior": "noite",
+          "taxa_maior": 0.0057,
+          "menor": "tarde",
+          "taxa_menor": 0.00023,
+          "razao": 25.06658,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "renda_pc_sm",
+          "maior": "mais_de_5_sm",
+          "taxa_maior": 0.00367,
+          "menor": "ate_meio_sm",
+          "taxa_menor": 0.00029,
+          "razao": 12.75459,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "idade",
+          "maior": "18-29",
+          "taxa_maior": 0.00172,
+          "menor": "60+",
+          "taxa_menor": 0.00025,
+          "razao": 6.86807,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "uf",
+          "maior": "RJ",
+          "taxa_maior": 0.00373,
+          "menor": "BA",
+          "taxa_menor": 0.00057,
+          "razao": 6.52785,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "situacao",
+          "maior": "urbano",
+          "taxa_maior": 0.0015,
+          "menor": "rural",
+          "taxa_menor": 0.00029,
+          "razao": 5.22434,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "dia_semana",
+          "maior": "sáb",
+          "taxa_maior": 0.00339,
+          "menor": "qui",
+          "taxa_menor": 0.00068,
+          "razao": 4.99898,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "n_moradores_uc",
+          "maior": "5",
+          "taxa_maior": 0.00174,
+          "menor": "6",
+          "taxa_menor": 0.00043,
+          "razao": 4.07049,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "regiao",
+          "maior": "centro_oeste",
+          "taxa_maior": 0.00201,
+          "menor": "nordeste",
+          "taxa_menor": 0.00051,
+          "razao": 3.93769,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "local",
+          "maior": "em_casa",
+          "taxa_maior": 0.0017,
+          "menor": "fora_de_casa",
+          "taxa_menor": 0.0009,
+          "razao": 1.88627,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "sexo",
+          "maior": "feminino",
+          "taxa_maior": 0.00132,
+          "menor": "masculino",
+          "taxa_menor": 0.00129,
+          "razao": 1.02046,
+          "intervalos_separados": false
+        }
+      ],
+      "tabela": [
+        {
+          "categoria": "seg",
+          "n": 50130,
+          "positivos": 40,
+          "taxa": 0.0009,
+          "ic_inf": 0.00041,
+          "ic_sup": 0.00149,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "ter",
+          "n": 146990,
+          "positivos": 91,
+          "taxa": 0.00078,
+          "ic_inf": 0.00052,
+          "ic_sup": 0.00104,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "qua",
+          "n": 86860,
+          "positivos": 53,
+          "taxa": 0.00099,
+          "ic_inf": 0.00052,
+          "ic_sup": 0.00154,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "qui",
+          "n": 173830,
+          "positivos": 120,
+          "taxa": 0.00068,
+          "ic_inf": 0.00048,
+          "ic_sup": 0.00087,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "sex",
+          "n": 103140,
+          "positivos": 103,
+          "taxa": 0.00151,
+          "ic_inf": 0.00095,
+          "ic_sup": 0.00228,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "sáb",
+          "n": 64300,
+          "positivos": 141,
+          "taxa": 0.00339,
+          "ic_inf": 0.00226,
+          "ic_sup": 0.00462,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "dom",
+          "n": 43780,
+          "positivos": 106,
+          "taxa": 0.00249,
+          "ic_inf": 0.00151,
+          "ic_sup": 0.00372,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "madrugada",
+          "n": 133806,
+          "positivos": 1,
+          "taxa": 4e-05,
+          "ic_inf": 0.0,
+          "ic_sup": 0.00012,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "manha",
+          "n": 133806,
+          "positivos": 17,
+          "taxa": 8e-05,
+          "ic_inf": 3e-05,
+          "ic_sup": 0.00014,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "almoco",
+          "n": 133806,
+          "positivos": 42,
+          "taxa": 0.00047,
+          "ic_inf": 0.00024,
+          "ic_sup": 0.00069,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "tarde",
+          "n": 133806,
+          "positivos": 38,
+          "taxa": 0.00023,
+          "ic_inf": 0.00013,
+          "ic_sup": 0.00033,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "noite",
+          "n": 133806,
+          "positivos": 556,
+          "taxa": 0.0057,
+          "ic_inf": 0.00467,
+          "ic_sup": 0.00687,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "em_casa",
+          "n": 334515,
+          "positivos": 363,
+          "taxa": 0.0017,
+          "ic_inf": 0.00132,
+          "ic_sup": 0.00211,
+          "variavel": "local"
+        },
+        {
+          "categoria": "fora_de_casa",
+          "n": 334515,
+          "positivos": 291,
+          "taxa": 0.0009,
+          "ic_inf": 0.00069,
+          "ic_sup": 0.00114,
+          "variavel": "local"
+        },
+        {
+          "categoria": "RO",
+          "n": 11290,
+          "positivos": 8,
+          "taxa": 0.00061,
+          "ic_inf": 0.00016,
+          "ic_sup": 0.00126,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AC",
+          "n": 12020,
+          "positivos": 12,
+          "taxa": 0.00099,
+          "ic_inf": 0.00024,
+          "ic_sup": 0.00197,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AM",
+          "n": 22050,
+          "positivos": 20,
+          "taxa": 0.0011,
+          "ic_inf": 0.0005,
+          "ic_sup": 0.00185,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RR",
+          "n": 6500,
+          "positivos": 16,
+          "taxa": 0.00258,
+          "ic_inf": 0.00113,
+          "ic_sup": 0.00461,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PA",
+          "n": 24340,
+          "positivos": 9,
+          "taxa": 0.00043,
+          "ic_inf": 0.00016,
+          "ic_sup": 0.00074,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AP",
+          "n": 9920,
+          "positivos": 5,
+          "taxa": 0.00102,
+          "ic_inf": 3e-05,
+          "ic_sup": 0.00262,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "TO",
+          "n": 17900,
+          "positivos": 6,
+          "taxa": 0.00042,
+          "ic_inf": 6e-05,
+          "ic_sup": 0.00119,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MA",
+          "n": 29590,
+          "positivos": 28,
+          "taxa": 0.00076,
+          "ic_inf": 0.00036,
+          "ic_sup": 0.00121,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PI",
+          "n": 30590,
+          "positivos": 15,
+          "taxa": 0.00048,
+          "ic_inf": 0.0002,
+          "ic_sup": 0.00079,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "CE",
+          "n": 23160,
+          "positivos": 5,
+          "taxa": 0.00012,
+          "ic_inf": 2e-05,
+          "ic_sup": 0.00029,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RN",
+          "n": 16980,
+          "positivos": 11,
+          "taxa": 0.00092,
+          "ic_inf": 0.00029,
+          "ic_sup": 0.00201,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PB",
+          "n": 19120,
+          "positivos": 5,
+          "taxa": 0.0002,
+          "ic_inf": 0.0,
+          "ic_sup": 0.00042,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PE",
+          "n": 29040,
+          "positivos": 19,
+          "taxa": 0.00069,
+          "ic_inf": 0.00022,
+          "ic_sup": 0.00117,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AL",
+          "n": 32250,
+          "positivos": 14,
+          "taxa": 0.0004,
+          "ic_inf": 0.00011,
+          "ic_sup": 0.00075,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SE",
+          "n": 22660,
+          "positivos": 10,
+          "taxa": 0.00037,
+          "ic_inf": 0.0001,
+          "ic_sup": 0.00081,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "BA",
+          "n": 44280,
+          "positivos": 25,
+          "taxa": 0.00057,
+          "ic_inf": 0.00028,
+          "ic_sup": 0.00091,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MG",
+          "n": 57990,
+          "positivos": 44,
+          "taxa": 0.0007,
+          "ic_inf": 0.00034,
+          "ic_sup": 0.00114,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "ES",
+          "n": 16430,
+          "positivos": 16,
+          "taxa": 0.00078,
+          "ic_inf": 0.00027,
+          "ic_sup": 0.00159,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RJ",
+          "n": 24290,
+          "positivos": 64,
+          "taxa": 0.00373,
+          "ic_inf": 0.00204,
+          "ic_sup": 0.00545,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SP",
+          "n": 44790,
+          "positivos": 56,
+          "taxa": 0.00119,
+          "ic_inf": 0.00075,
+          "ic_sup": 0.00175,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PR",
+          "n": 30360,
+          "positivos": 47,
+          "taxa": 0.00197,
+          "ic_inf": 0.00113,
+          "ic_sup": 0.0029,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SC",
+          "n": 26810,
+          "positivos": 45,
+          "taxa": 0.00212,
+          "ic_inf": 0.00126,
+          "ic_sup": 0.0031,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RS",
+          "n": 25110,
+          "positivos": 47,
+          "taxa": 0.00193,
+          "ic_inf": 0.00105,
+          "ic_sup": 0.00292,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MS",
+          "n": 27440,
+          "positivos": 42,
+          "taxa": 0.00227,
+          "ic_inf": 0.00139,
+          "ic_sup": 0.0037,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MT",
+          "n": 23980,
+          "positivos": 33,
+          "taxa": 0.00133,
+          "ic_inf": 0.00078,
+          "ic_sup": 0.002,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "GO",
+          "n": 35000,
+          "positivos": 44,
+          "taxa": 0.0015,
+          "ic_inf": 0.0009,
+          "ic_sup": 0.00244,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "DF",
+          "n": 5140,
+          "positivos": 8,
+          "taxa": 0.00388,
+          "ic_inf": 0.0006,
+          "ic_sup": 0.00842,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "norte",
+          "n": 104020,
+          "positivos": 76,
+          "taxa": 0.0007,
+          "ic_inf": 0.00049,
+          "ic_sup": 0.00096,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "nordeste",
+          "n": 247670,
+          "positivos": 132,
+          "taxa": 0.00051,
+          "ic_inf": 0.00037,
+          "ic_sup": 0.00064,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "sudeste",
+          "n": 143500,
+          "positivos": 180,
+          "taxa": 0.00156,
+          "ic_inf": 0.00115,
+          "ic_sup": 0.00203,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "sul",
+          "n": 82280,
+          "positivos": 139,
+          "taxa": 0.00199,
+          "ic_inf": 0.00144,
+          "ic_sup": 0.00254,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "centro_oeste",
+          "n": 91560,
+          "positivos": 127,
+          "taxa": 0.00201,
+          "ic_inf": 0.00135,
+          "ic_sup": 0.00299,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "urbano",
+          "n": 506050,
+          "positivos": 608,
+          "taxa": 0.0015,
+          "ic_inf": 0.00124,
+          "ic_sup": 0.00182,
+          "variavel": "situacao"
+        },
+        {
+          "categoria": "rural",
+          "n": 162980,
+          "positivos": 46,
+          "taxa": 0.00029,
+          "ic_inf": 0.00016,
+          "ic_sup": 0.00044,
+          "variavel": "situacao"
+        },
+        {
+          "categoria": "10-17",
+          "n": 122720,
+          "positivos": 149,
+          "taxa": 0.00164,
+          "ic_inf": 0.0012,
+          "ic_sup": 0.00215,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "18-29",
+          "n": 163500,
+          "positivos": 204,
+          "taxa": 0.00172,
+          "ic_inf": 0.00125,
+          "ic_sup": 0.00216,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "30-44",
+          "n": 175830,
+          "positivos": 192,
+          "taxa": 0.00136,
+          "ic_inf": 0.00107,
+          "ic_sup": 0.00165,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "45-59",
+          "n": 121720,
+          "positivos": 88,
+          "taxa": 0.00112,
+          "ic_inf": 0.00076,
+          "ic_sup": 0.00154,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "60+",
+          "n": 85260,
+          "positivos": 21,
+          "taxa": 0.00025,
+          "ic_inf": 0.0001,
+          "ic_sup": 0.00042,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "feminino",
+          "n": 360430,
+          "positivos": 348,
+          "taxa": 0.00132,
+          "ic_inf": 0.00105,
+          "ic_sup": 0.00164,
+          "variavel": "sexo"
+        },
+        {
+          "categoria": "masculino",
+          "n": 308600,
+          "positivos": 306,
+          "taxa": 0.00129,
+          "ic_inf": 0.00104,
+          "ic_sup": 0.00155,
+          "variavel": "sexo"
+        },
+        {
+          "categoria": "ate_meio_sm",
+          "n": 153120,
+          "positivos": 43,
+          "taxa": 0.00029,
+          "ic_inf": 0.00012,
+          "ic_sup": 0.00047,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "meio_a_1_sm",
+          "n": 180440,
+          "positivos": 80,
+          "taxa": 0.00072,
+          "ic_inf": 0.00043,
+          "ic_sup": 0.00108,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "de_1_a_2_sm",
+          "n": 180570,
+          "positivos": 190,
+          "taxa": 0.00143,
+          "ic_inf": 0.00093,
+          "ic_sup": 0.00204,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "de_2_a_5_sm",
+          "n": 117800,
+          "positivos": 213,
+          "taxa": 0.00167,
+          "ic_inf": 0.00123,
+          "ic_sup": 0.00217,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "mais_de_5_sm",
+          "n": 37100,
+          "positivos": 128,
+          "taxa": 0.00367,
+          "ic_inf": 0.00269,
+          "ic_sup": 0.00482,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "1",
+          "n": 28740,
+          "positivos": 26,
+          "taxa": 0.00065,
+          "ic_inf": 0.00039,
+          "ic_sup": 0.00093,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "2",
+          "n": 102750,
+          "positivos": 109,
+          "taxa": 0.00149,
+          "ic_inf": 0.00106,
+          "ic_sup": 0.0021,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "3",
+          "n": 151090,
+          "positivos": 181,
+          "taxa": 0.00151,
+          "ic_inf": 0.00106,
+          "ic_sup": 0.00199,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "4",
+          "n": 164680,
+          "positivos": 173,
+          "taxa": 0.0014,
+          "ic_inf": 0.00094,
+          "ic_sup": 0.00193,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "5",
+          "n": 106480,
+          "positivos": 122,
+          "taxa": 0.00174,
+          "ic_inf": 0.0011,
+          "ic_sup": 0.00251,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "6",
+          "n": 53690,
+          "positivos": 27,
+          "taxa": 0.00043,
+          "ic_inf": 0.00019,
+          "ic_sup": 0.00082,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "7+",
+          "n": 61600,
+          "positivos": 16,
+          "taxa": 0.00029,
+          "ic_inf": 9e-05,
+          "ic_sup": 0.00056,
+          "variavel": "n_moradores_uc"
+        }
+      ]
+    },
+    "preferencia": {
+      "taxa_geral": 0.23452,
+      "amplitude": [
+        {
+          "variavel": "uf",
+          "maior": "PE",
+          "taxa_maior": 0.43243,
+          "menor": "SC",
+          "taxa_menor": 0.08651,
+          "razao": 4.99866,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "regiao",
+          "maior": "nordeste",
+          "taxa_maior": 0.3135,
+          "menor": "sul",
+          "taxa_menor": 0.17097,
+          "razao": 1.83366,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "renda_pc_sm",
+          "maior": "meio_a_1_sm",
+          "taxa_maior": 0.28437,
+          "menor": "mais_de_5_sm",
+          "taxa_menor": 0.16675,
+          "razao": 1.7054,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "idade",
+          "maior": "60+",
+          "taxa_maior": 0.3213,
+          "menor": "18-29",
+          "taxa_menor": 0.19587,
+          "razao": 1.64034,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "dia_semana",
+          "maior": "ter",
+          "taxa_maior": 0.26745,
+          "menor": "dom",
+          "taxa_menor": 0.16688,
+          "razao": 1.60263,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "situacao",
+          "maior": "rural",
+          "taxa_maior": 0.32998,
+          "menor": "urbano",
+          "taxa_menor": 0.22684,
+          "razao": 1.45469,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "faixa_horario",
+          "maior": "manha",
+          "taxa_maior": 0.29878,
+          "menor": "tarde",
+          "taxa_menor": 0.21856,
+          "razao": 1.36702,
+          "intervalos_separados": true
+        },
+        {
+          "variavel": "n_moradores_uc",
+          "maior": "6",
+          "taxa_maior": 0.26858,
+          "menor": "2",
+          "taxa_menor": 0.21431,
+          "razao": 1.25327,
+          "intervalos_separados": false
+        },
+        {
+          "variavel": "local",
+          "maior": "em_casa",
+          "taxa_maior": 0.24949,
+          "menor": "fora_de_casa",
+          "taxa_menor": 0.20591,
+          "razao": 1.21164,
+          "intervalos_separados": false
+        },
+        {
+          "variavel": "sexo",
+          "maior": "feminino",
+          "taxa_maior": 0.24813,
+          "menor": "masculino",
+          "taxa_menor": 0.22182,
+          "razao": 1.11858,
+          "intervalos_separados": false
+        }
+      ],
+      "tabela": [
+        {
+          "categoria": "seg",
+          "n": 1482,
+          "positivos": 326,
+          "taxa": 0.21335,
+          "ic_inf": 0.15373,
+          "ic_sup": 0.2759,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "ter",
+          "n": 3677,
+          "positivos": 938,
+          "taxa": 0.26745,
+          "ic_inf": 0.23347,
+          "ic_sup": 0.29839,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "qua",
+          "n": 2293,
+          "positivos": 621,
+          "taxa": 0.24431,
+          "ic_inf": 0.20126,
+          "ic_sup": 0.29448,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "qui",
+          "n": 4427,
+          "positivos": 1067,
+          "taxa": 0.23762,
+          "ic_inf": 0.21436,
+          "ic_sup": 0.26846,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "sex",
+          "n": 2830,
+          "positivos": 738,
+          "taxa": 0.24278,
+          "ic_inf": 0.21123,
+          "ic_sup": 0.28948,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "sáb",
+          "n": 2330,
+          "positivos": 568,
+          "taxa": 0.24583,
+          "ic_inf": 0.20415,
+          "ic_sup": 0.28178,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "dom",
+          "n": 2143,
+          "positivos": 426,
+          "taxa": 0.16688,
+          "ic_inf": 0.13606,
+          "ic_sup": 0.20272,
+          "variavel": "dia_semana"
+        },
+        {
+          "categoria": "madrugada",
+          "n": 49,
+          "positivos": 8,
+          "taxa": 0.20807,
+          "ic_inf": 0.06772,
+          "ic_sup": 0.39099,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "manha",
+          "n": 1389,
+          "positivos": 408,
+          "taxa": 0.29878,
+          "ic_inf": 0.25545,
+          "ic_sup": 0.34937,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "almoco",
+          "n": 7507,
+          "positivos": 1851,
+          "taxa": 0.24457,
+          "ic_inf": 0.22374,
+          "ic_sup": 0.26548,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "tarde",
+          "n": 3181,
+          "positivos": 752,
+          "taxa": 0.21856,
+          "ic_inf": 0.19147,
+          "ic_sup": 0.25032,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "noite",
+          "n": 7056,
+          "positivos": 1665,
+          "taxa": 0.22127,
+          "ic_inf": 0.19672,
+          "ic_sup": 0.243,
+          "variavel": "faixa_horario"
+        },
+        {
+          "categoria": "em_casa",
+          "n": 12405,
+          "positivos": 3272,
+          "taxa": 0.24949,
+          "ic_inf": 0.22397,
+          "ic_sup": 0.27366,
+          "variavel": "local"
+        },
+        {
+          "categoria": "fora_de_casa",
+          "n": 6777,
+          "positivos": 1412,
+          "taxa": 0.20591,
+          "ic_inf": 0.18617,
+          "ic_sup": 0.22999,
+          "variavel": "local"
+        },
+        {
+          "categoria": "RO",
+          "n": 387,
+          "positivos": 66,
+          "taxa": 0.15989,
+          "ic_inf": 0.09335,
+          "ic_sup": 0.2365,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AC",
+          "n": 393,
+          "positivos": 119,
+          "taxa": 0.28781,
+          "ic_inf": 0.20377,
+          "ic_sup": 0.37487,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AM",
+          "n": 755,
+          "positivos": 229,
+          "taxa": 0.32396,
+          "ic_inf": 0.26795,
+          "ic_sup": 0.37593,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RR",
+          "n": 204,
+          "positivos": 26,
+          "taxa": 0.11058,
+          "ic_inf": 0.04322,
+          "ic_sup": 0.19791,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PA",
+          "n": 559,
+          "positivos": 150,
+          "taxa": 0.26469,
+          "ic_inf": 0.19603,
+          "ic_sup": 0.33726,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AP",
+          "n": 283,
+          "positivos": 73,
+          "taxa": 0.23024,
+          "ic_inf": 0.14818,
+          "ic_sup": 0.32672,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "TO",
+          "n": 460,
+          "positivos": 138,
+          "taxa": 0.29956,
+          "ic_inf": 0.21312,
+          "ic_sup": 0.38365,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MA",
+          "n": 626,
+          "positivos": 147,
+          "taxa": 0.27418,
+          "ic_inf": 0.19053,
+          "ic_sup": 0.35214,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PI",
+          "n": 577,
+          "positivos": 186,
+          "taxa": 0.31997,
+          "ic_inf": 0.22958,
+          "ic_sup": 0.42693,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "CE",
+          "n": 432,
+          "positivos": 97,
+          "taxa": 0.23999,
+          "ic_inf": 0.17793,
+          "ic_sup": 0.30113,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RN",
+          "n": 367,
+          "positivos": 122,
+          "taxa": 0.29968,
+          "ic_inf": 0.2166,
+          "ic_sup": 0.38894,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PB",
+          "n": 333,
+          "positivos": 92,
+          "taxa": 0.22157,
+          "ic_inf": 0.13163,
+          "ic_sup": 0.31924,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PE",
+          "n": 887,
+          "positivos": 374,
+          "taxa": 0.43243,
+          "ic_inf": 0.37014,
+          "ic_sup": 0.51418,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "AL",
+          "n": 657,
+          "positivos": 148,
+          "taxa": 0.24764,
+          "ic_inf": 0.18915,
+          "ic_sup": 0.30831,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SE",
+          "n": 552,
+          "positivos": 133,
+          "taxa": 0.25505,
+          "ic_inf": 0.1871,
+          "ic_sup": 0.32772,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "BA",
+          "n": 715,
+          "positivos": 226,
+          "taxa": 0.30451,
+          "ic_inf": 0.23517,
+          "ic_sup": 0.36403,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MG",
+          "n": 1576,
+          "positivos": 360,
+          "taxa": 0.21424,
+          "ic_inf": 0.18054,
+          "ic_sup": 0.252,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "ES",
+          "n": 500,
+          "positivos": 96,
+          "taxa": 0.16927,
+          "ic_inf": 0.12734,
+          "ic_sup": 0.23004,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RJ",
+          "n": 951,
+          "positivos": 248,
+          "taxa": 0.22613,
+          "ic_inf": 0.16876,
+          "ic_sup": 0.2833,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SP",
+          "n": 1961,
+          "positivos": 545,
+          "taxa": 0.24276,
+          "ic_inf": 0.19752,
+          "ic_sup": 0.2899,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "PR",
+          "n": 936,
+          "positivos": 138,
+          "taxa": 0.12492,
+          "ic_inf": 0.09074,
+          "ic_sup": 0.16456,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "SC",
+          "n": 779,
+          "positivos": 81,
+          "taxa": 0.08651,
+          "ic_inf": 0.05954,
+          "ic_sup": 0.1242,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "RS",
+          "n": 1142,
+          "positivos": 259,
+          "taxa": 0.23036,
+          "ic_inf": 0.18757,
+          "ic_sup": 0.29425,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MS",
+          "n": 877,
+          "positivos": 226,
+          "taxa": 0.25305,
+          "ic_inf": 0.19499,
+          "ic_sup": 0.32213,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "MT",
+          "n": 774,
+          "positivos": 143,
+          "taxa": 0.20282,
+          "ic_inf": 0.1409,
+          "ic_sup": 0.27795,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "GO",
+          "n": 1313,
+          "positivos": 233,
+          "taxa": 0.15295,
+          "ic_inf": 0.11222,
+          "ic_sup": 0.19201,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "DF",
+          "n": 186,
+          "positivos": 29,
+          "taxa": 0.19546,
+          "ic_inf": 0.08353,
+          "ic_sup": 0.29769,
+          "variavel": "uf"
+        },
+        {
+          "categoria": "norte",
+          "n": 3041,
+          "positivos": 801,
+          "taxa": 0.26755,
+          "ic_inf": 0.23139,
+          "ic_sup": 0.30033,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "nordeste",
+          "n": 5146,
+          "positivos": 1525,
+          "taxa": 0.3135,
+          "ic_inf": 0.28176,
+          "ic_sup": 0.34672,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "sudeste",
+          "n": 4988,
+          "positivos": 1249,
+          "taxa": 0.23199,
+          "ic_inf": 0.20162,
+          "ic_sup": 0.26553,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "sul",
+          "n": 2857,
+          "positivos": 478,
+          "taxa": 0.17097,
+          "ic_inf": 0.13884,
+          "ic_sup": 0.20613,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "centro_oeste",
+          "n": 3150,
+          "positivos": 631,
+          "taxa": 0.18636,
+          "ic_inf": 0.1524,
+          "ic_sup": 0.21741,
+          "variavel": "regiao"
+        },
+        {
+          "categoria": "urbano",
+          "n": 16527,
+          "positivos": 3848,
+          "taxa": 0.22684,
+          "ic_inf": 0.20705,
+          "ic_sup": 0.2475,
+          "variavel": "situacao"
+        },
+        {
+          "categoria": "rural",
+          "n": 2655,
+          "positivos": 836,
+          "taxa": 0.32998,
+          "ic_inf": 0.29104,
+          "ic_sup": 0.37661,
+          "variavel": "situacao"
+        },
+        {
+          "categoria": "10-17",
+          "n": 4327,
+          "positivos": 1151,
+          "taxa": 0.26423,
+          "ic_inf": 0.23532,
+          "ic_sup": 0.2945,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "18-29",
+          "n": 6046,
+          "positivos": 1275,
+          "taxa": 0.19587,
+          "ic_inf": 0.1747,
+          "ic_sup": 0.2199,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "30-44",
+          "n": 5039,
+          "positivos": 1213,
+          "taxa": 0.24273,
+          "ic_inf": 0.21408,
+          "ic_sup": 0.27454,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "45-59",
+          "n": 2645,
+          "positivos": 651,
+          "taxa": 0.2172,
+          "ic_inf": 0.18037,
+          "ic_sup": 0.2609,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "60+",
+          "n": 1125,
+          "positivos": 394,
+          "taxa": 0.3213,
+          "ic_inf": 0.2503,
+          "ic_sup": 0.40151,
+          "variavel": "idade"
+        },
+        {
+          "categoria": "feminino",
+          "n": 9772,
+          "positivos": 2416,
+          "taxa": 0.24813,
+          "ic_inf": 0.22558,
+          "ic_sup": 0.27488,
+          "variavel": "sexo"
+        },
+        {
+          "categoria": "masculino",
+          "n": 9410,
+          "positivos": 2268,
+          "taxa": 0.22182,
+          "ic_inf": 0.20271,
+          "ic_sup": 0.24527,
+          "variavel": "sexo"
+        },
+        {
+          "categoria": "ate_meio_sm",
+          "n": 2116,
+          "positivos": 627,
+          "taxa": 0.25531,
+          "ic_inf": 0.21431,
+          "ic_sup": 0.29853,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "meio_a_1_sm",
+          "n": 4432,
+          "positivos": 1189,
+          "taxa": 0.28437,
+          "ic_inf": 0.24441,
+          "ic_sup": 0.31735,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "de_1_a_2_sm",
+          "n": 5812,
+          "positivos": 1464,
+          "taxa": 0.25213,
+          "ic_inf": 0.22046,
+          "ic_sup": 0.2857,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "de_2_a_5_sm",
+          "n": 5047,
+          "positivos": 1073,
+          "taxa": 0.20548,
+          "ic_inf": 0.17454,
+          "ic_sup": 0.24619,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "mais_de_5_sm",
+          "n": 1775,
+          "positivos": 331,
+          "taxa": 0.16675,
+          "ic_inf": 0.13235,
+          "ic_sup": 0.20148,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "categoria": "1",
+          "n": 795,
+          "positivos": 180,
+          "taxa": 0.25038,
+          "ic_inf": 0.18348,
+          "ic_sup": 0.31502,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "2",
+          "n": 2915,
+          "positivos": 662,
+          "taxa": 0.21431,
+          "ic_inf": 0.17761,
+          "ic_sup": 0.26458,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "3",
+          "n": 4749,
+          "positivos": 1183,
+          "taxa": 0.2144,
+          "ic_inf": 0.18279,
+          "ic_sup": 0.24526,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "4",
+          "n": 5259,
+          "positivos": 1272,
+          "taxa": 0.24273,
+          "ic_inf": 0.21205,
+          "ic_sup": 0.2811,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "5",
+          "n": 2948,
+          "positivos": 753,
+          "taxa": 0.24883,
+          "ic_inf": 0.19537,
+          "ic_sup": 0.30802,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "6",
+          "n": 1308,
+          "positivos": 310,
+          "taxa": 0.26858,
+          "ic_inf": 0.19412,
+          "ic_sup": 0.32398,
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "categoria": "7+",
+          "n": 1208,
+          "positivos": 324,
+          "taxa": 0.25455,
+          "ic_inf": 0.19266,
+          "ic_sup": 0.32018,
+          "variavel": "n_moradores_uc"
+        }
+      ]
+    }
+  },
+  "curvas": {
+    "formas": {
+      "ocasiao": {
+        "idade (faixas de 5 anos)": "sem diferença clara até 15-19 e queda depois",
+        "renda por pessoa (décimos ponderados)": "alta da primeira à última faixa, sem extremo no meio"
+      },
+      "preferencia": {
+        "idade (faixas de 5 anos)": "alta até 75-79 e sem diferença clara depois",
+        "renda por pessoa (décimos ponderados)": "sem diferença clara até 3 e queda depois"
+      }
+    },
+    "curvas_com_extremo_no_meio": [
+      "ocasiao: idade (faixas de 5 anos)",
+      "preferencia: idade (faixas de 5 anos)",
+      "preferencia: renda por pessoa (décimos ponderados)"
+    ],
+    "cortes_decis_renda_sm": {
+      "ocasiao": [
+        0.363,
+        0.543,
+        0.731,
+        0.964,
+        1.219,
+        1.538,
+        2.023,
+        2.779,
+        4.451
+      ],
+      "preferencia": [
+        0.57,
+        0.795,
+        1.065,
+        1.359,
+        1.686,
+        2.149,
+        2.681,
+        3.532,
+        5.566
+      ]
+    },
+    "criterio": "extremo no meio: o máximo (mínimo) cai numa faixa interior e seu intervalo não cruza o de ao menos uma ponta; tendência: os intervalos das duas pontas não se cruzam",
+    "tabelas": {
+      "ocasiao": [
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "10-14",
+          "n": 77490,
+          "positivos": 82,
+          "taxa": 0.00143,
+          "ic_inf": 0.00094,
+          "ic_sup": 0.0019
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "15-19",
+          "n": 72060,
+          "positivos": 100,
+          "taxa": 0.00201,
+          "ic_inf": 0.00141,
+          "ic_sup": 0.00265
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "20-24",
+          "n": 66240,
+          "positivos": 76,
+          "taxa": 0.00158,
+          "ic_inf": 0.00091,
+          "ic_sup": 0.00245
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "25-29",
+          "n": 70430,
+          "positivos": 95,
+          "taxa": 0.00169,
+          "ic_inf": 0.00121,
+          "ic_sup": 0.0023
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "30-34",
+          "n": 64910,
+          "positivos": 91,
+          "taxa": 0.00145,
+          "ic_inf": 0.00103,
+          "ic_sup": 0.00194
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "35-39",
+          "n": 57630,
+          "positivos": 41,
+          "taxa": 0.00106,
+          "ic_inf": 0.00065,
+          "ic_sup": 0.00161
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "40-44",
+          "n": 53290,
+          "positivos": 60,
+          "taxa": 0.00158,
+          "ic_inf": 0.00108,
+          "ic_sup": 0.00225
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "45-49",
+          "n": 48770,
+          "positivos": 51,
+          "taxa": 0.00151,
+          "ic_inf": 0.00098,
+          "ic_sup": 0.00221
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "50-54",
+          "n": 40000,
+          "positivos": 23,
+          "taxa": 0.00091,
+          "ic_inf": 0.0004,
+          "ic_sup": 0.00161
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "55-59",
+          "n": 32950,
+          "positivos": 14,
+          "taxa": 0.00079,
+          "ic_inf": 0.00031,
+          "ic_sup": 0.00147
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "60-64",
+          "n": 26620,
+          "positivos": 11,
+          "taxa": 0.00042,
+          "ic_inf": 0.0001,
+          "ic_sup": 0.0009
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "65-69",
+          "n": 22160,
+          "positivos": 4,
+          "taxa": 0.00016,
+          "ic_inf": 2e-05,
+          "ic_sup": 0.00041
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "70-74",
+          "n": 15980,
+          "positivos": 4,
+          "taxa": 0.00015,
+          "ic_inf": 1e-05,
+          "ic_sup": 0.00035
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "75-79",
+          "n": 9700,
+          "positivos": 1,
+          "taxa": 7e-05,
+          "ic_inf": 0.0,
+          "ic_sup": 0.00021
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "80+",
+          "n": 10800,
+          "positivos": 1,
+          "taxa": 0.00033,
+          "ic_inf": 0.0,
+          "ic_sup": 0.00097
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "1",
+          "n": 90870,
+          "positivos": 17,
+          "taxa": 0.00024,
+          "ic_inf": 8e-05,
+          "ic_sup": 0.00039
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "2",
+          "n": 80780,
+          "positivos": 36,
+          "taxa": 0.00045,
+          "ic_inf": 0.00021,
+          "ic_sup": 0.00078
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "3",
+          "n": 74790,
+          "positivos": 18,
+          "taxa": 0.00029,
+          "ic_inf": 0.00012,
+          "ic_sup": 0.00052
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "4",
+          "n": 76080,
+          "positivos": 47,
+          "taxa": 0.00104,
+          "ic_inf": 0.0004,
+          "ic_sup": 0.00172
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "5",
+          "n": 69150,
+          "positivos": 46,
+          "taxa": 0.00103,
+          "ic_inf": 0.00044,
+          "ic_sup": 0.00182
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "6",
+          "n": 63460,
+          "positivos": 89,
+          "taxa": 0.00217,
+          "ic_inf": 0.00094,
+          "ic_sup": 0.00376
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "7",
+          "n": 60810,
+          "positivos": 64,
+          "taxa": 0.00108,
+          "ic_inf": 0.00058,
+          "ic_sup": 0.0016
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "8",
+          "n": 54820,
+          "positivos": 81,
+          "taxa": 0.00144,
+          "ic_inf": 0.00101,
+          "ic_sup": 0.00203
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "9",
+          "n": 53150,
+          "positivos": 107,
+          "taxa": 0.00148,
+          "ic_inf": 0.00092,
+          "ic_sup": 0.00205
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "10",
+          "n": 45120,
+          "positivos": 149,
+          "taxa": 0.0038,
+          "ic_inf": 0.00273,
+          "ic_sup": 0.00517
+        }
+      ],
+      "preferencia": [
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "10-14",
+          "n": 2571,
+          "positivos": 716,
+          "taxa": 0.28657,
+          "ic_inf": 0.23902,
+          "ic_sup": 0.32576
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "15-19",
+          "n": 2862,
+          "positivos": 693,
+          "taxa": 0.24123,
+          "ic_inf": 0.21057,
+          "ic_sup": 0.27329
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "20-24",
+          "n": 2431,
+          "positivos": 530,
+          "taxa": 0.18123,
+          "ic_inf": 0.15205,
+          "ic_sup": 0.21073
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "25-29",
+          "n": 2509,
+          "positivos": 487,
+          "taxa": 0.18516,
+          "ic_inf": 0.14771,
+          "ic_sup": 0.22461
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "30-34",
+          "n": 2075,
+          "positivos": 451,
+          "taxa": 0.21823,
+          "ic_inf": 0.17476,
+          "ic_sup": 0.25436
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "35-39",
+          "n": 1512,
+          "positivos": 393,
+          "taxa": 0.29493,
+          "ic_inf": 0.23992,
+          "ic_sup": 0.35426
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "40-44",
+          "n": 1452,
+          "positivos": 369,
+          "taxa": 0.22359,
+          "ic_inf": 0.18235,
+          "ic_sup": 0.26687
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "45-49",
+          "n": 1169,
+          "positivos": 243,
+          "taxa": 0.17254,
+          "ic_inf": 0.12493,
+          "ic_sup": 0.22126
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "50-54",
+          "n": 855,
+          "positivos": 243,
+          "taxa": 0.24547,
+          "ic_inf": 0.18964,
+          "ic_sup": 0.31485
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "55-59",
+          "n": 621,
+          "positivos": 165,
+          "taxa": 0.27165,
+          "ic_inf": 0.19299,
+          "ic_sup": 0.34097
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "60-64",
+          "n": 404,
+          "positivos": 131,
+          "taxa": 0.2155,
+          "ic_inf": 0.14502,
+          "ic_sup": 0.30843
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "65-69",
+          "n": 287,
+          "positivos": 83,
+          "taxa": 0.23821,
+          "ic_inf": 0.14018,
+          "ic_sup": 0.34586
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "70-74",
+          "n": 212,
+          "positivos": 81,
+          "taxa": 0.32975,
+          "ic_inf": 0.2298,
+          "ic_sup": 0.45395
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "75-79",
+          "n": 125,
+          "positivos": 58,
+          "taxa": 0.6794,
+          "ic_inf": 0.47302,
+          "ic_sup": 0.80105
+        },
+        {
+          "eixo": "idade (faixas de 5 anos)",
+          "x": "80+",
+          "n": 97,
+          "positivos": 41,
+          "taxa": 0.54283,
+          "ic_inf": 0.3511,
+          "ic_sup": 0.67935
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "1",
+          "n": 2680,
+          "positivos": 796,
+          "taxa": 0.26563,
+          "ic_inf": 0.22789,
+          "ic_sup": 0.30162
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "2",
+          "n": 2088,
+          "positivos": 545,
+          "taxa": 0.26467,
+          "ic_inf": 0.21228,
+          "ic_sup": 0.3228
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "3",
+          "n": 2289,
+          "positivos": 595,
+          "taxa": 0.28971,
+          "ic_inf": 0.24035,
+          "ic_sup": 0.33935
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "4",
+          "n": 1962,
+          "positivos": 520,
+          "taxa": 0.2677,
+          "ic_inf": 0.20198,
+          "ic_sup": 0.33854
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "5",
+          "n": 1872,
+          "positivos": 495,
+          "taxa": 0.25553,
+          "ic_inf": 0.19544,
+          "ic_sup": 0.31441
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "6",
+          "n": 1957,
+          "positivos": 429,
+          "taxa": 0.21663,
+          "ic_inf": 0.17498,
+          "ic_sup": 0.27425
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "7",
+          "n": 1581,
+          "positivos": 339,
+          "taxa": 0.22115,
+          "ic_inf": 0.15315,
+          "ic_sup": 0.29264
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "8",
+          "n": 1578,
+          "positivos": 330,
+          "taxa": 0.20533,
+          "ic_inf": 0.13696,
+          "ic_sup": 0.26602
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "9",
+          "n": 1653,
+          "positivos": 341,
+          "taxa": 0.18205,
+          "ic_inf": 0.13495,
+          "ic_sup": 0.23598
+        },
+        {
+          "eixo": "renda por pessoa (décimos ponderados)",
+          "x": "10",
+          "n": 1522,
+          "positivos": 294,
+          "taxa": 0.17708,
+          "ic_inf": 0.13913,
+          "ic_sup": 0.21683
+        }
+      ]
+    }
+  },
+  "interacoes": {
+    "nota": "descrição; a lista de interações não é escolhida pelo tamanho do desvio",
+    "resumo": [
+      {
+        "parte": "ocasiao",
+        "par": "dia_semana x faixa_horario",
+        "combinacoes": 35,
+        "com_10_ou_mais_positivos": 8,
+        "intervalo_exclui_zero": 3,
+        "maior_desvio_absoluto": 0.7293
+      },
+      {
+        "parte": "ocasiao",
+        "par": "faixa_horario x local",
+        "combinacoes": 10,
+        "com_10_ou_mais_positivos": 7,
+        "intervalo_exclui_zero": 1,
+        "maior_desvio_absoluto": 0.9176
+      },
+      {
+        "parte": "ocasiao",
+        "par": "local x situacao",
+        "combinacoes": 4,
+        "com_10_ou_mais_positivos": 4,
+        "intervalo_exclui_zero": 4,
+        "maior_desvio_absoluto": 0.654
+      },
+      {
+        "parte": "preferencia",
+        "par": "tem_pizza x local",
+        "combinacoes": 4,
+        "com_10_ou_mais_positivos": 4,
+        "intervalo_exclui_zero": 0,
+        "maior_desvio_absoluto": 0.3683
+      },
+      {
+        "parte": "preferencia",
+        "par": "tem_pizza x regiao",
+        "combinacoes": 10,
+        "com_10_ou_mais_positivos": 9,
+        "intervalo_exclui_zero": 4,
+        "maior_desvio_absoluto": 0.8496
+      },
+      {
+        "parte": "preferencia",
+        "par": "regiao x local",
+        "combinacoes": 10,
+        "com_10_ou_mais_positivos": 10,
+        "intervalo_exclui_zero": 2,
+        "maior_desvio_absoluto": 0.3043
+      },
+      {
+        "parte": "preferencia",
+        "par": "faixa_horario x local",
+        "combinacoes": 10,
+        "com_10_ou_mais_positivos": 8,
+        "intervalo_exclui_zero": 2,
+        "maior_desvio_absoluto": 0.2394
+      }
+    ],
+    "tabelas": {
+      "ocasiao": {
+        "dia_semana x faixa_horario": [
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "dom",
+            "b": "almoco",
+            "n": 8756,
+            "positivos": 10,
+            "taxa": 0.00185,
+            "desvio": 0.72928,
+            "desvio_ic_inf": -0.53288,
+            "desvio_ic_sup": 1.3455
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "dom",
+            "b": "madrugada",
+            "n": 8756,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "dom",
+            "b": "manha",
+            "n": 8756,
+            "positivos": 2,
+            "taxa": 0.00014,
+            "desvio": -0.06256,
+            "desvio_ic_inf": -1.2263,
+            "desvio_ic_sup": 1.15461
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "dom",
+            "b": "noite",
+            "n": 8756,
+            "positivos": 87,
+            "taxa": 0.0099,
+            "desvio": -0.09239,
+            "desvio_ic_inf": -0.28066,
+            "desvio_ic_sup": 0.03821
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "dom",
+            "b": "tarde",
+            "n": 8756,
+            "positivos": 7,
+            "taxa": 0.00055,
+            "desvio": 0.24141,
+            "desvio_ic_inf": -1.393,
+            "desvio_ic_sup": 1.03808
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qua",
+            "b": "almoco",
+            "n": 17372,
+            "positivos": 2,
+            "taxa": 8e-05,
+            "desvio": -1.46451,
+            "desvio_ic_inf": -2.63073,
+            "desvio_ic_sup": 0.00598
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qua",
+            "b": "madrugada",
+            "n": 17372,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qua",
+            "b": "manha",
+            "n": 17372,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qua",
+            "b": "noite",
+            "n": 17372,
+            "positivos": 49,
+            "taxa": 0.00475,
+            "desvio": 0.09205,
+            "desvio_ic_inf": 0.01464,
+            "desvio_ic_sup": 0.15128
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qua",
+            "b": "tarde",
+            "n": 17372,
+            "positivos": 2,
+            "taxa": 0.00011,
+            "desvio": -0.408,
+            "desvio_ic_inf": -1.42098,
+            "desvio_ic_sup": 0.77205
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qui",
+            "b": "almoco",
+            "n": 34766,
+            "positivos": 8,
+            "taxa": 0.00015,
+            "desvio": -0.45428,
+            "desvio_ic_inf": -1.82003,
+            "desvio_ic_sup": 0.32142
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qui",
+            "b": "madrugada",
+            "n": 34766,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qui",
+            "b": "manha",
+            "n": 34766,
+            "positivos": 4,
+            "taxa": 5e-05,
+            "desvio": 0.13041,
+            "desvio_ic_inf": -1.45174,
+            "desvio_ic_sup": 1.00231
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qui",
+            "b": "noite",
+            "n": 34766,
+            "positivos": 99,
+            "taxa": 0.00299,
+            "desvio": 0.00523,
+            "desvio_ic_inf": -0.07203,
+            "desvio_ic_sup": 0.08383
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "qui",
+            "b": "tarde",
+            "n": 34766,
+            "positivos": 9,
+            "taxa": 0.0002,
+            "desvio": 0.52871,
+            "desvio_ic_inf": -1.44086,
+            "desvio_ic_sup": 1.20203
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "seg",
+            "b": "almoco",
+            "n": 10026,
+            "positivos": 4,
+            "taxa": 0.00061,
+            "desvio": 0.63588,
+            "desvio_ic_inf": -0.83249,
+            "desvio_ic_sup": 1.66071
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "seg",
+            "b": "madrugada",
+            "n": 10026,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "seg",
+            "b": "manha",
+            "n": 10026,
+            "positivos": 1,
+            "taxa": 7e-05,
+            "desvio": 0.21687,
+            "desvio_ic_inf": -0.47229,
+            "desvio_ic_sup": 1.91056
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "seg",
+            "b": "noite",
+            "n": 10026,
+            "positivos": 33,
+            "taxa": 0.00375,
+            "desvio": -0.05245,
+            "desvio_ic_inf": -0.37866,
+            "desvio_ic_sup": 0.08164
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "seg",
+            "b": "tarde",
+            "n": 10026,
+            "positivos": 2,
+            "taxa": 8e-05,
+            "desvio": -0.66504,
+            "desvio_ic_inf": -1.59821,
+            "desvio_ic_sup": 0.85168
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sex",
+            "b": "almoco",
+            "n": 20628,
+            "positivos": 5,
+            "taxa": 0.0003,
+            "desvio": -0.59174,
+            "desvio_ic_inf": -2.80774,
+            "desvio_ic_sup": 0.37431
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sex",
+            "b": "madrugada",
+            "n": 20628,
+            "positivos": 1,
+            "taxa": 0.00025,
+            "desvio": 1.66626,
+            "desvio_ic_inf": 1.3135,
+            "desvio_ic_sup": 1.98427
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sex",
+            "b": "manha",
+            "n": 20628,
+            "positivos": 2,
+            "taxa": 2e-05,
+            "desvio": -1.45287,
+            "desvio_ic_inf": -2.53737,
+            "desvio_ic_sup": -0.16984
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sex",
+            "b": "noite",
+            "n": 20628,
+            "positivos": 89,
+            "taxa": 0.00682,
+            "desvio": 0.03043,
+            "desvio_ic_inf": -0.07312,
+            "desvio_ic_sup": 0.09967
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sex",
+            "b": "tarde",
+            "n": 20628,
+            "positivos": 6,
+            "taxa": 0.00018,
+            "desvio": -0.40238,
+            "desvio_ic_inf": -1.70013,
+            "desvio_ic_sup": 0.41444
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sáb",
+            "b": "almoco",
+            "n": 12860,
+            "positivos": 5,
+            "taxa": 0.00029,
+            "desvio": -1.42946,
+            "desvio_ic_inf": -2.74748,
+            "desvio_ic_sup": -0.62519
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sáb",
+            "b": "madrugada",
+            "n": 12860,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sáb",
+            "b": "manha",
+            "n": 12860,
+            "positivos": 1,
+            "taxa": 4e-05,
+            "desvio": -1.56851,
+            "desvio_ic_inf": -2.07361,
+            "desvio_ic_sup": -0.15541
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sáb",
+            "b": "noite",
+            "n": 12860,
+            "positivos": 132,
+            "taxa": 0.01641,
+            "desvio": 0.1111,
+            "desvio_ic_inf": 0.06352,
+            "desvio_ic_sup": 0.16272
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "sáb",
+            "b": "tarde",
+            "n": 12860,
+            "positivos": 3,
+            "taxa": 0.00018,
+            "desvio": -1.17893,
+            "desvio_ic_inf": -2.95351,
+            "desvio_ic_sup": -0.22898
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "ter",
+            "b": "almoco",
+            "n": 29398,
+            "positivos": 8,
+            "taxa": 0.00075,
+            "desvio": 0.98272,
+            "desvio_ic_inf": -0.08254,
+            "desvio_ic_sup": 1.56022
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "ter",
+            "b": "madrugada",
+            "n": 29398,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "ter",
+            "b": "manha",
+            "n": 29398,
+            "positivos": 7,
+            "taxa": 0.00021,
+            "desvio": 1.51778,
+            "desvio_ic_inf": 0.34924,
+            "desvio_ic_sup": 2.08537
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "ter",
+            "b": "noite",
+            "n": 29398,
+            "positivos": 67,
+            "taxa": 0.0026,
+            "desvio": -0.27374,
+            "desvio_ic_inf": -0.52174,
+            "desvio_ic_sup": -0.07722
+          },
+          {
+            "par": "dia_semana x faixa_horario",
+            "a": "ter",
+            "b": "tarde",
+            "n": 29398,
+            "positivos": 9,
+            "taxa": 0.00034,
+            "desvio": 0.9087,
+            "desvio_ic_inf": -0.24955,
+            "desvio_ic_sup": 1.61669
+          }
+        ],
+        "faixa_horario x local": [
+          {
+            "par": "faixa_horario x local",
+            "a": "almoco",
+            "b": "em_casa",
+            "n": 66903,
+            "positivos": 32,
+            "taxa": 0.00074,
+            "desvio": 0.19042,
+            "desvio_ic_inf": -0.12734,
+            "desvio_ic_sup": 0.38077
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "almoco",
+            "b": "fora_de_casa",
+            "n": 66903,
+            "positivos": 10,
+            "taxa": 0.0002,
+            "desvio": -0.50396,
+            "desvio_ic_inf": -1.56346,
+            "desvio_ic_sup": 0.21315
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "madrugada",
+            "b": "em_casa",
+            "n": 66903,
+            "positivos": 1,
+            "taxa": 8e-05,
+            "desvio": 0.425,
+            "desvio_ic_inf": 0.33411,
+            "desvio_ic_sup": 0.5505
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "madrugada",
+            "b": "fora_de_casa",
+            "n": 66903,
+            "positivos": 0,
+            "taxa": 0.0,
+            "desvio": null,
+            "desvio_ic_inf": null,
+            "desvio_ic_sup": null
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "manha",
+            "b": "em_casa",
+            "n": 66903,
+            "positivos": 3,
+            "taxa": 2e-05,
+            "desvio": -1.59214,
+            "desvio_ic_inf": -3.3706,
+            "desvio_ic_sup": -0.47149
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "manha",
+            "b": "fora_de_casa",
+            "n": 66903,
+            "positivos": 14,
+            "taxa": 0.00014,
+            "desvio": 0.91765,
+            "desvio_ic_inf": 0.47064,
+            "desvio_ic_sup": 1.18386
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "noite",
+            "b": "em_casa",
+            "n": 66903,
+            "positivos": 310,
+            "taxa": 0.00745,
+            "desvio": 0.00161,
+            "desvio_ic_inf": -0.03316,
+            "desvio_ic_sup": 0.03484
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "noite",
+            "b": "fora_de_casa",
+            "n": 66903,
+            "positivos": 246,
+            "taxa": 0.00395,
+            "desvio": -0.00182,
+            "desvio_ic_inf": -0.07073,
+            "desvio_ic_sup": 0.0479
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "tarde",
+            "b": "em_casa",
+            "n": 66903,
+            "positivos": 17,
+            "taxa": 0.00022,
+            "desvio": -0.29916,
+            "desvio_ic_inf": -1.15058,
+            "desvio_ic_sup": 0.06945
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "tarde",
+            "b": "fora_de_casa",
+            "n": 66903,
+            "positivos": 21,
+            "taxa": 0.00023,
+            "desvio": 0.39727,
+            "desvio_ic_inf": -0.12926,
+            "desvio_ic_sup": 0.84564
+          }
+        ],
+        "local x situacao": [
+          {
+            "par": "local x situacao",
+            "a": "em_casa",
+            "b": "rural",
+            "n": 81490,
+            "positivos": 19,
+            "taxa": 0.0002,
+            "desvio": -0.654,
+            "desvio_ic_inf": -1.40962,
+            "desvio_ic_sup": -0.18569
+          },
+          {
+            "par": "local x situacao",
+            "a": "em_casa",
+            "b": "urbano",
+            "n": 253025,
+            "positivos": 344,
+            "taxa": 0.002,
+            "desvio": 0.01818,
+            "desvio_ic_inf": 0.00495,
+            "desvio_ic_sup": 0.03861
+          },
+          {
+            "par": "local x situacao",
+            "a": "fora_de_casa",
+            "b": "rural",
+            "n": 81490,
+            "positivos": 27,
+            "taxa": 0.00038,
+            "desvio": 0.64497,
+            "desvio_ic_inf": 0.26181,
+            "desvio_ic_sup": 0.99034
+          },
+          {
+            "par": "local x situacao",
+            "a": "fora_de_casa",
+            "b": "urbano",
+            "n": 253025,
+            "positivos": 264,
+            "taxa": 0.00101,
+            "desvio": -0.03512,
+            "desvio_ic_inf": -0.08423,
+            "desvio_ic_sup": -0.00944
+          }
+        ]
+      },
+      "preferencia": {
+        "tem_pizza x local": [
+          {
+            "par": "tem_pizza x local",
+            "a": "0",
+            "b": "em_casa",
+            "n": 12041,
+            "positivos": 3223,
+            "taxa": 0.25443,
+            "desvio": 0.00509,
+            "desvio_ic_inf": -0.00314,
+            "desvio_ic_sup": 0.01243
+          },
+          {
+            "par": "tem_pizza x local",
+            "a": "0",
+            "b": "fora_de_casa",
+            "n": 6486,
+            "positivos": 1360,
+            "taxa": 0.20755,
+            "desvio": -0.0111,
+            "desvio_ic_inf": -0.02562,
+            "desvio_ic_sup": 0.00466
+          },
+          {
+            "par": "tem_pizza x local",
+            "a": "1",
+            "b": "em_casa",
+            "n": 364,
+            "positivos": 49,
+            "taxa": 0.12548,
+            "desvio": -0.20145,
+            "desvio_ic_inf": -0.55782,
+            "desvio_ic_sup": 0.04117
+          },
+          {
+            "par": "tem_pizza x local",
+            "a": "1",
+            "b": "fora_de_casa",
+            "n": 291,
+            "positivos": 52,
+            "taxa": 0.16518,
+            "desvio": 0.36831,
+            "desvio_ic_inf": -0.0704,
+            "desvio_ic_sup": 0.78688
+          }
+        ],
+        "tem_pizza x regiao": [
+          {
+            "par": "tem_pizza x regiao",
+            "a": "0",
+            "b": "centro_oeste",
+            "n": 3022,
+            "positivos": 614,
+            "taxa": 0.19068,
+            "desvio": 0.00714,
+            "desvio_ic_inf": -0.02414,
+            "desvio_ic_sup": 0.0399
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "0",
+            "b": "nordeste",
+            "n": 5014,
+            "positivos": 1493,
+            "taxa": 0.31234,
+            "desvio": -0.02652,
+            "desvio_ic_inf": -0.04258,
+            "desvio_ic_sup": -0.01001
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "0",
+            "b": "norte",
+            "n": 2965,
+            "positivos": 793,
+            "taxa": 0.27039,
+            "desvio": -0.00665,
+            "desvio_ic_inf": -0.02613,
+            "desvio_ic_sup": 0.01685
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "0",
+            "b": "sudeste",
+            "n": 4808,
+            "positivos": 1227,
+            "taxa": 0.23779,
+            "desvio": 0.01117,
+            "desvio_ic_inf": 0.00118,
+            "desvio_ic_sup": 0.02145
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "0",
+            "b": "sul",
+            "n": 2718,
+            "positivos": 456,
+            "taxa": 0.17121,
+            "desvio": -0.0194,
+            "desvio_ic_inf": -0.05928,
+            "desvio_ic_sup": 0.01923
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "1",
+            "b": "centro_oeste",
+            "n": 128,
+            "positivos": 17,
+            "taxa": 0.10888,
+            "desvio": 0.01042,
+            "desvio_ic_inf": -0.79729,
+            "desvio_ic_sup": 0.84488
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "1",
+            "b": "nordeste",
+            "n": 132,
+            "positivos": 32,
+            "taxa": 0.36055,
+            "desvio": 0.84961,
+            "desvio_ic_inf": 0.23697,
+            "desvio_ic_sup": 1.44702
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "1",
+            "b": "norte",
+            "n": 76,
+            "positivos": 8,
+            "taxa": 0.1517,
+            "desvio": -0.07546,
+            "desvio_ic_inf": -1.79922,
+            "desvio_ic_sup": 0.80337
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "1",
+            "b": "sudeste",
+            "n": 180,
+            "positivos": 22,
+            "taxa": 0.08662,
+            "desvio": -0.51968,
+            "desvio_ic_inf": -1.57226,
+            "desvio_ic_sup": -0.1079
+          },
+          {
+            "par": "tem_pizza x regiao",
+            "a": "1",
+            "b": "sul",
+            "n": 139,
+            "positivos": 22,
+            "taxa": 0.16658,
+            "desvio": 0.6075,
+            "desvio_ic_inf": -0.36073,
+            "desvio_ic_sup": 1.19566
+          }
+        ],
+        "regiao x local": [
+          {
+            "par": "regiao x local",
+            "a": "centro_oeste",
+            "b": "em_casa",
+            "n": 2037,
+            "positivos": 467,
+            "taxa": 0.22302,
+            "desvio": 0.14402,
+            "desvio_ic_inf": 0.04804,
+            "desvio_ic_sup": 0.25686
+          },
+          {
+            "par": "regiao x local",
+            "a": "centro_oeste",
+            "b": "fora_de_casa",
+            "n": 1113,
+            "positivos": 164,
+            "taxa": 0.12511,
+            "desvio": -0.30433,
+            "desvio_ic_inf": -0.57364,
+            "desvio_ic_sup": -0.06183
+          },
+          {
+            "par": "regiao x local",
+            "a": "nordeste",
+            "b": "em_casa",
+            "n": 3172,
+            "positivos": 1029,
+            "taxa": 0.34352,
+            "desvio": 0.05452,
+            "desvio_ic_inf": -0.02719,
+            "desvio_ic_sup": 0.14383
+          },
+          {
+            "par": "regiao x local",
+            "a": "nordeste",
+            "b": "fora_de_casa",
+            "n": 1974,
+            "positivos": 496,
+            "taxa": 0.26435,
+            "desvio": -0.07291,
+            "desvio_ic_inf": -0.25003,
+            "desvio_ic_sup": 0.09748
+          },
+          {
+            "par": "regiao x local",
+            "a": "norte",
+            "b": "em_casa",
+            "n": 1876,
+            "positivos": 523,
+            "taxa": 0.27788,
+            "desvio": -0.02955,
+            "desvio_ic_inf": -0.1638,
+            "desvio_ic_sup": 0.09559
+          },
+          {
+            "par": "regiao x local",
+            "a": "norte",
+            "b": "fora_de_casa",
+            "n": 1165,
+            "positivos": 278,
+            "taxa": 0.25121,
+            "desvio": 0.08171,
+            "desvio_ic_inf": -0.13887,
+            "desvio_ic_sup": 0.29706
+          },
+          {
+            "par": "regiao x local",
+            "a": "sudeste",
+            "b": "em_casa",
+            "n": 3361,
+            "positivos": 905,
+            "taxa": 0.24618,
+            "desvio": -0.00365,
+            "desvio_ic_inf": -0.04996,
+            "desvio_ic_sup": 0.04021
+          },
+          {
+            "par": "regiao x local",
+            "a": "sudeste",
+            "b": "fora_de_casa",
+            "n": 1627,
+            "positivos": 344,
+            "taxa": 0.20314,
+            "desvio": -0.0029,
+            "desvio_ic_inf": -0.10461,
+            "desvio_ic_sup": 0.09651
+          },
+          {
+            "par": "regiao x local",
+            "a": "sul",
+            "b": "em_casa",
+            "n": 1959,
+            "positivos": 348,
+            "taxa": 0.17254,
+            "desvio": -0.0706,
+            "desvio_ic_inf": -0.16774,
+            "desvio_ic_sup": 0.04364
+          },
+          {
+            "par": "regiao x local",
+            "a": "sul",
+            "b": "fora_de_casa",
+            "n": 898,
+            "positivos": 130,
+            "taxa": 0.16759,
+            "desvio": 0.14274,
+            "desvio_ic_inf": -0.13845,
+            "desvio_ic_sup": 0.32929
+          }
+        ],
+        "faixa_horario x local": [
+          {
+            "par": "faixa_horario x local",
+            "a": "almoco",
+            "b": "em_casa",
+            "n": 5393,
+            "positivos": 1411,
+            "taxa": 0.25006,
+            "desvio": -0.05216,
+            "desvio_ic_inf": -0.09717,
+            "desvio_ic_sup": -0.01033
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "almoco",
+            "b": "fora_de_casa",
+            "n": 2114,
+            "positivos": 440,
+            "taxa": 0.23172,
+            "desvio": 0.09597,
+            "desvio_ic_inf": -0.01114,
+            "desvio_ic_sup": 0.20444
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "madrugada",
+            "b": "em_casa",
+            "n": 14,
+            "positivos": 6,
+            "taxa": 0.3536,
+            "desvio": 0.65171,
+            "desvio_ic_inf": -0.42417,
+            "desvio_ic_sup": 1.72675
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "madrugada",
+            "b": "fora_de_casa",
+            "n": 35,
+            "positivos": 2,
+            "taxa": 0.10638,
+            "desvio": -0.62487,
+            "desvio_ic_inf": -1.75868,
+            "desvio_ic_sup": 0.36751
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "manha",
+            "b": "em_casa",
+            "n": 469,
+            "positivos": 145,
+            "taxa": 0.37003,
+            "desvio": 0.23937,
+            "desvio_ic_inf": -0.0219,
+            "desvio_ic_sup": 0.5334
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "manha",
+            "b": "fora_de_casa",
+            "n": 920,
+            "positivos": 263,
+            "taxa": 0.26205,
+            "desvio": -0.01546,
+            "desvio_ic_inf": -0.24539,
+            "desvio_ic_sup": 0.14377
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "noite",
+            "b": "em_casa",
+            "n": 4932,
+            "positivos": 1285,
+            "taxa": 0.24016,
+            "desvio": 0.02484,
+            "desvio_ic_inf": -0.02172,
+            "desvio_ic_sup": 0.07038
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "noite",
+            "b": "fora_de_casa",
+            "n": 2124,
+            "positivos": 380,
+            "taxa": 0.17197,
+            "desvio": -0.14665,
+            "desvio_ic_inf": -0.29312,
+            "desvio_ic_sup": -0.00999
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "tarde",
+            "b": "em_casa",
+            "n": 1597,
+            "positivos": 425,
+            "taxa": 0.24788,
+            "desvio": 0.08248,
+            "desvio_ic_inf": -0.04719,
+            "desvio_ic_sup": 0.22058
+          },
+          {
+            "par": "faixa_horario x local",
+            "a": "tarde",
+            "b": "fora_de_casa",
+            "n": 1584,
+            "positivos": 327,
+            "taxa": 0.18887,
+            "desvio": -0.01655,
+            "desvio_ic_inf": -0.17589,
+            "desvio_ic_sup": 0.13397
+          }
+        ]
+      }
+    }
+  },
+  "pizza_e_preferencia": {
+    "guarana_sem_pizza": {
+      "taxa": 0.23833,
+      "ic_inf": 0.21813,
+      "ic_sup": 0.26038,
+      "n": 18527,
+      "positivos": 4583
+    },
+    "guarana_com_pizza": {
+      "taxa": 0.13922,
+      "ic_inf": 0.08834,
+      "ic_sup": 0.20041,
+      "n": 655,
+      "positivos": 101
+    },
+    "diferenca_guarana_com_menos_sem": {
+      "estimativa": -0.0991,
+      "ic_inf": -0.14992,
+      "ic_sup": -0.03537
+    },
+    "cola_sem_pizza": 0.53064,
+    "cola_com_pizza": 0.56754,
+    "diferenca_cola_com_menos_sem": {
+      "estimativa": 0.03691,
+      "ic_inf": -0.04364,
+      "ic_sup": 0.13767
+    }
+  },
+  "sazonalidade": {
+    "dias_pessoa_com_data": 66885,
+    "dias_pessoa_total": 66903,
+    "por_trimestre": [
+      {
+        "trimestre": "jan-mar",
+        "n": 15691,
+        "positivos": 149,
+        "taxa": 0.01406,
+        "ic_inf": 0.00883,
+        "ic_sup": 0.01953
+      },
+      {
+        "trimestre": "abr-jun",
+        "n": 17103,
+        "positivos": 174,
+        "taxa": 0.01261,
+        "ic_inf": 0.00918,
+        "ic_sup": 0.01734
+      },
+      {
+        "trimestre": "jul-set",
+        "n": 17714,
+        "positivos": 167,
+        "taxa": 0.01405,
+        "ic_inf": 0.00994,
+        "ic_sup": 0.01955
+      },
+      {
+        "trimestre": "out-dez",
+        "n": 16377,
+        "positivos": 161,
+        "taxa": 0.01121,
+        "ic_inf": 0.00771,
+        "ic_sup": 0.01498
+      }
+    ],
+    "meses_por_trimestre": {
+      "abr-jun": [
+        "2008-05",
+        "2008-06",
+        "2009-04",
+        "2009-05"
+      ],
+      "jan-mar": [
+        "2009-01",
+        "2009-02",
+        "2009-03"
+      ],
+      "jul-set": [
+        "2008-07",
+        "2008-08",
+        "2008-09"
+      ],
+      "out-dez": [
+        "2008-10",
+        "2008-11",
+        "2008-12"
+      ]
+    },
+    "intervalos_do_maior_e_do_menor_separados": false
+  },
+  "tapi": {
+    "pizza_refri_por_contexto": {
+      "demais faixas": {
+        "n": 535224,
+        "positivos": 98,
+        "taxa": 0.0002,
+        "ic_inf": 0.00014,
+        "ic_sup": 0.00028
+      },
+      "seg-qui, noite, em casa": {
+        "n": 45781,
+        "positivos": 141,
+        "taxa": 0.00425,
+        "ic_inf": 0.00292,
+        "ic_sup": 0.00595
+      },
+      "seg-qui, noite, fora de casa": {
+        "n": 45781,
+        "positivos": 107,
+        "taxa": 0.00239,
+        "ic_inf": 0.00168,
+        "ic_sup": 0.00307
+      },
+      "sex-dom, noite, em casa": {
+        "n": 21122,
+        "positivos": 169,
+        "taxa": 0.01372,
+        "ic_inf": 0.00895,
+        "ic_sup": 0.0186
+      },
+      "sex-dom, noite, fora de casa": {
+        "n": 21122,
+        "positivos": 139,
+        "taxa": 0.007,
+        "ic_inf": 0.00418,
+        "ic_sup": 0.0104
+      }
+    },
+    "razao_sex_dom_sobre_seg_qui_noite_em_casa": {
+      "estimativa": 3.2322,
+      "ic_inf": 2.0956,
+      "ic_sup": 4.8967
+    },
+    "razao_em_casa_sobre_fora_sex_dom_noite": {
+      "estimativa": 1.9617,
+      "ic_inf": 1.1493,
+      "ic_sup": 3.2817
+    },
+    "pizza_refri_por_renda": {
+      "ate_meio_sm": {
+        "n": 153120,
+        "positivos": 43,
+        "taxa": 0.00029,
+        "ic_inf": 0.00012,
+        "ic_sup": 0.00047
+      },
+      "meio_a_1_sm": {
+        "n": 180440,
+        "positivos": 80,
+        "taxa": 0.00072,
+        "ic_inf": 0.00043,
+        "ic_sup": 0.00108
+      },
+      "de_1_a_2_sm": {
+        "n": 180570,
+        "positivos": 190,
+        "taxa": 0.00143,
+        "ic_inf": 0.00093,
+        "ic_sup": 0.00204
+      },
+      "de_2_a_5_sm": {
+        "n": 117800,
+        "positivos": 213,
+        "taxa": 0.00167,
+        "ic_inf": 0.00123,
+        "ic_sup": 0.00217
+      },
+      "mais_de_5_sm": {
+        "n": 37100,
+        "positivos": 128,
+        "taxa": 0.00367,
+        "ic_inf": 0.00269,
+        "ic_sup": 0.00482
+      }
+    },
+    "guarana_por_renda_todas": {
+      "ate_meio_sm": {
+        "n": 2116,
+        "positivos": 627,
+        "taxa": 0.25531,
+        "ic_inf": 0.21431,
+        "ic_sup": 0.29853
+      },
+      "de_1_a_2_sm": {
+        "n": 5812,
+        "positivos": 1464,
+        "taxa": 0.25213,
+        "ic_inf": 0.22046,
+        "ic_sup": 0.2857
+      },
+      "de_2_a_5_sm": {
+        "n": 5047,
+        "positivos": 1073,
+        "taxa": 0.20548,
+        "ic_inf": 0.17454,
+        "ic_sup": 0.24619
+      },
+      "mais_de_5_sm": {
+        "n": 1775,
+        "positivos": 331,
+        "taxa": 0.16675,
+        "ic_inf": 0.13235,
+        "ic_sup": 0.20148
+      },
+      "meio_a_1_sm": {
+        "n": 4432,
+        "positivos": 1189,
+        "taxa": 0.28437,
+        "ic_inf": 0.24441,
+        "ic_sup": 0.31735
+      }
+    },
+    "guarana_por_renda_com_pizza": {
+      "ate_meio_sm": {
+        "n": 44,
+        "positivos": 0,
+        "taxa": 0.0,
+        "ic_inf": 0.0,
+        "ic_sup": 0.0
+      },
+      "de_1_a_2_sm": {
+        "n": 190,
+        "positivos": 21,
+        "taxa": 0.09879,
+        "ic_inf": 0.03634,
+        "ic_sup": 0.1882
+      },
+      "de_2_a_5_sm": {
+        "n": 213,
+        "positivos": 41,
+        "taxa": 0.15474,
+        "ic_inf": 0.07981,
+        "ic_sup": 0.24146
+      },
+      "mais_de_5_sm": {
+        "n": 128,
+        "positivos": 16,
+        "taxa": 0.0994,
+        "ic_inf": 0.04025,
+        "ic_sup": 0.1875
+      },
+      "meio_a_1_sm": {
+        "n": 80,
+        "positivos": 23,
+        "taxa": 0.31678,
+        "ic_inf": 0.10973,
+        "ic_sup": 0.52514
+      }
+    }
+  },
+  "degrau_a": {
+    "parte_1": {
+      "dimensoes": [
+        "dia_semana",
+        "faixa_horario",
+        "local"
+      ],
+      "resumo": {
+        "combinacoes": 70,
+        "sem_positivo": 21,
+        "menos_de_5": 50,
+        "menos_de_10": 56,
+        "menos_de_30": 61,
+        "mediana": 1.5,
+        "maximo": 76
+      },
+      "positivos_por_combinacao": [
+        {
+          "dia_semana": "1",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 5013,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 5013,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 5013,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 5013,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 5013,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 5013,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 5013,
+          "positivos": 19
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 5013,
+          "positivos": 14
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 5013,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "1",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 5013,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 14699,
+          "positivos": 7
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 14699,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 14699,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 14699,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 14699,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 14699,
+          "positivos": 7
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 14699,
+          "positivos": 40
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 14699,
+          "positivos": 27
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 14699,
+          "positivos": 5
+        },
+        {
+          "dia_semana": "2",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 14699,
+          "positivos": 4
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 8686,
+          "positivos": 2
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 8686,
+          "positivos": 26
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 8686,
+          "positivos": 23
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 8686,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "3",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 8686,
+          "positivos": 2
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 17383,
+          "positivos": 7
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 17383,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 17383,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 17383,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 17383,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 17383,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 17383,
+          "positivos": 56
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 17383,
+          "positivos": 43
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 17383,
+          "positivos": 4
+        },
+        {
+          "dia_semana": "4",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 17383,
+          "positivos": 5
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 10314,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 10314,
+          "positivos": 2
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 10314,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 10314,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 10314,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 10314,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 10314,
+          "positivos": 45
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 10314,
+          "positivos": 44
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 10314,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "5",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 10314,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 6430,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 6430,
+          "positivos": 2
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 6430,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 6430,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 6430,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 6430,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 6430,
+          "positivos": 76
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 6430,
+          "positivos": 56
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 6430,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "6",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 6430,
+          "positivos": 3
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "almoco",
+          "local": "em_casa",
+          "n": 4378,
+          "positivos": 9
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "almoco",
+          "local": "fora_de_casa",
+          "n": 4378,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "madrugada",
+          "local": "em_casa",
+          "n": 4378,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "madrugada",
+          "local": "fora_de_casa",
+          "n": 4378,
+          "positivos": 0
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "manha",
+          "local": "em_casa",
+          "n": 4378,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "manha",
+          "local": "fora_de_casa",
+          "n": 4378,
+          "positivos": 1
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "noite",
+          "local": "em_casa",
+          "n": 4378,
+          "positivos": 48
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "noite",
+          "local": "fora_de_casa",
+          "n": 4378,
+          "positivos": 39
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "tarde",
+          "local": "em_casa",
+          "n": 4378,
+          "positivos": 4
+        },
+        {
+          "dia_semana": "7",
+          "faixa_horario": "tarde",
+          "local": "fora_de_casa",
+          "n": 4378,
+          "positivos": 3
+        }
+      ],
+      "alternativas_descritivas": {
+        "grupo_dia x faixa_horario x local": {
+          "combinacoes": 20,
+          "sem_positivo": 3,
+          "menos_de_5": 7,
+          "menos_de_10": 11,
+          "menos_de_30": 16,
+          "mediana": 8.0,
+          "maximo": 169
+        },
+        "faixa_horario x local": {
+          "combinacoes": 10,
+          "sem_positivo": 1,
+          "menos_de_5": 3,
+          "menos_de_10": 3,
+          "menos_de_30": 7,
+          "mediana": 15.5,
+          "maximo": 310
+        },
+        "dia_semana x local (só noite)": {
+          "combinacoes": 14,
+          "sem_positivo": 0,
+          "menos_de_5": 0,
+          "menos_de_10": 0,
+          "menos_de_30": 5,
+          "mediana": 41.5,
+          "maximo": 76
+        }
+      }
+    },
+    "parte_2": {
+      "dimensoes": [
+        "regiao",
+        "local"
+      ],
+      "resumo": {
+        "combinacoes": 10,
+        "sem_positivo": 0,
+        "menos_de_5": 0,
+        "menos_de_10": 0,
+        "menos_de_30": 0,
+        "mediana": 407.5,
+        "maximo": 1029
+      },
+      "positivos_por_combinacao": [
+        {
+          "regiao": "centro_oeste",
+          "local": "em_casa",
+          "n": 2037,
+          "positivos": 467
+        },
+        {
+          "regiao": "centro_oeste",
+          "local": "fora_de_casa",
+          "n": 1113,
+          "positivos": 164
+        },
+        {
+          "regiao": "nordeste",
+          "local": "em_casa",
+          "n": 3172,
+          "positivos": 1029
+        },
+        {
+          "regiao": "nordeste",
+          "local": "fora_de_casa",
+          "n": 1974,
+          "positivos": 496
+        },
+        {
+          "regiao": "norte",
+          "local": "em_casa",
+          "n": 1876,
+          "positivos": 523
+        },
+        {
+          "regiao": "norte",
+          "local": "fora_de_casa",
+          "n": 1165,
+          "positivos": 278
+        },
+        {
+          "regiao": "sudeste",
+          "local": "em_casa",
+          "n": 3361,
+          "positivos": 905
+        },
+        {
+          "regiao": "sudeste",
+          "local": "fora_de_casa",
+          "n": 1627,
+          "positivos": 344
+        },
+        {
+          "regiao": "sul",
+          "local": "em_casa",
+          "n": 1959,
+          "positivos": 348
+        },
+        {
+          "regiao": "sul",
+          "local": "fora_de_casa",
+          "n": 898,
+          "positivos": 130
+        }
+      ]
+    }
+  }
+}

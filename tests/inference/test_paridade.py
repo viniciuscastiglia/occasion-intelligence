@@ -10,6 +10,7 @@ from tests.bases.test_modelagem import EDICAO, ocasiao_lista, pessoa_dia_minimo
 from tests.inference.test_predict import _artefato_unico
 
 from occasion.bases.modelagem import montar_celulas
+from occasion.eda.descritivas import faixa_de_renda
 from occasion.features.variaveis import COLUNAS_CONTEXTO
 from occasion.inference.contract import (
     CODIGO_UF,
@@ -25,15 +26,7 @@ _SIGLA_DA_UF = {codigo: sigla for sigla, codigo in CODIGO_UF.items()}
 
 
 def _faixa_de_renda(valor: float) -> FaixaRenda:
-    if valor < 0.5:
-        return "ate_meio_sm"
-    if valor < 1:
-        return "meio_a_1_sm"
-    if valor < 2:
-        return "de_1_a_2_sm"
-    if valor < 5:
-        return "de_2_a_5_sm"
-    return "mais_de_5_sm"
+    return cast(FaixaRenda, faixa_de_renda(pd.Series([valor])).iloc[0])
 
 
 def _celulas_variadas() -> pd.DataFrame:
