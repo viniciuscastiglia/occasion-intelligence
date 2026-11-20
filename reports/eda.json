@@ -1,7 +1,10 @@
 {
   "edicao": "2008-2009",
   "semente": 20261112,
-  "replicas_bootstrap": 200,
+  "replicas_bootstrap": {
+    "padrao": 200,
+    "destaques": 1000
+  },
   "tamanhos": {
     "células": {
       "linhas": 669030,
@@ -115,7 +118,7 @@
       }
     },
     "sugestao_de_fronteira": null,
-    "observacao": "Só a série de todas as ocasiões com refrigerante tem pico dividido entre faixas: 15h (0.0603) com a vizinha [14] (0.0438) em outra faixa. A série do alvo da parte 1 não tem pico cortado; nenhuma mudança é sugerida."
+    "observacao": "Só a série de todas as ocasiões com refrigerante tem pico dividido entre faixas: 15h (6,0%) com a vizinha 14h (4,4%, faixa almoco) em outra faixa. A série do alvo da parte 1 não tem pico cortado; nenhuma mudança é sugerida."
   },
   "taxas_por_variavel": {
     "ocasiao": {
@@ -220,6 +223,8 @@
           "taxa": 0.0009,
           "ic_inf": 0.00041,
           "ic_sup": 0.00149,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -229,6 +234,8 @@
           "taxa": 0.00078,
           "ic_inf": 0.00052,
           "ic_sup": 0.00104,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -238,6 +245,8 @@
           "taxa": 0.00099,
           "ic_inf": 0.00052,
           "ic_sup": 0.00154,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -247,6 +256,8 @@
           "taxa": 0.00068,
           "ic_inf": 0.00048,
           "ic_sup": 0.00087,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -256,6 +267,8 @@
           "taxa": 0.00151,
           "ic_inf": 0.00095,
           "ic_sup": 0.00228,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -265,6 +278,8 @@
           "taxa": 0.00339,
           "ic_inf": 0.00226,
           "ic_sup": 0.00462,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -274,6 +289,8 @@
           "taxa": 0.00249,
           "ic_inf": 0.00151,
           "ic_sup": 0.00372,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -283,6 +300,8 @@
           "taxa": 4e-05,
           "ic_inf": 0.0,
           "ic_sup": 0.00012,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -292,6 +311,8 @@
           "taxa": 8e-05,
           "ic_inf": 3e-05,
           "ic_sup": 0.00014,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -301,6 +322,8 @@
           "taxa": 0.00047,
           "ic_inf": 0.00024,
           "ic_sup": 0.00069,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -310,6 +333,8 @@
           "taxa": 0.00023,
           "ic_inf": 0.00013,
           "ic_sup": 0.00033,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -319,6 +344,8 @@
           "taxa": 0.0057,
           "ic_inf": 0.00467,
           "ic_sup": 0.00687,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -328,6 +355,8 @@
           "taxa": 0.0017,
           "ic_inf": 0.00132,
           "ic_sup": 0.00211,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "local"
         },
         {
@@ -337,6 +366,8 @@
           "taxa": 0.0009,
           "ic_inf": 0.00069,
           "ic_sup": 0.00114,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "local"
         },
         {
@@ -346,6 +377,8 @@
           "taxa": 0.00061,
           "ic_inf": 0.00016,
           "ic_sup": 0.00126,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -355,6 +388,8 @@
           "taxa": 0.00099,
           "ic_inf": 0.00024,
           "ic_sup": 0.00197,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -364,6 +399,8 @@
           "taxa": 0.0011,
           "ic_inf": 0.0005,
           "ic_sup": 0.00185,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -373,6 +410,8 @@
           "taxa": 0.00258,
           "ic_inf": 0.00113,
           "ic_sup": 0.00461,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -382,6 +421,8 @@
           "taxa": 0.00043,
           "ic_inf": 0.00016,
           "ic_sup": 0.00074,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -391,6 +432,8 @@
           "taxa": 0.00102,
           "ic_inf": 3e-05,
           "ic_sup": 0.00262,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -400,6 +443,8 @@
           "taxa": 0.00042,
           "ic_inf": 6e-05,
           "ic_sup": 0.00119,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -409,6 +454,8 @@
           "taxa": 0.00076,
           "ic_inf": 0.00036,
           "ic_sup": 0.00121,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -418,6 +465,8 @@
           "taxa": 0.00048,
           "ic_inf": 0.0002,
           "ic_sup": 0.00079,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -427,6 +476,8 @@
           "taxa": 0.00012,
           "ic_inf": 2e-05,
           "ic_sup": 0.00029,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -436,6 +487,8 @@
           "taxa": 0.00092,
           "ic_inf": 0.00029,
           "ic_sup": 0.00201,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -445,6 +498,8 @@
           "taxa": 0.0002,
           "ic_inf": 0.0,
           "ic_sup": 0.00042,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -454,6 +509,8 @@
           "taxa": 0.00069,
           "ic_inf": 0.00022,
           "ic_sup": 0.00117,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -463,6 +520,8 @@
           "taxa": 0.0004,
           "ic_inf": 0.00011,
           "ic_sup": 0.00075,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -472,6 +531,8 @@
           "taxa": 0.00037,
           "ic_inf": 0.0001,
           "ic_sup": 0.00081,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -481,6 +542,8 @@
           "taxa": 0.00057,
           "ic_inf": 0.00028,
           "ic_sup": 0.00091,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -490,6 +553,8 @@
           "taxa": 0.0007,
           "ic_inf": 0.00034,
           "ic_sup": 0.00114,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -499,6 +564,8 @@
           "taxa": 0.00078,
           "ic_inf": 0.00027,
           "ic_sup": 0.00159,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -508,6 +575,8 @@
           "taxa": 0.00373,
           "ic_inf": 0.00204,
           "ic_sup": 0.00545,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -517,6 +586,8 @@
           "taxa": 0.00119,
           "ic_inf": 0.00075,
           "ic_sup": 0.00175,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -526,6 +597,8 @@
           "taxa": 0.00197,
           "ic_inf": 0.00113,
           "ic_sup": 0.0029,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -535,6 +608,8 @@
           "taxa": 0.00212,
           "ic_inf": 0.00126,
           "ic_sup": 0.0031,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -544,6 +619,8 @@
           "taxa": 0.00193,
           "ic_inf": 0.00105,
           "ic_sup": 0.00292,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -553,6 +630,8 @@
           "taxa": 0.00227,
           "ic_inf": 0.00139,
           "ic_sup": 0.0037,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -562,6 +641,8 @@
           "taxa": 0.00133,
           "ic_inf": 0.00078,
           "ic_sup": 0.002,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -571,6 +652,8 @@
           "taxa": 0.0015,
           "ic_inf": 0.0009,
           "ic_sup": 0.00244,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -580,6 +663,8 @@
           "taxa": 0.00388,
           "ic_inf": 0.0006,
           "ic_sup": 0.00842,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -589,6 +674,8 @@
           "taxa": 0.0007,
           "ic_inf": 0.00049,
           "ic_sup": 0.00096,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -598,6 +685,8 @@
           "taxa": 0.00051,
           "ic_inf": 0.00037,
           "ic_sup": 0.00064,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -607,6 +696,8 @@
           "taxa": 0.00156,
           "ic_inf": 0.00115,
           "ic_sup": 0.00203,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -616,6 +707,8 @@
           "taxa": 0.00199,
           "ic_inf": 0.00144,
           "ic_sup": 0.00254,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -625,6 +718,8 @@
           "taxa": 0.00201,
           "ic_inf": 0.00135,
           "ic_sup": 0.00299,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -634,6 +729,8 @@
           "taxa": 0.0015,
           "ic_inf": 0.00124,
           "ic_sup": 0.00182,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "situacao"
         },
         {
@@ -643,6 +740,8 @@
           "taxa": 0.00029,
           "ic_inf": 0.00016,
           "ic_sup": 0.00044,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "situacao"
         },
         {
@@ -652,6 +751,8 @@
           "taxa": 0.00164,
           "ic_inf": 0.0012,
           "ic_sup": 0.00215,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -661,6 +762,8 @@
           "taxa": 0.00172,
           "ic_inf": 0.00125,
           "ic_sup": 0.00216,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -670,6 +773,8 @@
           "taxa": 0.00136,
           "ic_inf": 0.00107,
           "ic_sup": 0.00165,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -679,6 +784,8 @@
           "taxa": 0.00112,
           "ic_inf": 0.00076,
           "ic_sup": 0.00154,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -688,6 +795,8 @@
           "taxa": 0.00025,
           "ic_inf": 0.0001,
           "ic_sup": 0.00042,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -697,6 +806,8 @@
           "taxa": 0.00132,
           "ic_inf": 0.00105,
           "ic_sup": 0.00164,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "sexo"
         },
         {
@@ -706,6 +817,8 @@
           "taxa": 0.00129,
           "ic_inf": 0.00104,
           "ic_sup": 0.00155,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "sexo"
         },
         {
@@ -715,6 +828,8 @@
           "taxa": 0.00029,
           "ic_inf": 0.00012,
           "ic_sup": 0.00047,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -724,6 +839,8 @@
           "taxa": 0.00072,
           "ic_inf": 0.00043,
           "ic_sup": 0.00108,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -733,6 +850,8 @@
           "taxa": 0.00143,
           "ic_inf": 0.00093,
           "ic_sup": 0.00204,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -742,6 +861,8 @@
           "taxa": 0.00167,
           "ic_inf": 0.00123,
           "ic_sup": 0.00217,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -751,6 +872,8 @@
           "taxa": 0.00367,
           "ic_inf": 0.00269,
           "ic_sup": 0.00482,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -760,6 +883,8 @@
           "taxa": 0.00065,
           "ic_inf": 0.00039,
           "ic_sup": 0.00093,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -769,6 +894,8 @@
           "taxa": 0.00149,
           "ic_inf": 0.00106,
           "ic_sup": 0.0021,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -778,6 +905,8 @@
           "taxa": 0.00151,
           "ic_inf": 0.00106,
           "ic_sup": 0.00199,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -787,6 +916,8 @@
           "taxa": 0.0014,
           "ic_inf": 0.00094,
           "ic_sup": 0.00193,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -796,6 +927,8 @@
           "taxa": 0.00174,
           "ic_inf": 0.0011,
           "ic_sup": 0.00251,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -805,6 +938,8 @@
           "taxa": 0.00043,
           "ic_inf": 0.00019,
           "ic_sup": 0.00082,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -814,6 +949,8 @@
           "taxa": 0.00029,
           "ic_inf": 9e-05,
           "ic_sup": 0.00056,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         }
       ]
@@ -920,6 +1057,8 @@
           "taxa": 0.21335,
           "ic_inf": 0.15373,
           "ic_sup": 0.2759,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -929,6 +1068,8 @@
           "taxa": 0.26745,
           "ic_inf": 0.23347,
           "ic_sup": 0.29839,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -938,6 +1079,8 @@
           "taxa": 0.24431,
           "ic_inf": 0.20126,
           "ic_sup": 0.29448,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -947,6 +1090,8 @@
           "taxa": 0.23762,
           "ic_inf": 0.21436,
           "ic_sup": 0.26846,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -956,6 +1101,8 @@
           "taxa": 0.24278,
           "ic_inf": 0.21123,
           "ic_sup": 0.28948,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -965,6 +1112,8 @@
           "taxa": 0.24583,
           "ic_inf": 0.20415,
           "ic_sup": 0.28178,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -974,6 +1123,8 @@
           "taxa": 0.16688,
           "ic_inf": 0.13606,
           "ic_sup": 0.20272,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "dia_semana"
         },
         {
@@ -983,6 +1134,8 @@
           "taxa": 0.20807,
           "ic_inf": 0.06772,
           "ic_sup": 0.39099,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -992,6 +1145,8 @@
           "taxa": 0.29878,
           "ic_inf": 0.25545,
           "ic_sup": 0.34937,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -1001,6 +1156,8 @@
           "taxa": 0.24457,
           "ic_inf": 0.22374,
           "ic_sup": 0.26548,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -1010,6 +1167,8 @@
           "taxa": 0.21856,
           "ic_inf": 0.19147,
           "ic_sup": 0.25032,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -1019,6 +1178,8 @@
           "taxa": 0.22127,
           "ic_inf": 0.19672,
           "ic_sup": 0.243,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "faixa_horario"
         },
         {
@@ -1028,6 +1189,8 @@
           "taxa": 0.24949,
           "ic_inf": 0.22397,
           "ic_sup": 0.27366,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "local"
         },
         {
@@ -1037,6 +1200,8 @@
           "taxa": 0.20591,
           "ic_inf": 0.18617,
           "ic_sup": 0.22999,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "local"
         },
         {
@@ -1046,6 +1211,8 @@
           "taxa": 0.15989,
           "ic_inf": 0.09335,
           "ic_sup": 0.2365,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1055,6 +1222,8 @@
           "taxa": 0.28781,
           "ic_inf": 0.20377,
           "ic_sup": 0.37487,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1064,6 +1233,8 @@
           "taxa": 0.32396,
           "ic_inf": 0.26795,
           "ic_sup": 0.37593,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1073,6 +1244,8 @@
           "taxa": 0.11058,
           "ic_inf": 0.04322,
           "ic_sup": 0.19791,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1082,6 +1255,8 @@
           "taxa": 0.26469,
           "ic_inf": 0.19603,
           "ic_sup": 0.33726,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1091,6 +1266,8 @@
           "taxa": 0.23024,
           "ic_inf": 0.14818,
           "ic_sup": 0.32672,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1100,6 +1277,8 @@
           "taxa": 0.29956,
           "ic_inf": 0.21312,
           "ic_sup": 0.38365,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1109,6 +1288,8 @@
           "taxa": 0.27418,
           "ic_inf": 0.19053,
           "ic_sup": 0.35214,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1118,6 +1299,8 @@
           "taxa": 0.31997,
           "ic_inf": 0.22958,
           "ic_sup": 0.42693,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1127,6 +1310,8 @@
           "taxa": 0.23999,
           "ic_inf": 0.17793,
           "ic_sup": 0.30113,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1136,6 +1321,8 @@
           "taxa": 0.29968,
           "ic_inf": 0.2166,
           "ic_sup": 0.38894,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1145,6 +1332,8 @@
           "taxa": 0.22157,
           "ic_inf": 0.13163,
           "ic_sup": 0.31924,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1154,6 +1343,8 @@
           "taxa": 0.43243,
           "ic_inf": 0.37014,
           "ic_sup": 0.51418,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1163,6 +1354,8 @@
           "taxa": 0.24764,
           "ic_inf": 0.18915,
           "ic_sup": 0.30831,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1172,6 +1365,8 @@
           "taxa": 0.25505,
           "ic_inf": 0.1871,
           "ic_sup": 0.32772,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1181,6 +1376,8 @@
           "taxa": 0.30451,
           "ic_inf": 0.23517,
           "ic_sup": 0.36403,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1190,6 +1387,8 @@
           "taxa": 0.21424,
           "ic_inf": 0.18054,
           "ic_sup": 0.252,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1199,6 +1398,8 @@
           "taxa": 0.16927,
           "ic_inf": 0.12734,
           "ic_sup": 0.23004,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1208,6 +1409,8 @@
           "taxa": 0.22613,
           "ic_inf": 0.16876,
           "ic_sup": 0.2833,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1217,6 +1420,8 @@
           "taxa": 0.24276,
           "ic_inf": 0.19752,
           "ic_sup": 0.2899,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1226,6 +1431,8 @@
           "taxa": 0.12492,
           "ic_inf": 0.09074,
           "ic_sup": 0.16456,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1235,6 +1442,8 @@
           "taxa": 0.08651,
           "ic_inf": 0.05954,
           "ic_sup": 0.1242,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1244,6 +1453,8 @@
           "taxa": 0.23036,
           "ic_inf": 0.18757,
           "ic_sup": 0.29425,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1253,6 +1464,8 @@
           "taxa": 0.25305,
           "ic_inf": 0.19499,
           "ic_sup": 0.32213,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1262,6 +1475,8 @@
           "taxa": 0.20282,
           "ic_inf": 0.1409,
           "ic_sup": 0.27795,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1271,6 +1486,8 @@
           "taxa": 0.15295,
           "ic_inf": 0.11222,
           "ic_sup": 0.19201,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1280,6 +1497,8 @@
           "taxa": 0.19546,
           "ic_inf": 0.08353,
           "ic_sup": 0.29769,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "uf"
         },
         {
@@ -1289,6 +1508,8 @@
           "taxa": 0.26755,
           "ic_inf": 0.23139,
           "ic_sup": 0.30033,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -1298,6 +1519,8 @@
           "taxa": 0.3135,
           "ic_inf": 0.28176,
           "ic_sup": 0.34672,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -1307,6 +1530,8 @@
           "taxa": 0.23199,
           "ic_inf": 0.20162,
           "ic_sup": 0.26553,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -1316,6 +1541,8 @@
           "taxa": 0.17097,
           "ic_inf": 0.13884,
           "ic_sup": 0.20613,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -1325,6 +1552,8 @@
           "taxa": 0.18636,
           "ic_inf": 0.1524,
           "ic_sup": 0.21741,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "regiao"
         },
         {
@@ -1334,6 +1563,8 @@
           "taxa": 0.22684,
           "ic_inf": 0.20705,
           "ic_sup": 0.2475,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "situacao"
         },
         {
@@ -1343,6 +1574,8 @@
           "taxa": 0.32998,
           "ic_inf": 0.29104,
           "ic_sup": 0.37661,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "situacao"
         },
         {
@@ -1352,6 +1585,8 @@
           "taxa": 0.26423,
           "ic_inf": 0.23532,
           "ic_sup": 0.2945,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -1361,6 +1596,8 @@
           "taxa": 0.19587,
           "ic_inf": 0.1747,
           "ic_sup": 0.2199,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -1370,6 +1607,8 @@
           "taxa": 0.24273,
           "ic_inf": 0.21408,
           "ic_sup": 0.27454,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -1379,6 +1618,8 @@
           "taxa": 0.2172,
           "ic_inf": 0.18037,
           "ic_sup": 0.2609,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -1388,6 +1629,8 @@
           "taxa": 0.3213,
           "ic_inf": 0.2503,
           "ic_sup": 0.40151,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "idade"
         },
         {
@@ -1397,6 +1640,8 @@
           "taxa": 0.24813,
           "ic_inf": 0.22558,
           "ic_sup": 0.27488,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "sexo"
         },
         {
@@ -1406,6 +1651,8 @@
           "taxa": 0.22182,
           "ic_inf": 0.20271,
           "ic_sup": 0.24527,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "sexo"
         },
         {
@@ -1415,6 +1662,8 @@
           "taxa": 0.25531,
           "ic_inf": 0.21431,
           "ic_sup": 0.29853,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -1424,6 +1673,8 @@
           "taxa": 0.28437,
           "ic_inf": 0.24441,
           "ic_sup": 0.31735,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -1433,6 +1684,8 @@
           "taxa": 0.25213,
           "ic_inf": 0.22046,
           "ic_sup": 0.2857,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -1442,6 +1695,8 @@
           "taxa": 0.20548,
           "ic_inf": 0.17454,
           "ic_sup": 0.24619,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -1451,6 +1706,8 @@
           "taxa": 0.16675,
           "ic_inf": 0.13235,
           "ic_sup": 0.20148,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "renda_pc_sm"
         },
         {
@@ -1460,6 +1717,8 @@
           "taxa": 0.25038,
           "ic_inf": 0.18348,
           "ic_sup": 0.31502,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1469,6 +1728,8 @@
           "taxa": 0.21431,
           "ic_inf": 0.17761,
           "ic_sup": 0.26458,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1478,6 +1739,8 @@
           "taxa": 0.2144,
           "ic_inf": 0.18279,
           "ic_sup": 0.24526,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1487,6 +1750,8 @@
           "taxa": 0.24273,
           "ic_inf": 0.21205,
           "ic_sup": 0.2811,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1496,6 +1761,8 @@
           "taxa": 0.24883,
           "ic_inf": 0.19537,
           "ic_sup": 0.30802,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1505,6 +1772,8 @@
           "taxa": 0.26858,
           "ic_inf": 0.19412,
           "ic_sup": 0.32398,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         },
         {
@@ -1514,27 +1783,17 @@
           "taxa": 0.25455,
           "ic_inf": 0.19266,
           "ic_sup": 0.32018,
+          "sem_positivos": false,
+          "b": 200,
           "variavel": "n_moradores_uc"
         }
       ]
     }
   },
   "curvas": {
-    "formas": {
-      "ocasiao": {
-        "idade (faixas de 5 anos)": "sem diferença clara até 15-19 e queda depois",
-        "renda por pessoa (décimos ponderados)": "alta da primeira à última faixa, sem extremo no meio"
-      },
-      "preferencia": {
-        "idade (faixas de 5 anos)": "alta até 75-79 e sem diferença clara depois",
-        "renda por pessoa (décimos ponderados)": "sem diferença clara até 3 e queda depois"
-      }
-    },
-    "curvas_com_extremo_no_meio": [
-      "ocasiao: idade (faixas de 5 anos)",
-      "preferencia: idade (faixas de 5 anos)",
-      "preferencia: renda por pessoa (décimos ponderados)"
-    ],
+    "metodo": "logística ponderada de uma variável (idade linear ou log1p(renda_pc_sm)) ajustada no alvo; desvio por faixa = logit(taxa observada) - logit(taxa ajustada da faixa); intervalo percentil do bootstrap de setores dentro da UF, pareado (os mesmos multiplicadores na taxa e no reajuste); renda agrupada em centésimos ponderados",
+    "b": 1000,
+    "criterio_da_frase": "a leitura diz que os dados sustentam desvio da reta quando o número de faixas cujo intervalo exclui zero passa do dobro do esperado por acaso (5% das faixas)",
     "cortes_decis_renda_sm": {
       "ocasiao": [
         0.363,
@@ -1559,463 +1818,798 @@
         5.566
       ]
     },
-    "criterio": "extremo no meio: o máximo (mínimo) cai numa faixa interior e seu intervalo não cruza o de ao menos uma ponta; tendência: os intervalos das duas pontas não se cruzam",
+    "resumo": [
+      {
+        "parte": "ocasiao",
+        "eixo": "idade (faixas de 5 anos)",
+        "escala_da_reta": "idade em anos",
+        "faixas": 15,
+        "faixas_com_desvio_que_exclui_zero": 5,
+        "esperado_por_acaso": 0.75,
+        "onde": [
+          "10-14 (-0,34)",
+          "45-49 (0,42)",
+          "65-69 (-1,40)",
+          "70-74 (-1,41)",
+          "75-79 (-2,13)"
+        ]
+      },
+      {
+        "parte": "ocasiao",
+        "eixo": "renda por pessoa (décimos ponderados)",
+        "escala_da_reta": "log1p(renda_pc_sm)",
+        "faixas": 10,
+        "faixas_com_desvio_que_exclui_zero": 3,
+        "esperado_por_acaso": 0.5,
+        "onde": [
+          "1 (-0,99)",
+          "3 (-1,02)",
+          "6 (0,69)"
+        ]
+      },
+      {
+        "parte": "preferencia",
+        "eixo": "idade (faixas de 5 anos)",
+        "escala_da_reta": "idade em anos",
+        "faixas": 15,
+        "faixas_com_desvio_que_exclui_zero": 7,
+        "esperado_por_acaso": 0.75,
+        "onde": [
+          "10-14 (0,37)",
+          "20-24 (-0,28)",
+          "25-29 (-0,27)",
+          "35-39 (0,29)",
+          "45-49 (-0,46)",
+          "75-79 (1,72)",
+          "80+ (1,10)"
+        ]
+      },
+      {
+        "parte": "preferencia",
+        "eixo": "renda por pessoa (décimos ponderados)",
+        "escala_da_reta": "log1p(renda_pc_sm)",
+        "faixas": 10,
+        "faixas_com_desvio_que_exclui_zero": 0,
+        "esperado_por_acaso": 0.5,
+        "onde": []
+      }
+    ],
     "tabelas": {
-      "ocasiao": [
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "10-14",
-          "n": 77490,
-          "positivos": 82,
-          "taxa": 0.00143,
-          "ic_inf": 0.00094,
-          "ic_sup": 0.0019
+      "ocasiao": {
+        "idade (faixas de 5 anos)": {
+          "escala_da_reta": "idade em anos",
+          "inclinacao_por_desvio_padrao": -0.5502,
+          "faixas": [
+            {
+              "x": "10-14",
+              "n": 77490,
+              "positivos": 82,
+              "taxa": 0.00143,
+              "ic_inf": 0.00095,
+              "ic_sup": 0.00193,
+              "taxa_ajustada": 0.002,
+              "desvio": -0.33782,
+              "desvio_ic_inf": -0.6481,
+              "desvio_ic_sup": -0.10999,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "15-19",
+              "n": 72060,
+              "positivos": 100,
+              "taxa": 0.00201,
+              "ic_inf": 0.00141,
+              "ic_sup": 0.00267,
+              "taxa_ajustada": 0.00182,
+              "desvio": 0.10179,
+              "desvio_ic_inf": -0.15905,
+              "desvio_ic_sup": 0.33429,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "20-24",
+              "n": 66240,
+              "positivos": 76,
+              "taxa": 0.00158,
+              "ic_inf": 0.00091,
+              "ic_sup": 0.00241,
+              "taxa_ajustada": 0.00164,
+              "desvio": -0.03669,
+              "desvio_ic_inf": -0.55414,
+              "desvio_ic_sup": 0.36095,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "25-29",
+              "n": 70430,
+              "positivos": 95,
+              "taxa": 0.00169,
+              "ic_inf": 0.00119,
+              "ic_sup": 0.00229,
+              "taxa_ajustada": 0.00148,
+              "desvio": 0.13127,
+              "desvio_ic_inf": -0.21711,
+              "desvio_ic_sup": 0.40114,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "30-34",
+              "n": 64910,
+              "positivos": 91,
+              "taxa": 0.00145,
+              "ic_inf": 0.00103,
+              "ic_sup": 0.00191,
+              "taxa_ajustada": 0.00135,
+              "desvio": 0.07257,
+              "desvio_ic_inf": -0.2365,
+              "desvio_ic_sup": 0.37244,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "35-39",
+              "n": 57630,
+              "positivos": 41,
+              "taxa": 0.00106,
+              "ic_inf": 0.00058,
+              "ic_sup": 0.00167,
+              "taxa_ajustada": 0.00121,
+              "desvio": -0.13947,
+              "desvio_ic_inf": -0.67423,
+              "desvio_ic_sup": 0.27317,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "40-44",
+              "n": 53290,
+              "positivos": 60,
+              "taxa": 0.00158,
+              "ic_inf": 0.00099,
+              "ic_sup": 0.00227,
+              "taxa_ajustada": 0.0011,
+              "desvio": 0.36574,
+              "desvio_ic_inf": -0.03608,
+              "desvio_ic_sup": 0.68099,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "45-49",
+              "n": 48770,
+              "positivos": 51,
+              "taxa": 0.00151,
+              "ic_inf": 0.00097,
+              "ic_sup": 0.00213,
+              "taxa_ajustada": 0.001,
+              "desvio": 0.41561,
+              "desvio_ic_inf": 0.03899,
+              "desvio_ic_sup": 0.69628,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "50-54",
+              "n": 40000,
+              "positivos": 23,
+              "taxa": 0.00091,
+              "ic_inf": 0.00036,
+              "ic_sup": 0.00161,
+              "taxa_ajustada": 0.0009,
+              "desvio": 0.01308,
+              "desvio_ic_inf": -0.80533,
+              "desvio_ic_sup": 0.5253,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "55-59",
+              "n": 32950,
+              "positivos": 14,
+              "taxa": 0.00079,
+              "ic_inf": 0.0003,
+              "ic_sup": 0.0015,
+              "taxa_ajustada": 0.00082,
+              "desvio": -0.02931,
+              "desvio_ic_inf": -0.94861,
+              "desvio_ic_sup": 0.52168,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "60-64",
+              "n": 26620,
+              "positivos": 11,
+              "taxa": 0.00042,
+              "ic_inf": 0.0001,
+              "ic_sup": 0.00092,
+              "taxa_ajustada": 0.00074,
+              "desvio": -0.57007,
+              "desvio_ic_inf": -2.0361,
+              "desvio_ic_sup": 0.15493,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "65-69",
+              "n": 22160,
+              "positivos": 4,
+              "taxa": 0.00016,
+              "ic_inf": 2e-05,
+              "ic_sup": 0.00039,
+              "taxa_ajustada": 0.00067,
+              "desvio": -1.40242,
+              "desvio_ic_inf": -3.18497,
+              "desvio_ic_sup": -0.575,
+              "b_validas": 980,
+              "exclui_zero": true
+            },
+            {
+              "x": "70-74",
+              "n": 15980,
+              "positivos": 4,
+              "taxa": 0.00015,
+              "ic_inf": 1e-05,
+              "ic_sup": 0.00035,
+              "taxa_ajustada": 0.00061,
+              "desvio": -1.41068,
+              "desvio_ic_inf": -3.49329,
+              "desvio_ic_sup": -0.54051,
+              "b_validas": 980,
+              "exclui_zero": true
+            },
+            {
+              "x": "75-79",
+              "n": 9700,
+              "positivos": 1,
+              "taxa": 7e-05,
+              "ic_inf": 0.0,
+              "ic_sup": 0.00021,
+              "taxa_ajustada": 0.00055,
+              "desvio": -2.12797,
+              "desvio_ic_inf": -2.38439,
+              "desvio_ic_sup": -0.85813,
+              "b_validas": 675,
+              "exclui_zero": true
+            },
+            {
+              "x": "80+",
+              "n": 10800,
+              "positivos": 1,
+              "taxa": 0.00033,
+              "ic_inf": 0.0,
+              "ic_sup": 0.00109,
+              "taxa_ajustada": 0.00047,
+              "desvio": -0.34574,
+              "desvio_ic_inf": -0.62461,
+              "desvio_ic_sup": 0.87896,
+              "b_validas": 638,
+              "exclui_zero": false
+            }
+          ]
         },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "15-19",
-          "n": 72060,
-          "positivos": 100,
-          "taxa": 0.00201,
-          "ic_inf": 0.00141,
-          "ic_sup": 0.00265
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "20-24",
-          "n": 66240,
-          "positivos": 76,
-          "taxa": 0.00158,
-          "ic_inf": 0.00091,
-          "ic_sup": 0.00245
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "25-29",
-          "n": 70430,
-          "positivos": 95,
-          "taxa": 0.00169,
-          "ic_inf": 0.00121,
-          "ic_sup": 0.0023
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "30-34",
-          "n": 64910,
-          "positivos": 91,
-          "taxa": 0.00145,
-          "ic_inf": 0.00103,
-          "ic_sup": 0.00194
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "35-39",
-          "n": 57630,
-          "positivos": 41,
-          "taxa": 0.00106,
-          "ic_inf": 0.00065,
-          "ic_sup": 0.00161
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "40-44",
-          "n": 53290,
-          "positivos": 60,
-          "taxa": 0.00158,
-          "ic_inf": 0.00108,
-          "ic_sup": 0.00225
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "45-49",
-          "n": 48770,
-          "positivos": 51,
-          "taxa": 0.00151,
-          "ic_inf": 0.00098,
-          "ic_sup": 0.00221
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "50-54",
-          "n": 40000,
-          "positivos": 23,
-          "taxa": 0.00091,
-          "ic_inf": 0.0004,
-          "ic_sup": 0.00161
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "55-59",
-          "n": 32950,
-          "positivos": 14,
-          "taxa": 0.00079,
-          "ic_inf": 0.00031,
-          "ic_sup": 0.00147
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "60-64",
-          "n": 26620,
-          "positivos": 11,
-          "taxa": 0.00042,
-          "ic_inf": 0.0001,
-          "ic_sup": 0.0009
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "65-69",
-          "n": 22160,
-          "positivos": 4,
-          "taxa": 0.00016,
-          "ic_inf": 2e-05,
-          "ic_sup": 0.00041
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "70-74",
-          "n": 15980,
-          "positivos": 4,
-          "taxa": 0.00015,
-          "ic_inf": 1e-05,
-          "ic_sup": 0.00035
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "75-79",
-          "n": 9700,
-          "positivos": 1,
-          "taxa": 7e-05,
-          "ic_inf": 0.0,
-          "ic_sup": 0.00021
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "80+",
-          "n": 10800,
-          "positivos": 1,
-          "taxa": 0.00033,
-          "ic_inf": 0.0,
-          "ic_sup": 0.00097
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "1",
-          "n": 90870,
-          "positivos": 17,
-          "taxa": 0.00024,
-          "ic_inf": 8e-05,
-          "ic_sup": 0.00039
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "2",
-          "n": 80780,
-          "positivos": 36,
-          "taxa": 0.00045,
-          "ic_inf": 0.00021,
-          "ic_sup": 0.00078
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "3",
-          "n": 74790,
-          "positivos": 18,
-          "taxa": 0.00029,
-          "ic_inf": 0.00012,
-          "ic_sup": 0.00052
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "4",
-          "n": 76080,
-          "positivos": 47,
-          "taxa": 0.00104,
-          "ic_inf": 0.0004,
-          "ic_sup": 0.00172
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "5",
-          "n": 69150,
-          "positivos": 46,
-          "taxa": 0.00103,
-          "ic_inf": 0.00044,
-          "ic_sup": 0.00182
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "6",
-          "n": 63460,
-          "positivos": 89,
-          "taxa": 0.00217,
-          "ic_inf": 0.00094,
-          "ic_sup": 0.00376
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "7",
-          "n": 60810,
-          "positivos": 64,
-          "taxa": 0.00108,
-          "ic_inf": 0.00058,
-          "ic_sup": 0.0016
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "8",
-          "n": 54820,
-          "positivos": 81,
-          "taxa": 0.00144,
-          "ic_inf": 0.00101,
-          "ic_sup": 0.00203
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "9",
-          "n": 53150,
-          "positivos": 107,
-          "taxa": 0.00148,
-          "ic_inf": 0.00092,
-          "ic_sup": 0.00205
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "10",
-          "n": 45120,
-          "positivos": 149,
-          "taxa": 0.0038,
-          "ic_inf": 0.00273,
-          "ic_sup": 0.00517
+        "renda por pessoa (décimos ponderados)": {
+          "escala_da_reta": "log1p(renda_pc_sm)",
+          "inclinacao_por_desvio_padrao": 0.4699,
+          "faixas": [
+            {
+              "x": "1",
+              "n": 90870,
+              "positivos": 17,
+              "taxa": 0.00024,
+              "ic_inf": 9e-05,
+              "ic_sup": 0.00042,
+              "taxa_ajustada": 0.00065,
+              "desvio": -0.9922,
+              "desvio_ic_inf": -1.99938,
+              "desvio_ic_sup": -0.40797,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "2",
+              "n": 80780,
+              "positivos": 36,
+              "taxa": 0.00045,
+              "ic_inf": 0.00021,
+              "ic_sup": 0.00075,
+              "taxa_ajustada": 0.00073,
+              "desvio": -0.48213,
+              "desvio_ic_inf": -1.18668,
+              "desvio_ic_sup": 0.0545,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "3",
+              "n": 74790,
+              "positivos": 18,
+              "taxa": 0.00029,
+              "ic_inf": 0.00012,
+              "ic_sup": 0.00052,
+              "taxa_ajustada": 0.00081,
+              "desvio": -1.01879,
+              "desvio_ic_inf": -1.91189,
+              "desvio_ic_sup": -0.40552,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "4",
+              "n": 76080,
+              "positivos": 47,
+              "taxa": 0.00104,
+              "ic_inf": 0.00044,
+              "ic_sup": 0.00176,
+              "taxa_ajustada": 0.00089,
+              "desvio": 0.15613,
+              "desvio_ic_inf": -0.62861,
+              "desvio_ic_sup": 0.66882,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "5",
+              "n": 69150,
+              "positivos": 46,
+              "taxa": 0.00103,
+              "ic_inf": 0.00047,
+              "ic_sup": 0.00181,
+              "taxa_ajustada": 0.00098,
+              "desvio": 0.04847,
+              "desvio_ic_inf": -0.7066,
+              "desvio_ic_sup": 0.56241,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "6",
+              "n": 63460,
+              "positivos": 89,
+              "taxa": 0.00217,
+              "ic_inf": 0.00106,
+              "ic_sup": 0.00349,
+              "taxa_ajustada": 0.00109,
+              "desvio": 0.69499,
+              "desvio_ic_inf": 0.07892,
+              "desvio_ic_sup": 1.08062,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "7",
+              "n": 60810,
+              "positivos": 64,
+              "taxa": 0.00108,
+              "ic_inf": 0.00058,
+              "ic_sup": 0.00165,
+              "taxa_ajustada": 0.00122,
+              "desvio": -0.11978,
+              "desvio_ic_inf": -0.73187,
+              "desvio_ic_sup": 0.28927,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "8",
+              "n": 54820,
+              "positivos": 81,
+              "taxa": 0.00144,
+              "ic_inf": 0.00098,
+              "ic_sup": 0.00203,
+              "taxa_ajustada": 0.00143,
+              "desvio": 0.00702,
+              "desvio_ic_inf": -0.36762,
+              "desvio_ic_sup": 0.3408,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "9",
+              "n": 53150,
+              "positivos": 107,
+              "taxa": 0.00148,
+              "ic_inf": 0.00096,
+              "ic_sup": 0.0021,
+              "taxa_ajustada": 0.00181,
+              "desvio": -0.20335,
+              "desvio_ic_inf": -0.62131,
+              "desvio_ic_sup": 0.12972,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "10",
+              "n": 45120,
+              "positivos": 149,
+              "taxa": 0.0038,
+              "ic_inf": 0.00269,
+              "ic_sup": 0.00502,
+              "taxa_ajustada": 0.00343,
+              "desvio": 0.10312,
+              "desvio_ic_inf": -0.05318,
+              "desvio_ic_sup": 0.22632,
+              "b_validas": 1000,
+              "exclui_zero": false
+            }
+          ]
         }
-      ],
-      "preferencia": [
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "10-14",
-          "n": 2571,
-          "positivos": 716,
-          "taxa": 0.28657,
-          "ic_inf": 0.23902,
-          "ic_sup": 0.32576
+      },
+      "preferencia": {
+        "idade (faixas de 5 anos)": {
+          "escala_da_reta": "idade em anos",
+          "inclinacao_por_desvio_padrao": 0.1228,
+          "faixas": [
+            {
+              "x": "10-14",
+              "n": 2571,
+              "positivos": 716,
+              "taxa": 0.28657,
+              "ic_inf": 0.24512,
+              "ic_sup": 0.32958,
+              "taxa_ajustada": 0.21748,
+              "desvio": 0.36833,
+              "desvio_ic_inf": 0.19849,
+              "desvio_ic_sup": 0.52539,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "15-19",
+              "n": 2862,
+              "positivos": 693,
+              "taxa": 0.24123,
+              "ic_inf": 0.20882,
+              "ic_sup": 0.27746,
+              "taxa_ajustada": 0.2214,
+              "desvio": 0.1116,
+              "desvio_ic_inf": -0.04322,
+              "desvio_ic_sup": 0.26525,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "20-24",
+              "n": 2431,
+              "positivos": 530,
+              "taxa": 0.18123,
+              "ic_inf": 0.14834,
+              "ic_sup": 0.21474,
+              "taxa_ajustada": 0.22567,
+              "desvio": -0.27513,
+              "desvio_ic_inf": -0.46985,
+              "desvio_ic_sup": -0.07584,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "25-29",
+              "n": 2509,
+              "positivos": 487,
+              "taxa": 0.18516,
+              "ic_inf": 0.14925,
+              "ic_sup": 0.22086,
+              "taxa_ajustada": 0.22998,
+              "desvio": -0.27335,
+              "desvio_ic_inf": -0.50909,
+              "desvio_ic_sup": -0.05972,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "30-34",
+              "n": 2075,
+              "positivos": 451,
+              "taxa": 0.21823,
+              "ic_inf": 0.18332,
+              "ic_sup": 0.25684,
+              "taxa_ajustada": 0.2342,
+              "desvio": -0.09125,
+              "desvio_ic_inf": -0.29713,
+              "desvio_ic_sup": 0.12937,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "35-39",
+              "n": 1512,
+              "positivos": 393,
+              "taxa": 0.29493,
+              "ic_inf": 0.23979,
+              "ic_sup": 0.35269,
+              "taxa_ajustada": 0.23879,
+              "desvio": 0.28778,
+              "desvio_ic_inf": 0.0093,
+              "desvio_ic_sup": 0.52465,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "40-44",
+              "n": 1452,
+              "positivos": 369,
+              "taxa": 0.22359,
+              "ic_inf": 0.18236,
+              "ic_sup": 0.26671,
+              "taxa_ajustada": 0.24338,
+              "desvio": -0.11065,
+              "desvio_ic_inf": -0.35176,
+              "desvio_ic_sup": 0.11882,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "45-49",
+              "n": 1169,
+              "positivos": 243,
+              "taxa": 0.17254,
+              "ic_inf": 0.12677,
+              "ic_sup": 0.2238,
+              "taxa_ajustada": 0.24762,
+              "desvio": -0.45634,
+              "desvio_ic_inf": -0.8153,
+              "desvio_ic_sup": -0.14717,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "50-54",
+              "n": 855,
+              "positivos": 243,
+              "taxa": 0.24547,
+              "ic_inf": 0.1904,
+              "ic_sup": 0.30786,
+              "taxa_ajustada": 0.25194,
+              "desvio": -0.03463,
+              "desvio_ic_inf": -0.32071,
+              "desvio_ic_sup": 0.24905,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "55-59",
+              "n": 621,
+              "positivos": 165,
+              "taxa": 0.27165,
+              "ic_inf": 0.19517,
+              "ic_sup": 0.34889,
+              "taxa_ajustada": 0.25704,
+              "desvio": 0.07513,
+              "desvio_ic_inf": -0.30291,
+              "desvio_ic_sup": 0.41766,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "60-64",
+              "n": 404,
+              "positivos": 131,
+              "taxa": 0.2155,
+              "ic_inf": 0.14627,
+              "ic_sup": 0.30239,
+              "taxa_ajustada": 0.26176,
+              "desvio": -0.25526,
+              "desvio_ic_inf": -0.67027,
+              "desvio_ic_sup": 0.14127,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "65-69",
+              "n": 287,
+              "positivos": 83,
+              "taxa": 0.23821,
+              "ic_inf": 0.1494,
+              "ic_sup": 0.34841,
+              "taxa_ajustada": 0.26619,
+              "desvio": -0.14845,
+              "desvio_ic_inf": -0.69083,
+              "desvio_ic_sup": 0.37359,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "70-74",
+              "n": 212,
+              "positivos": 81,
+              "taxa": 0.32975,
+              "ic_inf": 0.22362,
+              "ic_sup": 0.44028,
+              "taxa_ajustada": 0.27139,
+              "desvio": 0.27828,
+              "desvio_ic_inf": -0.22756,
+              "desvio_ic_sup": 0.74168,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "75-79",
+              "n": 125,
+              "positivos": 58,
+              "taxa": 0.6794,
+              "ic_inf": 0.48156,
+              "ic_sup": 0.80577,
+              "taxa_ajustada": 0.27593,
+              "desvio": 1.71578,
+              "desvio_ic_inf": 0.9889,
+              "desvio_ic_sup": 2.31225,
+              "b_validas": 1000,
+              "exclui_zero": true
+            },
+            {
+              "x": "80+",
+              "n": 97,
+              "positivos": 41,
+              "taxa": 0.54283,
+              "ic_inf": 0.33261,
+              "ic_sup": 0.6776,
+              "taxa_ajustada": 0.28304,
+              "desvio": 1.10114,
+              "desvio_ic_inf": 0.26274,
+              "desvio_ic_sup": 1.63705,
+              "b_validas": 1000,
+              "exclui_zero": true
+            }
+          ]
         },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "15-19",
-          "n": 2862,
-          "positivos": 693,
-          "taxa": 0.24123,
-          "ic_inf": 0.21057,
-          "ic_sup": 0.27329
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "20-24",
-          "n": 2431,
-          "positivos": 530,
-          "taxa": 0.18123,
-          "ic_inf": 0.15205,
-          "ic_sup": 0.21073
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "25-29",
-          "n": 2509,
-          "positivos": 487,
-          "taxa": 0.18516,
-          "ic_inf": 0.14771,
-          "ic_sup": 0.22461
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "30-34",
-          "n": 2075,
-          "positivos": 451,
-          "taxa": 0.21823,
-          "ic_inf": 0.17476,
-          "ic_sup": 0.25436
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "35-39",
-          "n": 1512,
-          "positivos": 393,
-          "taxa": 0.29493,
-          "ic_inf": 0.23992,
-          "ic_sup": 0.35426
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "40-44",
-          "n": 1452,
-          "positivos": 369,
-          "taxa": 0.22359,
-          "ic_inf": 0.18235,
-          "ic_sup": 0.26687
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "45-49",
-          "n": 1169,
-          "positivos": 243,
-          "taxa": 0.17254,
-          "ic_inf": 0.12493,
-          "ic_sup": 0.22126
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "50-54",
-          "n": 855,
-          "positivos": 243,
-          "taxa": 0.24547,
-          "ic_inf": 0.18964,
-          "ic_sup": 0.31485
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "55-59",
-          "n": 621,
-          "positivos": 165,
-          "taxa": 0.27165,
-          "ic_inf": 0.19299,
-          "ic_sup": 0.34097
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "60-64",
-          "n": 404,
-          "positivos": 131,
-          "taxa": 0.2155,
-          "ic_inf": 0.14502,
-          "ic_sup": 0.30843
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "65-69",
-          "n": 287,
-          "positivos": 83,
-          "taxa": 0.23821,
-          "ic_inf": 0.14018,
-          "ic_sup": 0.34586
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "70-74",
-          "n": 212,
-          "positivos": 81,
-          "taxa": 0.32975,
-          "ic_inf": 0.2298,
-          "ic_sup": 0.45395
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "75-79",
-          "n": 125,
-          "positivos": 58,
-          "taxa": 0.6794,
-          "ic_inf": 0.47302,
-          "ic_sup": 0.80105
-        },
-        {
-          "eixo": "idade (faixas de 5 anos)",
-          "x": "80+",
-          "n": 97,
-          "positivos": 41,
-          "taxa": 0.54283,
-          "ic_inf": 0.3511,
-          "ic_sup": 0.67935
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "1",
-          "n": 2680,
-          "positivos": 796,
-          "taxa": 0.26563,
-          "ic_inf": 0.22789,
-          "ic_sup": 0.30162
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "2",
-          "n": 2088,
-          "positivos": 545,
-          "taxa": 0.26467,
-          "ic_inf": 0.21228,
-          "ic_sup": 0.3228
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "3",
-          "n": 2289,
-          "positivos": 595,
-          "taxa": 0.28971,
-          "ic_inf": 0.24035,
-          "ic_sup": 0.33935
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "4",
-          "n": 1962,
-          "positivos": 520,
-          "taxa": 0.2677,
-          "ic_inf": 0.20198,
-          "ic_sup": 0.33854
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "5",
-          "n": 1872,
-          "positivos": 495,
-          "taxa": 0.25553,
-          "ic_inf": 0.19544,
-          "ic_sup": 0.31441
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "6",
-          "n": 1957,
-          "positivos": 429,
-          "taxa": 0.21663,
-          "ic_inf": 0.17498,
-          "ic_sup": 0.27425
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "7",
-          "n": 1581,
-          "positivos": 339,
-          "taxa": 0.22115,
-          "ic_inf": 0.15315,
-          "ic_sup": 0.29264
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "8",
-          "n": 1578,
-          "positivos": 330,
-          "taxa": 0.20533,
-          "ic_inf": 0.13696,
-          "ic_sup": 0.26602
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "9",
-          "n": 1653,
-          "positivos": 341,
-          "taxa": 0.18205,
-          "ic_inf": 0.13495,
-          "ic_sup": 0.23598
-        },
-        {
-          "eixo": "renda por pessoa (décimos ponderados)",
-          "x": "10",
-          "n": 1522,
-          "positivos": 294,
-          "taxa": 0.17708,
-          "ic_inf": 0.13913,
-          "ic_sup": 0.21683
+        "renda por pessoa (décimos ponderados)": {
+          "escala_da_reta": "log1p(renda_pc_sm)",
+          "inclinacao_por_desvio_padrao": -0.1954,
+          "faixas": [
+            {
+              "x": "1",
+              "n": 2680,
+              "positivos": 796,
+              "taxa": 0.26563,
+              "ic_inf": 0.22674,
+              "ic_sup": 0.30384,
+              "taxa_ajustada": 0.2816,
+              "desvio": -0.0804,
+              "desvio_ic_inf": -0.28522,
+              "desvio_ic_sup": 0.12314,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "2",
+              "n": 2088,
+              "positivos": 545,
+              "taxa": 0.26467,
+              "ic_inf": 0.20485,
+              "ic_sup": 0.31919,
+              "taxa_ajustada": 0.26859,
+              "desvio": -0.02005,
+              "desvio_ic_inf": -0.31003,
+              "desvio_ic_sup": 0.2055,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "3",
+              "n": 2289,
+              "positivos": 595,
+              "taxa": 0.28971,
+              "ic_inf": 0.2385,
+              "ic_sup": 0.34217,
+              "taxa_ajustada": 0.25987,
+              "desvio": 0.14985,
+              "desvio_ic_inf": -0.10498,
+              "desvio_ic_sup": 0.35942,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "4",
+              "n": 1962,
+              "positivos": 520,
+              "taxa": 0.2677,
+              "ic_inf": 0.20654,
+              "ic_sup": 0.33599,
+              "taxa_ajustada": 0.25123,
+              "desvio": 0.08574,
+              "desvio_ic_inf": -0.236,
+              "desvio_ic_sup": 0.3994,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "5",
+              "n": 1872,
+              "positivos": 495,
+              "taxa": 0.25553,
+              "ic_inf": 0.19754,
+              "ic_sup": 0.32197,
+              "taxa_ajustada": 0.24288,
+              "desvio": 0.06762,
+              "desvio_ic_inf": -0.23787,
+              "desvio_ic_sup": 0.35345,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "6",
+              "n": 1957,
+              "positivos": 429,
+              "taxa": 0.21663,
+              "ic_inf": 0.16986,
+              "ic_sup": 0.27424,
+              "taxa_ajustada": 0.23449,
+              "desvio": -0.10227,
+              "desvio_ic_inf": -0.39534,
+              "desvio_ic_sup": 0.18885,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "7",
+              "n": 1581,
+              "positivos": 339,
+              "taxa": 0.22115,
+              "ic_inf": 0.15527,
+              "ic_sup": 0.29621,
+              "taxa_ajustada": 0.22525,
+              "desvio": -0.02365,
+              "desvio_ic_inf": -0.43216,
+              "desvio_ic_sup": 0.34327,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "8",
+              "n": 1578,
+              "positivos": 330,
+              "taxa": 0.20533,
+              "ic_inf": 0.13933,
+              "ic_sup": 0.26704,
+              "taxa_ajustada": 0.2142,
+              "desvio": -0.05353,
+              "desvio_ic_inf": -0.49578,
+              "desvio_ic_sup": 0.2724,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "9",
+              "n": 1653,
+              "positivos": 341,
+              "taxa": 0.18205,
+              "ic_inf": 0.13948,
+              "ic_sup": 0.22771,
+              "taxa_ajustada": 0.19998,
+              "desvio": -0.11611,
+              "desvio_ic_inf": -0.39205,
+              "desvio_ic_sup": 0.13245,
+              "b_validas": 1000,
+              "exclui_zero": false
+            },
+            {
+              "x": "10",
+              "n": 1522,
+              "positivos": 294,
+              "taxa": 0.17708,
+              "ic_inf": 0.14112,
+              "ic_sup": 0.21773,
+              "taxa_ajustada": 0.16731,
+              "desvio": 0.06858,
+              "desvio_ic_inf": -0.14803,
+              "desvio_ic_sup": 0.27724,
+              "b_validas": 1000,
+              "exclui_zero": false
+            }
+          ]
         }
-      ]
-    }
+      }
+    },
+    "faixas_com_replicas_descartadas": [
+      "ocasião por idade 65-69 (980 de 1000)",
+      "ocasião por idade 70-74 (980 de 1000)",
+      "ocasião por idade 75-79 (675 de 1000)",
+      "ocasião por idade 80+ (638 de 1000)"
+    ]
   },
   "interacoes": {
     "nota": "descrição; a lista de interações não é escolhida pelo tamanho do desvio",
@@ -2024,6 +2618,7 @@
         "parte": "ocasiao",
         "par": "dia_semana x faixa_horario",
         "combinacoes": 35,
+        "graus_de_liberdade": 24,
         "com_10_ou_mais_positivos": 8,
         "intervalo_exclui_zero": 3,
         "maior_desvio_absoluto": 0.7293
@@ -2032,6 +2627,7 @@
         "parte": "ocasiao",
         "par": "faixa_horario x local",
         "combinacoes": 10,
+        "graus_de_liberdade": 4,
         "com_10_ou_mais_positivos": 7,
         "intervalo_exclui_zero": 1,
         "maior_desvio_absoluto": 0.9176
@@ -2040,6 +2636,7 @@
         "parte": "ocasiao",
         "par": "local x situacao",
         "combinacoes": 4,
+        "graus_de_liberdade": 1,
         "com_10_ou_mais_positivos": 4,
         "intervalo_exclui_zero": 4,
         "maior_desvio_absoluto": 0.654
@@ -2048,6 +2645,7 @@
         "parte": "preferencia",
         "par": "tem_pizza x local",
         "combinacoes": 4,
+        "graus_de_liberdade": 1,
         "com_10_ou_mais_positivos": 4,
         "intervalo_exclui_zero": 0,
         "maior_desvio_absoluto": 0.3683
@@ -2056,6 +2654,7 @@
         "parte": "preferencia",
         "par": "tem_pizza x regiao",
         "combinacoes": 10,
+        "graus_de_liberdade": 4,
         "com_10_ou_mais_positivos": 9,
         "intervalo_exclui_zero": 4,
         "maior_desvio_absoluto": 0.8496
@@ -2064,6 +2663,7 @@
         "parte": "preferencia",
         "par": "regiao x local",
         "combinacoes": 10,
+        "graus_de_liberdade": 4,
         "com_10_ou_mais_positivos": 10,
         "intervalo_exclui_zero": 2,
         "maior_desvio_absoluto": 0.3043
@@ -2072,6 +2672,7 @@
         "parte": "preferencia",
         "par": "faixa_horario x local",
         "combinacoes": 10,
+        "graus_de_liberdade": 4,
         "com_10_ou_mais_positivos": 8,
         "intervalo_exclui_zero": 2,
         "maior_desvio_absoluto": 0.2394
@@ -3009,34 +3610,38 @@
           }
         ]
       }
-    }
+    },
+    "intervalos_calculados": 50,
+    "intervalos_que_excluem_zero": 16,
+    "esperado_por_acaso": 2.5
   },
   "pizza_e_preferencia": {
+    "b": 1000,
     "guarana_sem_pizza": {
       "taxa": 0.23833,
-      "ic_inf": 0.21813,
-      "ic_sup": 0.26038,
+      "ic_inf": 0.21926,
+      "ic_sup": 0.25778,
       "n": 18527,
       "positivos": 4583
     },
     "guarana_com_pizza": {
       "taxa": 0.13922,
-      "ic_inf": 0.08834,
-      "ic_sup": 0.20041,
+      "ic_inf": 0.09177,
+      "ic_sup": 0.19311,
       "n": 655,
       "positivos": 101
     },
     "diferenca_guarana_com_menos_sem": {
       "estimativa": -0.0991,
-      "ic_inf": -0.14992,
-      "ic_sup": -0.03537
+      "ic_inf": -0.149,
+      "ic_sup": -0.04398
     },
     "cola_sem_pizza": 0.53064,
     "cola_com_pizza": 0.56754,
     "diferenca_cola_com_menos_sem": {
       "estimativa": 0.03691,
-      "ic_inf": -0.04364,
-      "ic_sup": 0.13767
+      "ic_inf": -0.04915,
+      "ic_sup": 0.1221
     }
   },
   "sazonalidade": {
@@ -3049,7 +3654,9 @@
         "positivos": 149,
         "taxa": 0.01406,
         "ic_inf": 0.00883,
-        "ic_sup": 0.01953
+        "ic_sup": 0.01953,
+        "sem_positivos": false,
+        "b": 200
       },
       {
         "trimestre": "abr-jun",
@@ -3057,7 +3664,9 @@
         "positivos": 174,
         "taxa": 0.01261,
         "ic_inf": 0.00918,
-        "ic_sup": 0.01734
+        "ic_sup": 0.01734,
+        "sem_positivos": false,
+        "b": 200
       },
       {
         "trimestre": "jul-set",
@@ -3065,7 +3674,9 @@
         "positivos": 167,
         "taxa": 0.01405,
         "ic_inf": 0.00994,
-        "ic_sup": 0.01955
+        "ic_sup": 0.01955,
+        "sem_positivos": false,
+        "b": 200
       },
       {
         "trimestre": "out-dez",
@@ -3073,7 +3684,9 @@
         "positivos": 161,
         "taxa": 0.01121,
         "ic_inf": 0.00771,
-        "ic_sup": 0.01498
+        "ic_sup": 0.01498,
+        "sem_positivos": false,
+        "b": 200
       }
     ],
     "meses_por_trimestre": {
@@ -3099,6 +3712,22 @@
         "2008-12"
       ]
     },
+    "anos_por_trimestre": {
+      "jan-mar": [
+        "2009"
+      ],
+      "abr-jun": [
+        "2008",
+        "2009"
+      ],
+      "jul-set": [
+        "2008"
+      ],
+      "out-dez": [
+        "2008"
+      ]
+    },
+    "estacao_e_ano_confundidos": true,
     "intervalos_do_maior_e_do_menor_separados": false
   },
   "tapi": {
@@ -3108,46 +3737,58 @@
         "positivos": 98,
         "taxa": 0.0002,
         "ic_inf": 0.00014,
-        "ic_sup": 0.00028
+        "ic_sup": 0.00027,
+        "sem_positivos": false,
+        "b": 1000
       },
       "seg-qui, noite, em casa": {
         "n": 45781,
         "positivos": 141,
         "taxa": 0.00425,
-        "ic_inf": 0.00292,
-        "ic_sup": 0.00595
+        "ic_inf": 0.00293,
+        "ic_sup": 0.00589,
+        "sem_positivos": false,
+        "b": 1000
       },
       "seg-qui, noite, fora de casa": {
         "n": 45781,
         "positivos": 107,
         "taxa": 0.00239,
-        "ic_inf": 0.00168,
-        "ic_sup": 0.00307
+        "ic_inf": 0.00169,
+        "ic_sup": 0.00318,
+        "sem_positivos": false,
+        "b": 1000
       },
       "sex-dom, noite, em casa": {
         "n": 21122,
         "positivos": 169,
         "taxa": 0.01372,
-        "ic_inf": 0.00895,
-        "ic_sup": 0.0186
+        "ic_inf": 0.00944,
+        "ic_sup": 0.0183,
+        "sem_positivos": false,
+        "b": 1000
       },
       "sex-dom, noite, fora de casa": {
         "n": 21122,
         "positivos": 139,
         "taxa": 0.007,
-        "ic_inf": 0.00418,
-        "ic_sup": 0.0104
+        "ic_inf": 0.0044,
+        "ic_sup": 0.01032,
+        "sem_positivos": false,
+        "b": 1000
       }
     },
     "razao_sex_dom_sobre_seg_qui_noite_em_casa": {
       "estimativa": 3.2322,
-      "ic_inf": 2.0956,
-      "ic_sup": 4.8967
+      "ic_inf": 2.0855,
+      "ic_sup": 5.0975,
+      "b": 1000
     },
     "razao_em_casa_sobre_fora_sex_dom_noite": {
       "estimativa": 1.9617,
-      "ic_inf": 1.1493,
-      "ic_sup": 3.2817
+      "ic_inf": 1.1509,
+      "ic_sup": 3.3548,
+      "b": 1000
     },
     "pizza_refri_por_renda": {
       "ate_meio_sm": {
@@ -3155,35 +3796,45 @@
         "positivos": 43,
         "taxa": 0.00029,
         "ic_inf": 0.00012,
-        "ic_sup": 0.00047
+        "ic_sup": 0.00047,
+        "sem_positivos": false,
+        "b": 200
       },
       "meio_a_1_sm": {
         "n": 180440,
         "positivos": 80,
         "taxa": 0.00072,
         "ic_inf": 0.00043,
-        "ic_sup": 0.00108
+        "ic_sup": 0.00108,
+        "sem_positivos": false,
+        "b": 200
       },
       "de_1_a_2_sm": {
         "n": 180570,
         "positivos": 190,
         "taxa": 0.00143,
         "ic_inf": 0.00093,
-        "ic_sup": 0.00204
+        "ic_sup": 0.00204,
+        "sem_positivos": false,
+        "b": 200
       },
       "de_2_a_5_sm": {
         "n": 117800,
         "positivos": 213,
         "taxa": 0.00167,
         "ic_inf": 0.00123,
-        "ic_sup": 0.00217
+        "ic_sup": 0.00217,
+        "sem_positivos": false,
+        "b": 200
       },
       "mais_de_5_sm": {
         "n": 37100,
         "positivos": 128,
         "taxa": 0.00367,
         "ic_inf": 0.00269,
-        "ic_sup": 0.00482
+        "ic_sup": 0.00482,
+        "sem_positivos": false,
+        "b": 200
       }
     },
     "guarana_por_renda_todas": {
@@ -3192,35 +3843,45 @@
         "positivos": 627,
         "taxa": 0.25531,
         "ic_inf": 0.21431,
-        "ic_sup": 0.29853
+        "ic_sup": 0.29853,
+        "sem_positivos": false,
+        "b": 200
       },
       "de_1_a_2_sm": {
         "n": 5812,
         "positivos": 1464,
         "taxa": 0.25213,
         "ic_inf": 0.22046,
-        "ic_sup": 0.2857
+        "ic_sup": 0.2857,
+        "sem_positivos": false,
+        "b": 200
       },
       "de_2_a_5_sm": {
         "n": 5047,
         "positivos": 1073,
         "taxa": 0.20548,
         "ic_inf": 0.17454,
-        "ic_sup": 0.24619
+        "ic_sup": 0.24619,
+        "sem_positivos": false,
+        "b": 200
       },
       "mais_de_5_sm": {
         "n": 1775,
         "positivos": 331,
         "taxa": 0.16675,
         "ic_inf": 0.13235,
-        "ic_sup": 0.20148
+        "ic_sup": 0.20148,
+        "sem_positivos": false,
+        "b": 200
       },
       "meio_a_1_sm": {
         "n": 4432,
         "positivos": 1189,
         "taxa": 0.28437,
         "ic_inf": 0.24441,
-        "ic_sup": 0.31735
+        "ic_sup": 0.31735,
+        "sem_positivos": false,
+        "b": 200
       }
     },
     "guarana_por_renda_com_pizza": {
@@ -3228,36 +3889,46 @@
         "n": 44,
         "positivos": 0,
         "taxa": 0.0,
-        "ic_inf": 0.0,
-        "ic_sup": 0.0
+        "ic_inf": null,
+        "ic_sup": null,
+        "sem_positivos": true,
+        "b": 200
       },
       "de_1_a_2_sm": {
         "n": 190,
         "positivos": 21,
         "taxa": 0.09879,
         "ic_inf": 0.03634,
-        "ic_sup": 0.1882
+        "ic_sup": 0.1882,
+        "sem_positivos": false,
+        "b": 200
       },
       "de_2_a_5_sm": {
         "n": 213,
         "positivos": 41,
         "taxa": 0.15474,
         "ic_inf": 0.07981,
-        "ic_sup": 0.24146
+        "ic_sup": 0.24146,
+        "sem_positivos": false,
+        "b": 200
       },
       "mais_de_5_sm": {
         "n": 128,
         "positivos": 16,
         "taxa": 0.0994,
         "ic_inf": 0.04025,
-        "ic_sup": 0.1875
+        "ic_sup": 0.1875,
+        "sem_positivos": false,
+        "b": 200
       },
       "meio_a_1_sm": {
         "n": 80,
         "positivos": 23,
         "taxa": 0.31678,
         "ic_inf": 0.10973,
-        "ic_sup": 0.52514
+        "ic_sup": 0.52514,
+        "sem_positivos": false,
+        "b": 200
       }
     }
   },
