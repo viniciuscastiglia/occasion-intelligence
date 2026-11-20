@@ -762,6 +762,8 @@ def test_segunda_execucao_nao_sobrescreve_e_confere(repo_com_tag, artefato_da_ta
 
 ### Tarefa 19: Google Trends (H10)
 
+> **Cortada em 20/11/2026, por decisão do autor.** A extração mostrou que a medida não sustenta H10: participação arredondada para inteiro (quase toda em 2% em 2017-2018), ruído de marca nos tópicos mesmo com filtro de categoria e 15 UFs vazias em 2008-2009. Os três CSV de comparação e o `LEIAME.md` ficam em `dados_externos/google_trends/` como registro; a decisão vai para a seção 27 do registro (tarefa 6); na tarefa 20, H10 sai como "não executada" com esse motivo. O texto abaixo fica só como histórico.
+
 **Ação do autor, que pode ser feita a qualquer momento antes desta tarefa:** exportar do site do Google Trends três CSVs de interesse por sub-região (estado), Brasil, pesquisa na web, todas as categorias, com os tópicos "Guaraná Antarctica" e "Coca-Cola" na mesma consulta: de 20/05/2008 a 22/05/2009, de 01/06/2017 a 31/07/2018 e os últimos 12 meses. Guardar em `dados_externos/google_trends/` com nomes `trends_2008-2009.csv`, `trends_2017-2018.csv`, `trends_recente.csv`, e anotar em `dados_externos/google_trends/LEIAME.md` a data da extração, os termos, os filtros e qualquer aviso que o site mostrar.
 
 **Arquivos:**
