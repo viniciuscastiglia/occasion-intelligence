@@ -3,6 +3,7 @@
 A tela só chama `carregar_artefato` e `prever` e formata a saída; não calcula nada.
 """
 
+import contextlib
 import os
 from pathlib import Path
 from typing import Any, cast, get_args
@@ -11,6 +12,8 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
+from occasion.briefing.cliente import ClienteHTTP, configuracao_de
+from occasion.briefing.servico import LIMITE_POR_SESSAO, Briefing, gerar_briefing
 from occasion.config import MODELOS
 from occasion.inference.contract import (
     UF,
@@ -24,6 +27,7 @@ from occasion.inference.contract import (
     Sexo,
     Situacao,
 )
+from occasion.inference.grade import tabela_do_mapa
 from occasion.inference.predict import ArtefatoAusente, ArtefatoModelo, carregar_artefato, prever
 from occasion.rotulos import (
     ROTULOS_DIA,
@@ -39,6 +43,11 @@ from occasion.rotulos import (
 
 COR_AUMENTA = "#2a78d6"
 COR_DIMINUI = "#eb6834"
+# Rampa sequencial de um matiz só (azul), do claro ao escuro, para o mapa de calor.
+COR_MAPA_CLARA = "#e8f1fb"
+COR_MAPA_ESCURA = "#0b3d7a"
+LIMITE_TEXTO_CLARO = 55
+VARIAVEIS_DO_BRIEFING = ("BRIEFING_BASE_URL", "BRIEFING_MODELO", "BRIEFING_CHAVE")
 
 
 def _formatar_opcao(rotulos: dict[str, str]) -> Any:
@@ -48,6 +57,120 @@ def _formatar_opcao(rotulos: dict[str, str]) -> Any:
 @st.cache_resource
 def _carregar(pasta: str) -> ArtefatoModelo:
     return carregar_artefato(Path(pasta))
+
+
+@st.cache_resource
+def _cache_de_briefings() -> dict[str, Briefing]:
+    """Um dicionário do processo, compartilhado entre as sessões."""
+    return {}
+
+
+def fonte_da_configuracao() -> dict[str, str]:
+    """`st.secrets` e `os.environ` combinados; a variável de ambiente prevalece.
+
+    Sem `secrets.toml`, `st.secrets` lança exceção: aqui isso vale como fonte vazia.
+    """
+    fonte: dict[str, str] = {}
+    for nome in VARIAVEIS_DO_BRIEFING:
+        # Sem arquivo de segredos: FileNotFoundError (StreamlitSecretNotFoundError herda dele).
+        with contextlib.suppress(FileNotFoundError, KeyError):
+            fonte[nome] = str(st.secrets[nome])
+    fonte.update({n: os.environ[n] for n in VARIAVEIS_DO_BRIEFING if n in os.environ})
+    return fonte
+
+
+@st.cache_data(show_spinner="Calculando o mapa de calor...")
+def _scores_do_mapa(contexto_json: str, pasta: str) -> pd.DataFrame:
+    """Tabela do mapa; a chave é o JSON do contexto com dia e faixa normalizados."""
+    contexto = Contexto.model_validate_json(contexto_json)
+    return tabela_do_mapa(contexto, _carregar(pasta))
+
+
+def tabela_do_mapa_na_tela(contexto: Contexto, pasta: str) -> pd.DataFrame:
+    """Scores em cache (independentes de dia e faixa do contexto) e a marca da célula atual."""
+    normalizado = contexto.model_copy(
+        update={"dia_semana": get_args(DiaSemana)[0], "faixa_horario": get_args(FaixaHorario)[0]}
+    )
+    tabela = _scores_do_mapa(normalizado.model_dump_json(), pasta).copy()
+    tabela["atual"] = (tabela["dia_semana"] == contexto.dia_semana) & (
+        tabela["faixa_horario"] == contexto.faixa_horario
+    )
+    return tabela
+
+
+def grafico_mapa(tabela: pd.DataFrame) -> alt.LayerChart:
+    """Mapa de calor dia x faixa: escala de 0 a 100, valor em cada célula, contorno na atual."""
+    dados = tabela.assign(
+        dia=tabela["dia_semana"].replace(ROTULOS_DIA),
+        faixa=tabela["faixa_horario"].replace(ROTULOS_HORARIO),
+    )
+    eixo_x = alt.X(
+        "faixa:N",
+        sort=[ROTULOS_HORARIO[f] for f in get_args(FaixaHorario)],
+        title=None,
+        axis=alt.Axis(orient="top", labelAngle=0),
+    )
+    eixo_y = alt.Y("dia:N", sort=[ROTULOS_DIA[d] for d in get_args(DiaSemana)], title=None)
+    base = alt.Chart(dados).encode(x=eixo_x, y=eixo_y)
+    celulas = base.mark_rect(stroke="white", strokeWidth=2).encode(
+        color=alt.Color(
+            "score:Q",
+            scale=alt.Scale(domain=[0, 100], range=[COR_MAPA_CLARA, COR_MAPA_ESCURA]),
+            legend=alt.Legend(title="Posição (0 a 100)"),
+        ),
+        tooltip=[
+            alt.Tooltip("dia:N", title="Dia"),
+            alt.Tooltip("faixa:N", title="Faixa"),
+            alt.Tooltip("score:Q", title="Score", format=".0f"),
+        ],
+    )
+    valores = base.mark_text(fontSize=13).encode(
+        text=alt.Text("score:Q", format=".0f"),
+        color=alt.condition(
+            alt.datum.score > LIMITE_TEXTO_CLARO, alt.value("white"), alt.value("#1f2a37")
+        ),
+    )
+    contorno = (
+        base.transform_filter(alt.datum.atual)
+        .mark_rect(fill=None, stroke="#eb6834", strokeWidth=4)
+        .encode()
+    )
+    return cast(alt.LayerChart, celulas + valores + contorno).properties(height=alt.Step(40))
+
+
+def mostrar_mapa(contexto: Contexto, pasta: str) -> None:
+    st.subheader("Mapa de calor: dia e faixa de horário")
+    st.altair_chart(grafico_mapa(tabela_do_mapa_na_tela(contexto, pasta)), width="stretch")
+    st.caption(
+        "Posição de cada combinação entre os contextos da população de referência, com os "
+        "demais campos fixos. O contorno marca o contexto calculado."
+    )
+
+
+def mostrar_briefing(contexto: Contexto, resultado: Resultado) -> None:
+    """Botão e texto do briefing; usa o contexto do último cálculo, nunca o formulário."""
+    st.session_state.setdefault("chamadas_llm", 0)
+    if st.button("Gerar briefing"):
+        config = configuracao_de(fonte_da_configuracao())
+        cliente = ClienteHTTP(config) if config else None
+        briefing, chamou = gerar_briefing(
+            contexto,
+            resultado,
+            cliente,
+            _cache_de_briefings(),
+            st.session_state["chamadas_llm"],
+        )
+        st.session_state["chamadas_llm"] += int(chamou)
+        st.session_state["briefing"] = briefing
+    briefing: Briefing | None = st.session_state.get("briefing")
+    if briefing is None:
+        st.caption(f"Até {LIMITE_POR_SESSAO} chamadas ao provedor por sessão.")
+        return
+    st.write(briefing.texto)
+    if briefing.fonte == "llm":
+        st.caption(f"Gerado por {briefing.modelo} e conferido automaticamente")
+    else:
+        st.caption(f"Texto reserva: {briefing.motivo}")
 
 
 def formulario() -> tuple[Contexto, bool]:
@@ -254,13 +377,17 @@ def main() -> None:
     if calculado:
         st.session_state["resultado"] = prever(contexto, artefato)
         st.session_state["contexto_usado"] = contexto
+        st.session_state.pop("briefing", None)
     resultado: Resultado | None = st.session_state.get("resultado")
     if resultado is None:
         st.info("Preencha o contexto na barra lateral e clique em Calcular.")
         return
     if st.session_state.get("contexto_usado") != contexto:
         st.warning("O contexto mudou desde o último cálculo. Clique em Calcular de novo.")
+    contexto_usado: Contexto = st.session_state["contexto_usado"]
     mostrar_resultado(resultado)
+    mostrar_briefing(contexto_usado, resultado)
+    mostrar_mapa(contexto_usado, pasta)
     sobre_o_modelo(resultado)
     with st.expander("JSON do contrato"):
         st.json(resultado.model_dump())

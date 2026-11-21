@@ -1,7 +1,10 @@
 """Testes da tela Streamlit com a ferramenta de teste de aplicações do próprio Streamlit."""
 
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
+import pyarrow as pa
 import pytest
 from streamlit.testing.v1 import AppTest
 from tests.inference.test_predict import _artefato_unico
@@ -117,3 +120,61 @@ def test_limitacao_das_edicoes_depende_do_modelo() -> None:
     servido = limitacao_das_edicoes("servido")
     assert "reajustado com as duas edições" in servido
     assert "não tem teste temporal próprio" in servido
+
+
+def _graficos(at: AppTest) -> Sequence[Any]:
+    return at.get("vega_lite_chart")
+
+
+def _celulas_atuais(grafico) -> list[dict]:
+    """Linhas da tabela do gráfico marcadas como célula atual (dados Arrow do elemento)."""
+    tabela = pa.ipc.open_stream(grafico.proto.datasets[0].data.data).read_all().to_pandas()
+    return tabela[tabela["atual"]][["dia_semana", "faixa_horario"]].to_dict("records")
+
+
+@pytest.fixture
+def sem_briefing_configurado(monkeypatch: pytest.MonkeyPatch) -> None:
+    for nome in ("BRIEFING_BASE_URL", "BRIEFING_MODELO", "BRIEFING_CHAVE"):
+        monkeypatch.delenv(nome, raising=False)
+
+
+def test_tela_mostra_mapa_de_calor_depois_de_calcular(
+    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
+) -> None:
+    at = AppTest.from_file(CAMINHO_APP).run()
+    assert len(_graficos(at)) == 0
+    at.sidebar.button[0].click().run()
+    assert not at.exception
+    assert len(_graficos(at)) == 2
+    assert len(_celulas_atuais(_graficos(at)[1])) == 1
+
+
+def test_briefing_sem_chave_mostra_reserva_com_motivo(
+    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
+) -> None:
+    at = AppTest.from_file(CAMINHO_APP).run()
+    at.sidebar.button[0].click().run()
+    botao = next(b for b in at.button if b.label == "Gerar briefing")
+    botao.click().run()
+    assert not at.exception
+    legendas = " ".join(c.value for c in at.caption)
+    assert "Texto reserva: sem chave configurada" in legendas
+    assert at.session_state["chamadas_llm"] == 0
+    # Recalcular apaga o briefing.
+    at.sidebar.button[0].click().run()
+    assert "Texto reserva" not in " ".join(c.value for c in at.caption)
+
+
+def test_mapa_e_briefing_usam_o_contexto_calculado(
+    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
+) -> None:
+    at = AppTest.from_file(CAMINHO_APP).run()
+    at.sidebar.button[0].click().run()
+    antes = _celulas_atuais(_graficos(at)[1])
+    assert antes == [{"dia_semana": "sabado", "faixa_horario": "noite"}]
+    at.sidebar.selectbox[1].set_value("segunda").run()
+    assert any("Calcular" in w.value for w in at.warning)
+    assert _celulas_atuais(_graficos(at)[1]) == antes
+    next(b for b in at.button if b.label == "Gerar briefing").click().run()
+    assert at.session_state["contexto_usado"].dia_semana == "sabado"
+    assert not at.exception
