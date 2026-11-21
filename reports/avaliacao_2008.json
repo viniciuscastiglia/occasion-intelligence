@@ -1,0 +1,4488 @@
+{
+  "commit": "00278ea883b4-dirty",
+  "configuracao": {
+    "erros": "contextos por regiao, dia_semana, faixa_horario e local, z = (O - E) / sqrt(soma de w² p (1 - p)), w com média 1; só contextos com 500 linhas ou mais",
+    "estabilidade": "contribuição média por nível nos modelos das dobras externas do vencedor (sem a sigmoide, que só reescala); instável se os sinais divergem e o maior valor absoluto passa de 0,05 log-chances",
+    "importancia_global": "lista da maior para a menor; média ponderada de |contribuição| no modelo final, treinado em 2008-2009 inteira (com a sigmoide, se a receita a usa)",
+    "o_que": "segmentos, contextos com mais erro, importância global, estabilidade e região fora, para a ocasião, a preferência (todas e com pizza) e o score",
+    "pesos": "peso_final em todas as métricas",
+    "previsoes": "fora da dobra do vencedor de cada parte, com a calibração decidida; o score é o salvo em previsoes_score (a calibração de H7 já aplicada)",
+    "receita": {
+      "calibrar": {
+        "ocasiao": false,
+        "preferencia": false
+      },
+      "calibrar_score": false,
+      "ocasiao": "C",
+      "preferencia": "C",
+      "score": "produto"
+    },
+    "regiao_fora": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita.",
+    "segmentos": "dia_semana, faixa_horario, regiao, faixa_etaria, sexo, faixa_renda, local"
+  },
+  "dados": {
+    "celulas": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 101,
+      "setores": 4328
+    },
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "ocasioes_refri": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    },
+    "receita": "reports/receita.json"
+  },
+  "data_hora": "2026-11-20T23:50:46-03:00",
+  "metricas": {
+    "ocasiao": {
+      "calibrado": false,
+      "degrau": "C",
+      "erros": {
+        "subestimados": [
+          {
+            "dia_semana": 1,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 656,
+            "positivos": 5,
+            "regiao": "norte",
+            "taxa_observada": 0.012325485403403969,
+            "taxa_prevista": 0.0015410188031973124,
+            "z": 5.0010486478307525
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "manha",
+            "local": "fora_de_casa",
+            "n": 6234,
+            "positivos": 2,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0009587182743619457,
+            "taxa_prevista": 9.086808004237907e-05,
+            "z": 4.742395048806739
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "tarde",
+            "local": "em_casa",
+            "n": 2258,
+            "positivos": 3,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.002701894173223672,
+            "taxa_prevista": 0.0002663788434533043,
+            "z": 4.7045516756599515
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 2503,
+            "positivos": 2,
+            "regiao": "norte",
+            "taxa_observada": 0.0017721665495637627,
+            "taxa_prevista": 0.00018084481044624396,
+            "z": 4.561534499273685
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1307,
+            "positivos": 5,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.018947294781654633,
+            "taxa_prevista": 0.004680622252411519,
+            "z": 4.504218981188591
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "tarde",
+            "local": "em_casa",
+            "n": 6234,
+            "positivos": 5,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0010673610895198143,
+            "taxa_prevista": 0.00013966149333917164,
+            "z": 4.093867966298717
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2839,
+            "positivos": 9,
+            "regiao": "nordeste",
+            "taxa_observada": 0.004278523490799006,
+            "taxa_prevista": 0.0013304676054168819,
+            "z": 3.0356214098305037
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 992,
+            "positivos": 2,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.003092590256109841,
+            "taxa_prevista": 0.0003391760725692945,
+            "z": 2.860533841278715
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 1477,
+            "positivos": 2,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.004910742522531687,
+            "taxa_prevista": 0.0008578367409297869,
+            "z": 2.8054534777956275
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 1792,
+            "positivos": 2,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0024771079316939907,
+            "taxa_prevista": 0.00041466547953215394,
+            "z": 2.6450563381708054
+          }
+        ],
+        "superestimados": [
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 935,
+            "positivos": 1,
+            "regiao": "norte",
+            "taxa_observada": 0.00038012769508013127,
+            "taxa_prevista": 0.012218712176405869,
+            "z": -2.35434084286757
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2092,
+            "positivos": 4,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0023395960286765626,
+            "taxa_prevista": 0.008789377221102374,
+            "z": -2.251023162420217
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1477,
+            "positivos": 3,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.001311328041306687,
+            "taxa_prevista": 0.01311772294228803,
+            "z": -2.1978804590228385
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 3459,
+            "positivos": 3,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0011142472424893455,
+            "taxa_prevista": 0.003498200997899406,
+            "z": -1.7155102282090062
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1473,
+            "positivos": 6,
+            "regiao": "sul",
+            "taxa_observada": 0.0015338850209689512,
+            "taxa_prevista": 0.0062030085516095925,
+            "z": -1.6469438612909857
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2705,
+            "positivos": 2,
+            "regiao": "sudeste",
+            "taxa_observada": 0.00016542242492160547,
+            "taxa_prevista": 0.002378336869221087,
+            "z": -1.6404088436887436
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1364,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.003351193397593836,
+            "z": -1.581998293060784
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2258,
+            "positivos": 4,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0022005933583935304,
+            "taxa_prevista": 0.005685498848289116,
+            "z": -1.4477755637697587
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 629,
+            "positivos": 3,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.004532642946949842,
+            "taxa_prevista": 0.020435694624568564,
+            "z": -1.3683161669019126
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2839,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0006526069974107758,
+            "taxa_prevista": 0.0024095048866616406,
+            "z": -1.3500565610175526
+          }
+        ]
+      },
+      "estabilidade": [
+        {
+          "contribuicao_por_modelo": [
+            -0.22074626141248696,
+            -0.12811173376703117,
+            -0.16523008801376154,
+            -0.0685485653071693,
+            -0.03574625400638661
+          ],
+          "instavel": false,
+          "n": 50130,
+          "nivel": "1",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.12781266407868583,
+            0.1434882760377964,
+            0.09851037547153314,
+            0.06304049550149185,
+            0.38982553396177294
+          ],
+          "instavel": false,
+          "n": 146990,
+          "nivel": "2",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3115221591167297,
+            -0.3119585760633781,
+            -0.24697709444941837,
+            -0.32525754752203895,
+            -0.3879548576720885
+          ],
+          "instavel": false,
+          "n": 86860,
+          "nivel": "3",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3228290172617471,
+            -0.35323351948258497,
+            -0.3579689807233215,
+            -0.2945552000182172,
+            -0.32103574909096666
+          ],
+          "instavel": false,
+          "n": 173830,
+          "nivel": "4",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.161599334036592,
+            0.19256181070405085,
+            0.1746286237176588,
+            0.2048924578333417,
+            -0.2498623602905148
+          ],
+          "instavel": true,
+          "n": 103140,
+          "nivel": "5",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.3151511376935602,
+            0.2935855430943537,
+            0.35553890047923625,
+            0.41680332442767765,
+            0.2508264535924532
+          ],
+          "instavel": false,
+          "n": 64300,
+          "nivel": "6",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.7536954332928435,
+            0.6323205881772258,
+            0.6366250036099163,
+            0.45967075057812495,
+            0.8887442512157295
+          ],
+          "instavel": false,
+          "n": 43780,
+          "nivel": "7",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.023145021975587838,
+            0.0811187216727782,
+            0.10885995597574323,
+            -0.013434932796415453,
+            0.29895896140186584
+          ],
+          "instavel": true,
+          "n": 133806,
+          "nivel": "almoco",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -1.0607323628452978,
+            -1.022987798245493,
+            -1.025228405813483,
+            -1.0121027455828344,
+            -1.949795872732391
+          ],
+          "instavel": false,
+          "n": 133806,
+          "nivel": "madrugada",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.8702095230159541,
+            -0.812995296746127,
+            -0.7964907294193255,
+            -0.9197295135996929,
+            -0.9114797258212158
+          ],
+          "instavel": false,
+          "n": 133806,
+          "nivel": "manha",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            2.1403363152637676,
+            2.1300890430848054,
+            2.1237812280510973,
+            2.0892127247349945,
+            2.5749148944500235
+          ],
+          "instavel": false,
+          "n": 133806,
+          "nivel": "noite",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.23156544447167998,
+            -0.37549147053172544,
+            -0.41167901895883235,
+            -0.14298720704534357,
+            -0.013680038410866622
+          ],
+          "instavel": false,
+          "n": 133806,
+          "nivel": "tarde",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.06558903479066784,
+            0.15964519395709914,
+            0.0683249012752271,
+            0.08079356204274599,
+            -0.06829314185662895
+          ],
+          "instavel": true,
+          "n": 334515,
+          "nivel": "em_casa",
+          "variavel": "local"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06520895699425058,
+            -0.1595804130711145,
+            -0.06898029703433552,
+            -0.08105691606176452,
+            0.06871273777107734
+          ],
+          "instavel": true,
+          "n": 334515,
+          "nivel": "fora_de_casa",
+          "variavel": "local"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.002178980562129215,
+            -0.15142768872211326,
+            -0.031736373569284916,
+            -0.05525754234800958,
+            -0.23088041552483024
+          ],
+          "instavel": false,
+          "n": 11290,
+          "nivel": "11",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.051528589990103256,
+            0.09286423447562961,
+            0.10971787563824918,
+            0.07570864127461556,
+            -0.1453514626543532
+          ],
+          "instavel": true,
+          "n": 12020,
+          "nivel": "12",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.14990946290922713,
+            0.08061616063488836,
+            0.3006584823473961,
+            0.33767992073086567,
+            0.506209751442071
+          ],
+          "instavel": false,
+          "n": 22050,
+          "nivel": "13",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.24741969348266304,
+            0.15548725033340163,
+            0.2486337188810965,
+            0.3093610102191801,
+            0.9408043103662821
+          ],
+          "instavel": false,
+          "n": 6500,
+          "nivel": "14",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.385508706641765,
+            -0.3183790135489136,
+            -0.342300182407572,
+            -0.25908708853450163,
+            -0.6741317792926306
+          ],
+          "instavel": false,
+          "n": 24340,
+          "nivel": "15",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.062331409550612574,
+            0.08948351716717423,
+            -0.13485517424735294,
+            0.09031523996581345,
+            0.12821479904196859
+          ],
+          "instavel": true,
+          "n": 9920,
+          "nivel": "16",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.07226795903747756,
+            -0.08988209558043099,
+            -0.18715639708370965,
+            -0.052786240448875726,
+            -0.21155398740642925
+          ],
+          "instavel": false,
+          "n": 17900,
+          "nivel": "17",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.39023568734803465,
+            0.3043273845249594,
+            0.20670881398524127,
+            0.22395164362387304,
+            0.36181920422908675
+          ],
+          "instavel": false,
+          "n": 29590,
+          "nivel": "21",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.019784576676796038,
+            0.006293841661479163,
+            0.0993751641486994,
+            0.1037233938426232,
+            -0.14479094810994309
+          ],
+          "instavel": true,
+          "n": 30590,
+          "nivel": "22",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.6767649979586771,
+            -0.5456718878516419,
+            -0.5140062428553885,
+            -0.4270496340722984,
+            -0.909623187023874
+          ],
+          "instavel": false,
+          "n": 23160,
+          "nivel": "23",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.3594760261658868,
+            0.19953574606104688,
+            0.010361906965537746,
+            0.3428049923009636,
+            0.5380657817434168
+          ],
+          "instavel": false,
+          "n": 16980,
+          "nivel": "24",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3482564374419252,
+            -0.21558325920278038,
+            -0.2020115636282553,
+            -0.1464798720235931,
+            -0.40950315892520023
+          ],
+          "instavel": false,
+          "n": 19120,
+          "nivel": "25",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.11229414330035636,
+            0.1448509487018822,
+            -0.12431746798769039,
+            0.15983524025389828,
+            0.17752456402201314
+          ],
+          "instavel": true,
+          "n": 29040,
+          "nivel": "26",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.02808775138365165,
+            -0.015428578211892535,
+            -0.012103361831870878,
+            -0.047268055084042124,
+            0.10524688925831004
+          ],
+          "instavel": true,
+          "n": 32250,
+          "nivel": "27",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.0055159594885425,
+            -0.14497951620160635,
+            0.0068030789717077825,
+            -0.041959723553184176,
+            0.06542836879005301
+          ],
+          "instavel": true,
+          "n": 22660,
+          "nivel": "28",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.07029855654193617,
+            -0.1080965226809224,
+            0.1713878618264206,
+            0.08039316874765719,
+            0.30051700909540274
+          ],
+          "instavel": true,
+          "n": 44280,
+          "nivel": "29",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.35955831138711597,
+            -0.5817430274490992,
+            -0.36937357299301055,
+            -0.34909621255884143,
+            -0.3774071755109284
+          ],
+          "instavel": false,
+          "n": 57990,
+          "nivel": "31",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.2388852662465723,
+            -0.38930971377272383,
+            -0.1835074175843488,
+            -0.015607976974700068,
+            -0.17457260107976696
+          ],
+          "instavel": false,
+          "n": 16430,
+          "nivel": "32",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            1.0102805652466833,
+            1.0241248044080602,
+            0.8702462637321089,
+            0.9248425934999865,
+            1.0565214946981296
+          ],
+          "instavel": false,
+          "n": 24290,
+          "nivel": "33",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.20059015432717087,
+            -0.036315912860803004,
+            -0.14549222639452733,
+            -0.38107995767397485,
+            -0.23993580428588296
+          ],
+          "instavel": false,
+          "n": 44790,
+          "nivel": "35",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.15590520542814423,
+            0.06813043565963553,
+            -0.04895863269018599,
+            0.1869579108908626,
+            0.13457824322904785
+          ],
+          "instavel": true,
+          "n": 30360,
+          "nivel": "41",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.17495582381835015,
+            0.12253545609790799,
+            0.3025165654018635,
+            -0.00458167629001828,
+            0.11330555447798979
+          ],
+          "instavel": true,
+          "n": 26810,
+          "nivel": "42",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.024835721440279426,
+            0.09164933202852045,
+            0.09916647420260583,
+            0.31256653479484897,
+            0.10545848741382935
+          ],
+          "instavel": false,
+          "n": 25110,
+          "nivel": "43",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.3118495083161761,
+            0.1541003285055532,
+            0.17534464792254612,
+            0.21090051112203995,
+            0.1378063455970338
+          ],
+          "instavel": false,
+          "n": 27440,
+          "nivel": "50",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.09404463747472999,
+            -0.16374725574373977,
+            -0.2512862453860627,
+            -0.05105854494827295,
+            0.02367474579150668
+          ],
+          "instavel": true,
+          "n": 23980,
+          "nivel": "51",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.015977293191185835,
+            0.06799403807205892,
+            -0.011432272374534223,
+            0.11103393086941411,
+            -0.17541799184451662
+          ],
+          "instavel": true,
+          "n": 35000,
+          "nivel": "52",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.08490205451901026,
+            0.2798158930942042,
+            0.5201306568769067,
+            0.42693132030719805,
+            0.46612131433505943
+          ],
+          "instavel": true,
+          "n": 5140,
+          "nivel": "53",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.23624574209856666,
+            0.3854946920254768,
+            0.4083347400387179,
+            0.5053144972089469,
+            0.28630622432941244
+          ],
+          "instavel": false,
+          "n": 91560,
+          "nivel": "centro_oeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.35087875869073415,
+            -0.34987291428721334,
+            -0.4863931870106666,
+            -0.32707740461172535,
+            -0.35306928718762376
+          ],
+          "instavel": false,
+          "n": 247670,
+          "nivel": "nordeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.1456253183733708,
+            -0.10737760265404325,
+            -0.12396169520427924,
+            0.023919717613935118,
+            -0.01569234600790849
+          ],
+          "instavel": true,
+          "n": 104020,
+          "nivel": "norte",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.11052319092133543,
+            0.06408783842284058,
+            0.14745099976008752,
+            -0.013434273848965936,
+            0.09872772427189372
+          ],
+          "instavel": true,
+          "n": 143500,
+          "nivel": "sudeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.2870181702223026,
+            0.33413746372049935,
+            0.3491362258351242,
+            0.37895721695550116,
+            0.24183921971463046
+          ],
+          "instavel": false,
+          "n": 82280,
+          "nivel": "sul",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.726814698997566,
+            -0.5417164539322945,
+            -0.724386121206546,
+            -0.6060990335450831,
+            -0.6123225831787621
+          ],
+          "instavel": false,
+          "n": 162980,
+          "nivel": "rural",
+          "variavel": "situacao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.14554696963697936,
+            0.10782566442633575,
+            0.14196142554575467,
+            0.11963426179240451,
+            0.12291740115140104
+          ],
+          "instavel": false,
+          "n": 506050,
+          "nivel": "urbano",
+          "variavel": "situacao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.5116422996672084,
+            0.5023997899661117,
+            0.4408236493054296,
+            0.3679964121034979,
+            0.5802709055506545
+          ],
+          "instavel": false,
+          "n": 122720,
+          "nivel": "10-17",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.4044489773877324,
+            0.4434206583998448,
+            0.38669789973646435,
+            0.3937900885879423,
+            0.44838707900527636
+          ],
+          "instavel": false,
+          "n": 163500,
+          "nivel": "18-29",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.004189248865791288,
+            0.017123107621272754,
+            0.03136386703583741,
+            0.07709793461679744,
+            0.11303148954040781
+          ],
+          "instavel": false,
+          "n": 175830,
+          "nivel": "30-44",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.4393485405120091,
+            -0.4834382606281676,
+            -0.40499343794922477,
+            -0.3892818432946698,
+            -0.3941349925524498
+          ],
+          "instavel": false,
+          "n": 121720,
+          "nivel": "45-59",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.7815707163506463,
+            -0.8148685539436158,
+            -0.7556346606945261,
+            -0.7856813140776288,
+            -1.261373921176383
+          ],
+          "instavel": false,
+          "n": 85260,
+          "nivel": "60+",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.06370874503933166,
+            0.015052390321544679,
+            0.004194798691571151,
+            0.045748010537288046,
+            0.024084398671612738
+          ],
+          "instavel": false,
+          "n": 360430,
+          "nivel": "feminino",
+          "variavel": "sexo"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06808761547427652,
+            -0.016282030002375193,
+            -0.004519716291298015,
+            -0.04946797659419583,
+            -0.025835970763639582
+          ],
+          "instavel": false,
+          "n": 308600,
+          "nivel": "masculino",
+          "variavel": "sexo"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.7296324384984911,
+            -0.7371681395023614,
+            -0.6415432581165919,
+            -0.6782860691353937,
+            -1.0950517128987505
+          ],
+          "instavel": false,
+          "n": 153120,
+          "nivel": "ate_meio_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.05146286330976672,
+            0.10118247400069712,
+            0.02317796532106584,
+            0.0268854786400645,
+            0.16869526433039678
+          ],
+          "instavel": false,
+          "n": 180570,
+          "nivel": "de_1_a_2_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.5355331929137616,
+            0.4944824493983943,
+            0.5360146368987599,
+            0.5738785526493295,
+            0.6370338420151223
+          ],
+          "instavel": false,
+          "n": 117800,
+          "nivel": "de_2_a_5_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.9595573688018174,
+            0.8072277014284263,
+            1.0067805090552469,
+            1.0539046036009077,
+            1.1075194301340356
+          ],
+          "instavel": false,
+          "n": 37100,
+          "nivel": "mais_de_5_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3774715294972241,
+            -0.3015044549992369,
+            -0.3898934610024296,
+            -0.4135490609945333,
+            -0.3630194952504184
+          ],
+          "instavel": false,
+          "n": 180440,
+          "nivel": "meio_a_1_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.017096012482113458,
+            0.1263044991489902,
+            0.03507438856511755,
+            -0.11998794870238948,
+            0.012273705434344017
+          ],
+          "instavel": true,
+          "n": 28740,
+          "nivel": "1",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.03596614321679257,
+            -0.26452217882899653,
+            -0.073821294339644,
+            0.2524102125165675,
+            -0.025567665848877236
+          ],
+          "instavel": true,
+          "n": 4950,
+          "nivel": "10",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.04186193829444879,
+            -0.3079473652709949,
+            -0.08592081466239526,
+            0.29378778598534033,
+            -0.029772262658124035
+          ],
+          "instavel": true,
+          "n": 1200,
+          "nivel": "11",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.04775773337210501,
+            -0.3513725517129936,
+            -0.09802033498514655,
+            0.3351653594541133,
+            -0.03397685946737085
+          ],
+          "instavel": true,
+          "n": 1820,
+          "nivel": "12",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.05365352844976124,
+            -0.3947977381549919,
+            -0.11011985530789783,
+            0.37654293292288626,
+            -0.038181456276617634
+          ],
+          "instavel": true,
+          "n": 590,
+          "nivel": "13",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.05954932352741748,
+            -0.43822292459699064,
+            -0.12221937563064914,
+            0.41792050639165923,
+            -0.042386053085864454
+          ],
+          "instavel": true,
+          "n": 620,
+          "nivel": "14",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06544511860507368,
+            -0.4816481110389891,
+            -0.13431889595340038,
+            0.45929807986043253,
+            -0.04659064989511126
+          ],
+          "instavel": true,
+          "n": 180,
+          "nivel": "15",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.01120021740445723,
+            0.08287931270699167,
+            0.022974868242366258,
+            -0.07861037523361648,
+            0.00806910862509721
+          ],
+          "instavel": true,
+          "n": 102750,
+          "nivel": "2",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.09492409399335483,
+            -0.6987740432489816,
+            -0.1948164975671569,
+            0.6661859472042972,
+            -0.0676136339413453
+          ],
+          "instavel": true,
+          "n": 140,
+          "nivel": "20",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.005304422326801004,
+            0.03945412626499315,
+            0.01087534791961498,
+            -0.03723280176484349,
+            0.0038645118158504043
+          ],
+          "instavel": false,
+          "n": 151090,
+          "nivel": "3",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.0005913727508552199,
+            -0.003971060177005364,
+            -0.001224172403136302,
+            0.004144771703929499,
+            -0.0003400849933964003
+          ],
+          "instavel": false,
+          "n": 164680,
+          "nivel": "4",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.006487167828511445,
+            -0.047396246619003886,
+            -0.013323692725887583,
+            0.045522345172702476,
+            -0.004544681802643206
+          ],
+          "instavel": false,
+          "n": 106480,
+          "nivel": "5",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.012382962906167671,
+            -0.09082143306100242,
+            -0.025423213048638867,
+            0.08689991864147548,
+            -0.008749278611890012
+          ],
+          "instavel": true,
+          "n": 53690,
+          "nivel": "6",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.018278757983823897,
+            -0.1342466195030009,
+            -0.037522733371390136,
+            0.12827749211024847,
+            -0.012953875421136818
+          ],
+          "instavel": true,
+          "n": 25910,
+          "nivel": "7",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.024174553061480118,
+            -0.17767180594499943,
+            -0.049622253694141416,
+            0.16965506557902146,
+            -0.01715847223038362
+          ],
+          "instavel": true,
+          "n": 16570,
+          "nivel": "8",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.03007034813913634,
+            -0.22109699238699795,
+            -0.06172177401689271,
+            0.21103263904779443,
+            -0.02136306903963043
+          ],
+          "instavel": true,
+          "n": 9620,
+          "nivel": "9",
+          "variavel": "n_moradores_uc"
+        }
+      ],
+      "importancia_global": [
+        {
+          "importancia": 0.9286669564525504,
+          "variavel": "faixa_horario"
+        },
+        {
+          "importancia": 0.46457255015189414,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "importancia": 0.4166033959214991,
+          "variavel": "idade"
+        },
+        {
+          "importancia": 0.2779650019262659,
+          "variavel": "dia_semana"
+        },
+        {
+          "importancia": 0.277793326987835,
+          "variavel": "uf"
+        },
+        {
+          "importancia": 0.22575825851579878,
+          "variavel": "local"
+        },
+        {
+          "importancia": 0.2167602342200463,
+          "variavel": "regiao"
+        },
+        {
+          "importancia": 0.21551390685465616,
+          "variavel": "situacao"
+        },
+        {
+          "importancia": 0.030519065066473648,
+          "variavel": "sexo"
+        },
+        {
+          "importancia": 0.004914750473462793,
+          "variavel": "n_moradores_uc"
+        }
+      ],
+      "resumo": {
+        "brier": 0.0012850668163041003,
+        "calibracao": {
+          "curva": [
+            {
+              "n": 83301,
+              "p_media": 1.0396353761259556e-05,
+              "positivos": 3,
+              "taxa_observada": 2.4316980914475807e-05
+            },
+            {
+              "n": 79199,
+              "p_media": 2.8736717101090294e-05,
+              "positivos": 0,
+              "taxa_observada": 0.0
+            },
+            {
+              "n": 73857,
+              "p_media": 5.0499094902732746e-05,
+              "positivos": 6,
+              "taxa_observada": 6.068310922846214e-05
+            },
+            {
+              "n": 69004,
+              "p_media": 7.859437474556553e-05,
+              "positivos": 7,
+              "taxa_observada": 0.00014389022387483827
+            },
+            {
+              "n": 64030,
+              "p_media": 0.00011867043478654047,
+              "positivos": 14,
+              "taxa_observada": 0.00022450919927705123
+            },
+            {
+              "n": 61495,
+              "p_media": 0.00018148109683094432,
+              "positivos": 16,
+              "taxa_observada": 0.00022470630666083938
+            },
+            {
+              "n": 58689,
+              "p_media": 0.00029822649354993433,
+              "positivos": 17,
+              "taxa_observada": 0.00020548212753561322
+            },
+            {
+              "n": 60264,
+              "p_media": 0.0005866477755901309,
+              "positivos": 28,
+              "taxa_observada": 0.0003567542715844491
+            },
+            {
+              "n": 64611,
+              "p_media": 0.0016690263756172835,
+              "positivos": 104,
+              "taxa_observada": 0.0015749750382514265
+            },
+            {
+              "n": 54580,
+              "p_media": 0.009957360142977009,
+              "positivos": 459,
+              "taxa_observada": 0.010212584137236816
+            }
+          ],
+          "inclinacao": 0.9976862961992525,
+          "intercepto_cil": 0.0,
+          "o_e": 1.0037185473434656
+        },
+        "concentracao_topo": 0.7839012657538289,
+        "log_loss": 0.0077704631658596654,
+        "n": 669030,
+        "positivos": 654,
+        "pr_auc": 0.02376695832773057,
+        "prevalencia": 0.0013027905562964716,
+        "roc_auc": 0.9176697440585142
+      },
+      "segmentos": [
+        {
+          "log_loss": 0.006231802830259558,
+          "motivo": null,
+          "n": 50130,
+          "o_e": 0.9813283117009077,
+          "positivos": 40,
+          "pr_auc": 0.007022932394052898,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.005571556226239538,
+          "motivo": null,
+          "n": 146990,
+          "o_e": 1.0030428775403037,
+          "positivos": 91,
+          "pr_auc": 0.025251930696637778,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": 0.006235491998812662,
+          "motivo": null,
+          "n": 86860,
+          "o_e": 0.9754586754650251,
+          "positivos": 53,
+          "pr_auc": 0.020092279511669302,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.004633992094284683,
+          "motivo": null,
+          "n": 173830,
+          "o_e": 0.9814178298207984,
+          "positivos": 120,
+          "pr_auc": 0.00846637337535409,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.008340249496650607,
+          "motivo": null,
+          "n": 103140,
+          "o_e": 1.0080286528433446,
+          "positivos": 103,
+          "pr_auc": 0.07836278484489141,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.016896837525096166,
+          "motivo": null,
+          "n": 64300,
+          "o_e": 1.0117651649439734,
+          "positivos": 141,
+          "pr_auc": 0.03274831760136883,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.014787208283456591,
+          "motivo": null,
+          "n": 43780,
+          "o_e": 1.034792539426714,
+          "positivos": 106,
+          "pr_auc": 0.0228831243606972,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": 0.0038942572446982477,
+          "motivo": null,
+          "n": 133806,
+          "o_e": 1.0073446854106032,
+          "positivos": 42,
+          "pr_auc": 0.002796346830738634,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 133806,
+          "o_e": null,
+          "positivos": 1,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": 0.0007960144942158191,
+          "motivo": null,
+          "n": 133806,
+          "o_e": 0.6770490163222871,
+          "positivos": 17,
+          "pr_auc": 0.0002638270327236311,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.03153660755618571,
+          "motivo": null,
+          "n": 133806,
+          "o_e": 1.0210707899900495,
+          "positivos": 556,
+          "pr_auc": 0.026581366251351102,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": 0.0021694456917831324,
+          "motivo": null,
+          "n": 133806,
+          "o_e": 0.9489299442008206,
+          "positivos": 38,
+          "pr_auc": 0.00030510848882216526,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.012543799607965755,
+          "motivo": null,
+          "n": 91560,
+          "o_e": 1.0317642592651577,
+          "positivos": 127,
+          "pr_auc": 0.013048248005206674,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.0036870619086465752,
+          "motivo": null,
+          "n": 247670,
+          "o_e": 0.9627563316791884,
+          "positivos": 132,
+          "pr_auc": 0.00759566303296405,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": 0.005069004643533701,
+          "motivo": null,
+          "n": 104020,
+          "o_e": 0.9561691957214425,
+          "positivos": 76,
+          "pr_auc": 0.005664373584449461,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.008792266898326911,
+          "motivo": null,
+          "n": 143500,
+          "o_e": 1.0044187693087168,
+          "positivos": 180,
+          "pr_auc": 0.031168905192690152,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.01145376639770719,
+          "motivo": null,
+          "n": 82280,
+          "o_e": 1.018288391916656,
+          "positivos": 139,
+          "pr_auc": 0.031140138975753975,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.009232293470096903,
+          "motivo": null,
+          "n": 122720,
+          "o_e": 1.1100463166521486,
+          "positivos": 149,
+          "pr_auc": 0.048893054853719815,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.010170659916912966,
+          "motivo": null,
+          "n": 163500,
+          "o_e": 0.9661614960234142,
+          "positivos": 204,
+          "pr_auc": 0.02198341704950453,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.008281551706712935,
+          "motivo": null,
+          "n": 175830,
+          "o_e": 1.030155925289653,
+          "positivos": 192,
+          "pr_auc": 0.01892035385165078,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.006502753042786572,
+          "motivo": null,
+          "n": 121720,
+          "o_e": 1.1862308036578808,
+          "positivos": 88,
+          "pr_auc": 0.02790897924389286,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": 0.0022704668732514725,
+          "motivo": null,
+          "n": 85260,
+          "o_e": 0.3888374779337229,
+          "positivos": 21,
+          "pr_auc": 0.002719047184350494,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.007876273080288019,
+          "motivo": null,
+          "n": 360430,
+          "o_e": 0.9980382564722436,
+          "positivos": 348,
+          "pr_auc": 0.024021876099750487,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.007656573339405606,
+          "motivo": null,
+          "n": 308600,
+          "o_e": 1.0100326963623123,
+          "positivos": 306,
+          "pr_auc": 0.026072108452608087,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": 0.0023695654025800896,
+          "motivo": null,
+          "n": 153120,
+          "o_e": 0.6698776704991956,
+          "positivos": 43,
+          "pr_auc": 0.00248524854594118,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.008332452154962835,
+          "motivo": null,
+          "n": 180570,
+          "o_e": 1.1257152242309842,
+          "positivos": 190,
+          "pr_auc": 0.033597666719378895,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.010141216647410467,
+          "motivo": null,
+          "n": 117800,
+          "o_e": 0.8520699215028603,
+          "positivos": 213,
+          "pr_auc": 0.01771157369024936,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": 0.018937556913183523,
+          "motivo": null,
+          "n": 37100,
+          "o_e": 1.2425991365800464,
+          "positivos": 128,
+          "pr_auc": 0.044147896805530114,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.00496488740082194,
+          "motivo": null,
+          "n": 180440,
+          "o_e": 0.9264711445927846,
+          "positivos": 80,
+          "pr_auc": 0.00953798270129209,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.009670401276439648,
+          "motivo": null,
+          "n": 334515,
+          "o_e": 1.0038366774667733,
+          "positivos": 363,
+          "pr_auc": 0.029800684377558423,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.005870525055279687,
+          "motivo": null,
+          "n": 334515,
+          "o_e": 1.003495798170503,
+          "positivos": 291,
+          "pr_auc": 0.013384157614631293,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ]
+    },
+    "preferencia": {
+      "calibrado": false,
+      "com_pizza": {
+        "erros": {
+          "subestimados": [],
+          "superestimados": []
+        },
+        "resumo": {
+          "brier": 0.12263502090002376,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 60,
+                "p_media": 0.06117522985811246,
+                "positivos": 7,
+                "taxa_observada": 0.1375336145759409
+              },
+              {
+                "n": 40,
+                "p_media": 0.08366130985094397,
+                "positivos": 5,
+                "taxa_observada": 0.16036445203452526
+              },
+              {
+                "n": 54,
+                "p_media": 0.0958828736866281,
+                "positivos": 9,
+                "taxa_observada": 0.11926668830606685
+              },
+              {
+                "n": 52,
+                "p_media": 0.1089521952524374,
+                "positivos": 10,
+                "taxa_observada": 0.18024699647981793
+              },
+              {
+                "n": 75,
+                "p_media": 0.12662515089893608,
+                "positivos": 8,
+                "taxa_observada": 0.07556714330493212
+              },
+              {
+                "n": 87,
+                "p_media": 0.1471038754680321,
+                "positivos": 8,
+                "taxa_observada": 0.07376421442628876
+              },
+              {
+                "n": 59,
+                "p_media": 0.16985553410459683,
+                "positivos": 13,
+                "taxa_observada": 0.14415285161006025
+              },
+              {
+                "n": 63,
+                "p_media": 0.1884710406154989,
+                "positivos": 12,
+                "taxa_observada": 0.1522495701753351
+              },
+              {
+                "n": 74,
+                "p_media": 0.2205237314930364,
+                "positivos": 15,
+                "taxa_observada": 0.15154107318288393
+              },
+              {
+                "n": 91,
+                "p_media": 0.29871775665572087,
+                "positivos": 14,
+                "taxa_observada": 0.19698488373783946
+              }
+            ],
+            "inclinacao": 0.23632033815926853,
+            "intercepto_cil": -0.09264946454323687,
+            "o_e": 0.926570267990968
+          },
+          "concentracao_topo": 0.13482766011866293,
+          "log_loss": 0.4134108721628509,
+          "n": 655,
+          "positivos": 101,
+          "pr_auc": 0.16439197086515678,
+          "prevalencia": 0.1392217631746601,
+          "roc_auc": 0.5268515115683682
+        },
+        "segmentos": [
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 40,
+            "o_e": null,
+            "positivos": 6,
+            "pr_auc": null,
+            "segmento": "dia_semana",
+            "valor": 1
+          },
+          {
+            "log_loss": 0.417348569023109,
+            "motivo": null,
+            "n": 91,
+            "o_e": 0.6568305800022969,
+            "positivos": 14,
+            "pr_auc": 0.18726174483061708,
+            "segmento": "dia_semana",
+            "valor": 2
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 53,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null,
+            "segmento": "dia_semana",
+            "valor": 3
+          },
+          {
+            "log_loss": 0.5727803992720785,
+            "motivo": null,
+            "n": 120,
+            "o_e": 1.4656791827508677,
+            "positivos": 17,
+            "pr_auc": 0.22404045191038338,
+            "segmento": "dia_semana",
+            "valor": 4
+          },
+          {
+            "log_loss": 0.25982354380117934,
+            "motivo": null,
+            "n": 103,
+            "o_e": 0.5543335923800511,
+            "positivos": 14,
+            "pr_auc": 0.17547301787752662,
+            "segmento": "dia_semana",
+            "valor": 5
+          },
+          {
+            "log_loss": 0.5912658083979543,
+            "motivo": null,
+            "n": 141,
+            "o_e": 1.283733229804793,
+            "positivos": 30,
+            "pr_auc": 0.1899734792167076,
+            "segmento": "dia_semana",
+            "valor": 6
+          },
+          {
+            "log_loss": 0.3009841822122908,
+            "motivo": null,
+            "n": 107,
+            "o_e": 1.047149229019273,
+            "positivos": 15,
+            "pr_auc": 0.2899644562229698,
+            "segmento": "dia_semana",
+            "valor": 7
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 43,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null,
+            "segmento": "faixa_horario",
+            "valor": "almoco"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 1,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null,
+            "segmento": "faixa_horario",
+            "valor": "madrugada"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 17,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null,
+            "segmento": "faixa_horario",
+            "valor": "manha"
+          },
+          {
+            "log_loss": 0.41496301136670616,
+            "motivo": null,
+            "n": 556,
+            "o_e": 0.9645417981051334,
+            "positivos": 89,
+            "pr_auc": 0.18237441295134138,
+            "segmento": "faixa_horario",
+            "valor": "noite"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 38,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null,
+            "segmento": "faixa_horario",
+            "valor": "tarde"
+          },
+          {
+            "log_loss": 0.37097547239357287,
+            "motivo": null,
+            "n": 128,
+            "o_e": 0.7114782415495717,
+            "positivos": 17,
+            "pr_auc": 0.1305622632024136,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.7255048052771378,
+            "motivo": null,
+            "n": 132,
+            "o_e": 1.4357735575530972,
+            "positivos": 32,
+            "pr_auc": 0.32977879346151223,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 76,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.3298659090934957,
+            "motivo": null,
+            "n": 180,
+            "o_e": 0.6809779934427168,
+            "positivos": 22,
+            "pr_auc": 0.06263154063928295,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.47392517072267465,
+            "motivo": null,
+            "n": 139,
+            "o_e": 1.1299925449772772,
+            "positivos": 22,
+            "pr_auc": 0.17041944546586174,
+            "segmento": "regiao",
+            "valor": "sul"
+          },
+          {
+            "log_loss": 0.5168806508358759,
+            "motivo": null,
+            "n": 150,
+            "o_e": 1.0003316878551727,
+            "positivos": 20,
+            "pr_auc": 0.18967494358825665,
+            "segmento": "faixa_etaria",
+            "valor": "10-17"
+          },
+          {
+            "log_loss": 0.2944196636315132,
+            "motivo": null,
+            "n": 204,
+            "o_e": 0.7099385576277275,
+            "positivos": 30,
+            "pr_auc": 0.17746474561147396,
+            "segmento": "faixa_etaria",
+            "valor": "18-29"
+          },
+          {
+            "log_loss": 0.5320301273598516,
+            "motivo": null,
+            "n": 192,
+            "o_e": 1.3549165610045832,
+            "positivos": 31,
+            "pr_auc": 0.2199631817670871,
+            "segmento": "faixa_etaria",
+            "valor": "30-44"
+          },
+          {
+            "log_loss": 0.31708247510951904,
+            "motivo": null,
+            "n": 88,
+            "o_e": 0.6007875078969076,
+            "positivos": 16,
+            "pr_auc": 0.15093276420372603,
+            "segmento": "faixa_etaria",
+            "valor": "45-59"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 21,
+            "o_e": null,
+            "positivos": 4,
+            "pr_auc": null,
+            "segmento": "faixa_etaria",
+            "valor": "60+"
+          },
+          {
+            "log_loss": 0.44195105471883445,
+            "motivo": null,
+            "n": 349,
+            "o_e": 0.9412944423547273,
+            "positivos": 57,
+            "pr_auc": 0.15689275164656236,
+            "segmento": "sexo",
+            "valor": "feminino"
+          },
+          {
+            "log_loss": 0.3820261279805254,
+            "motivo": null,
+            "n": 306,
+            "o_e": 0.9086108069123314,
+            "positivos": 44,
+            "pr_auc": 0.19871217709716896,
+            "segmento": "sexo",
+            "valor": "masculino"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 44,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null,
+            "segmento": "faixa_renda",
+            "valor": "ate_meio_sm"
+          },
+          {
+            "log_loss": 0.3895674390218094,
+            "motivo": null,
+            "n": 190,
+            "o_e": 0.5874757407664054,
+            "positivos": 21,
+            "pr_auc": 0.0707441802488066,
+            "segmento": "faixa_renda",
+            "valor": "de_1_a_2_sm"
+          },
+          {
+            "log_loss": 0.4125620179775426,
+            "motivo": null,
+            "n": 213,
+            "o_e": 1.1801991988926372,
+            "positivos": 41,
+            "pr_auc": 0.30962985176855456,
+            "segmento": "faixa_renda",
+            "valor": "de_2_a_5_sm"
+          },
+          {
+            "log_loss": 0.269098461382216,
+            "motivo": null,
+            "n": 128,
+            "o_e": 0.7976886524281578,
+            "positivos": 16,
+            "pr_auc": 0.5007353258633882,
+            "segmento": "faixa_renda",
+            "valor": "mais_de_5_sm"
+          },
+          {
+            "log_loss": 0.8035960348352195,
+            "motivo": null,
+            "n": 80,
+            "o_e": 1.6680894921936709,
+            "positivos": 23,
+            "pr_auc": 0.2811552041155202,
+            "segmento": "faixa_renda",
+            "valor": "meio_a_1_sm"
+          },
+          {
+            "log_loss": 0.40436050628238007,
+            "motivo": null,
+            "n": 364,
+            "o_e": 0.9017461030836889,
+            "positivos": 49,
+            "pr_auc": 0.11131944396871463,
+            "segmento": "local",
+            "valor": "em_casa"
+          },
+          {
+            "log_loss": 0.4304982049341193,
+            "motivo": null,
+            "n": 291,
+            "o_e": 0.9646580911442518,
+            "positivos": 52,
+            "pr_auc": 0.25918944426411883,
+            "segmento": "local",
+            "valor": "fora_de_casa"
+          }
+        ]
+      },
+      "degrau": "C",
+      "estabilidade": [
+        {
+          "contribuicao_por_modelo": [
+            -0.13107433998613918,
+            -0.12691241579681392,
+            0.007953859274157099,
+            -0.10011232692422461,
+            -0.22047903052509513
+          ],
+          "instavel": true,
+          "n": 1482,
+          "nivel": "1",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.20829775475637388,
+            0.06516599835170017,
+            0.1814987027598487,
+            0.1429620720523064,
+            0.09882578034630142
+          ],
+          "instavel": false,
+          "n": 3677,
+          "nivel": "2",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.03601627750037778,
+            0.1508189318709386,
+            0.09939297810874533,
+            -0.07639777908122224,
+            0.07737488666868725
+          ],
+          "instavel": true,
+          "n": 2293,
+          "nivel": "3",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.015205631843033902,
+            -0.005264185107825452,
+            -0.020683244528371423,
+            0.04349394721409533,
+            0.006800041416947224
+          ],
+          "instavel": false,
+          "n": 4427,
+          "nivel": "4",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.10206964523520061,
+            0.08122550043205456,
+            0.04364735134633908,
+            0.02660027328191568,
+            0.04003109550598346
+          ],
+          "instavel": false,
+          "n": 2830,
+          "nivel": "5",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.014345190579029419,
+            0.10383449984946996,
+            0.03004669793499185,
+            0.19575724688811572,
+            0.14964863331673686
+          ],
+          "instavel": false,
+          "n": 2330,
+          "nivel": "6",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3427902301310875,
+            -0.35479871160469456,
+            -0.4215777850182982,
+            -0.34503505640563936,
+            -0.26717985218966217
+          ],
+          "instavel": false,
+          "n": 2143,
+          "nivel": "7",
+          "variavel": "dia_semana"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.025103304997709328,
+            0.01328550335576767,
+            0.01692735612613464,
+            0.05971806577747159,
+            0.03869393132407896
+          ],
+          "instavel": false,
+          "n": 7507,
+          "nivel": "almoco",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.020371385409531817,
+            0.05187436974310115,
+            0.09347128335823249,
+            0.04547779381045105,
+            0.09849170629158847
+          ],
+          "instavel": false,
+          "n": 49,
+          "nivel": "madrugada",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.18397768398697512,
+            0.33454001274297124,
+            0.24650085543357594,
+            0.26416346727222934,
+            0.20413307053923707
+          ],
+          "instavel": false,
+          "n": 1389,
+          "nivel": "manha",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.04835886540386775,
+            -0.05410192953579114,
+            -0.038788195184222454,
+            -0.057343695696173924,
+            -0.0627608171615247
+          ],
+          "instavel": false,
+          "n": 7056,
+          "nivel": "noite",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.015118636234426736,
+            -0.029711671024048803,
+            -0.04259248047074295,
+            -0.1023758585205115,
+            -0.01392186046358574
+          ],
+          "instavel": false,
+          "n": 3181,
+          "nivel": "tarde",
+          "variavel": "faixa_horario"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.06451607948720525,
+            0.05668496193300889,
+            0.034394554634193185,
+            0.04289039696667102,
+            0.041905681500006446
+          ],
+          "instavel": false,
+          "n": 12405,
+          "nivel": "em_casa",
+          "variavel": "local"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.11772930536709857,
+            -0.11025569725853906,
+            -0.06597095596881364,
+            -0.08234377722090445,
+            -0.08133035281163278
+          ],
+          "instavel": false,
+          "n": 6777,
+          "nivel": "fora_de_casa",
+          "variavel": "local"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.26126064427037154,
+            -0.23102643273506326,
+            -0.24440519256540455,
+            -0.25064520063895135,
+            -0.292878360437203
+          ],
+          "instavel": false,
+          "n": 387,
+          "nivel": "11",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06367586969378437,
+            -0.044461913120345475,
+            -0.019088395439068363,
+            -0.0450161536483856,
+            -0.003423876566870343
+          ],
+          "instavel": false,
+          "n": 393,
+          "nivel": "12",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.10705378581549976,
+            0.2241941299236831,
+            0.23302152986941274,
+            0.16631477009686416,
+            0.11860453386594724
+          ],
+          "instavel": false,
+          "n": 755,
+          "nivel": "13",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.1556233863882342,
+            -0.12460670150124009,
+            -0.13565018996273237,
+            -0.13074448946511927,
+            -0.1394992814742022
+          ],
+          "instavel": false,
+          "n": 204,
+          "nivel": "14",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.05095406595019613,
+            -0.17732979054631204,
+            -0.05388495773834644,
+            0.022678519271174313,
+            0.0028510001965917076
+          ],
+          "instavel": true,
+          "n": 559,
+          "nivel": "15",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.0742156038140044,
+            -0.058531048745553906,
+            -0.058365821376201124,
+            -0.07547320445279276,
+            -0.04334064498283057
+          ],
+          "instavel": false,
+          "n": 283,
+          "nivel": "16",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.024111979580375937,
+            -0.014166191190430536,
+            0.008059022084783256,
+            0.06243017449132829,
+            -0.019004169788895946
+          ],
+          "instavel": true,
+          "n": 460,
+          "nivel": "17",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.1397823361785308,
+            -0.0586585382286526,
+            -0.1535337030336007,
+            -0.0790536042963952,
+            -0.1051823135680075
+          ],
+          "instavel": false,
+          "n": 626,
+          "nivel": "21",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.03551019140835906,
+            0.023674133843116896,
+            0.06723689441233956,
+            -0.007940162956466304,
+            -0.048815001733277436
+          ],
+          "instavel": true,
+          "n": 577,
+          "nivel": "22",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.21202617072946978,
+            -0.3249475428855638,
+            -0.193705195610961,
+            -0.2749017918744162,
+            -0.1239905239156822
+          ],
+          "instavel": false,
+          "n": 432,
+          "nivel": "23",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.02665468811120319,
+            -0.01272362193222885,
+            -0.020441253441592335,
+            -0.02087079103599459,
+            -0.08122476186839228
+          ],
+          "instavel": false,
+          "n": 367,
+          "nivel": "24",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.17210501389326846,
+            -0.19476560846312516,
+            -0.339586242736202,
+            -0.17589220802979613,
+            -0.16910692050789142
+          ],
+          "instavel": false,
+          "n": 333,
+          "nivel": "25",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.4182097163296736,
+            0.3328258902352997,
+            0.4616759678652177,
+            0.5055609299215376,
+            0.4758339988521459
+          ],
+          "instavel": false,
+          "n": 887,
+          "nivel": "26",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.15672735019160536,
+            -0.18557325431980043,
+            -0.1723557648436834,
+            -0.1709172460139028,
+            -0.12124158930240031
+          ],
+          "instavel": false,
+          "n": 657,
+          "nivel": "27",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.11844506407182641,
+            -0.12023902291375278,
+            -0.029632577266111144,
+            -0.06629819147989825,
+            -0.18452040277505805
+          ],
+          "instavel": false,
+          "n": 552,
+          "nivel": "28",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.05264466169977017,
+            0.1169358843772858,
+            0.13626705589851343,
+            0.02289603589909245,
+            -0.023311144944373002
+          ],
+          "instavel": true,
+          "n": 715,
+          "nivel": "29",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.19653246839486896,
+            -0.11368967236839456,
+            0.07776068740237735,
+            -0.13399441000394183,
+            -0.14504996524413202
+          ],
+          "instavel": true,
+          "n": 1576,
+          "nivel": "31",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.23481117416714495,
+            -0.22462479561483403,
+            -0.319701167663989,
+            -0.1641236889207021,
+            -0.2220116939955612
+          ],
+          "instavel": false,
+          "n": 500,
+          "nivel": "32",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.027822529418416578,
+            -0.13809596492131018,
+            -0.10109172279722904,
+            0.10595536441327906,
+            -0.046001047078997735
+          ],
+          "instavel": true,
+          "n": 951,
+          "nivel": "33",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.09460527192981018,
+            0.112128347265258,
+            0.010224121582982826,
+            0.00031523042918732425,
+            0.07514210200911085
+          ],
+          "instavel": false,
+          "n": 1961,
+          "nivel": "35",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.2544186145250508,
+            -0.21211788780301896,
+            -0.2961203701071378,
+            -0.24032984711703112,
+            -0.1556951638005996
+          ],
+          "instavel": false,
+          "n": 936,
+          "nivel": "41",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.4072785965125501,
+            -0.4133645514658063,
+            -0.3974248664117386,
+            -0.35696770630811014,
+            -0.43278039598937623
+          ],
+          "instavel": false,
+          "n": 779,
+          "nivel": "42",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.30861369788214343,
+            0.3565242461353503,
+            0.4142623823355431,
+            0.33330462965080393,
+            0.30021271527134213
+          ],
+          "instavel": false,
+          "n": 1142,
+          "nivel": "43",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.05688789764439899,
+            0.08385708136615584,
+            0.11212041320431847,
+            0.13317369246831245,
+            0.09009633119651736
+          ],
+          "instavel": false,
+          "n": 877,
+          "nivel": "50",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.12100207907453214,
+            -0.14191327214285765,
+            -0.09109295837480871,
+            -0.0014869182548613163,
+            -0.03203071942661561
+          ],
+          "instavel": false,
+          "n": 774,
+          "nivel": "51",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.3088019645944783,
+            -0.24912747204108027,
+            -0.30379372241976127,
+            -0.3782555711893201,
+            -0.30397296295573445
+          ],
+          "instavel": false,
+          "n": 1313,
+          "nivel": "52",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.07058505476730427,
+            -0.025073955624214873,
+            -0.020359722289149375,
+            -0.012455586958147274,
+            -0.10828638526487977
+          ],
+          "instavel": true,
+          "n": 186,
+          "nivel": "53",
+          "variavel": "uf"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.019176319586665515,
+            -0.06046747721610087,
+            -0.10726557025608618,
+            -0.08168368944253844,
+            -0.12912888417330484
+          ],
+          "instavel": false,
+          "n": 3150,
+          "nivel": "centro_oeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.2810403326172741,
+            0.2567591326627039,
+            0.31815027696065784,
+            0.18361199371167108,
+            0.27007528500068384
+          ],
+          "instavel": false,
+          "n": 5146,
+          "nivel": "nordeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.10823148698363645,
+            0.11206152184141217,
+            0.17487955514619827,
+            0.11019342952367456,
+            0.121985332411498
+          ],
+          "instavel": false,
+          "n": 3041,
+          "nivel": "norte",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.018944232527156803,
+            -0.02896882840685426,
+            -0.02955689592339005,
+            0.02452853632170089,
+            -0.010721706388250875
+          ],
+          "instavel": false,
+          "n": 4988,
+          "nivel": "sudeste",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.26470029192778005,
+            -0.1882145234534553,
+            -0.24324285519612304,
+            -0.2751727087057855,
+            -0.23497304266402577
+          ],
+          "instavel": false,
+          "n": 2857,
+          "nivel": "sul",
+          "variavel": "regiao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.319593234031625,
+            0.2988171844718964,
+            0.3363813553864485,
+            0.4422197124386359,
+            0.4428495221214021
+          ],
+          "instavel": false,
+          "n": 2655,
+          "nivel": "rural",
+          "variavel": "situacao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.025249415551897053,
+            -0.02505960670085719,
+            -0.025842939337375772,
+            -0.036530005398725,
+            -0.03543311926120643
+          ],
+          "instavel": false,
+          "n": 16527,
+          "nivel": "urbano",
+          "variavel": "situacao"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.1334278768746957,
+            0.09486863505740195,
+            0.08265368381506843,
+            0.08712322511659738,
+            0.10474936912294627
+          ],
+          "instavel": false,
+          "n": 4327,
+          "nivel": "10-17",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.15510356332910355,
+            -0.13151913667439252,
+            -0.1480672289656375,
+            -0.10353912855271254,
+            -0.15534572328049223
+          ],
+          "instavel": false,
+          "n": 6046,
+          "nivel": "18-29",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06936787538600944,
+            -0.07116681694015312,
+            -0.05739243843245802,
+            -0.07372256149360454,
+            -0.06596682933127454
+          ],
+          "instavel": false,
+          "n": 5039,
+          "nivel": "30-44",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.13146436918003668,
+            0.11431564055974648,
+            0.1373782893315531,
+            0.07847772220203998,
+            0.14063684339806432
+          ],
+          "instavel": false,
+          "n": 2645,
+          "nivel": "45-59",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.3120511047860638,
+            0.31621800792247096,
+            0.313326618052051,
+            0.27940247767603815,
+            0.3265787789730613
+          ],
+          "instavel": false,
+          "n": 1125,
+          "nivel": "60+",
+          "variavel": "idade"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.03799223571074289,
+            0.07746837733144675,
+            0.0674585863509737,
+            0.04904410148027219,
+            0.08177752358528792
+          ],
+          "instavel": false,
+          "n": 9772,
+          "nivel": "feminino",
+          "variavel": "sexo"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.03548872974600907,
+            -0.07200939711229308,
+            -0.06224372879618751,
+            -0.04750454474281768,
+            -0.07436942168389794
+          ],
+          "instavel": false,
+          "n": 9410,
+          "nivel": "masculino",
+          "variavel": "sexo"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.025586125375817965,
+            0.06625030274893798,
+            -0.027962535659641026,
+            0.10687674768270786,
+            0.07865159493543783
+          ],
+          "instavel": true,
+          "n": 2116,
+          "nivel": "ate_meio_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.10654212441583966,
+            0.09026741568850363,
+            0.10590325216713546,
+            0.0947214281728954,
+            0.1107244325826335
+          ],
+          "instavel": false,
+          "n": 5812,
+          "nivel": "de_1_a_2_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.0871309695351025,
+            -0.0863463425064989,
+            -0.06985382992139805,
+            -0.10405150458057046,
+            -0.09896451622195185
+          ],
+          "instavel": false,
+          "n": 5047,
+          "nivel": "de_2_a_5_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.27208342986601486,
+            -0.28482970476235714,
+            -0.2714687410477545,
+            -0.3048385176529789,
+            -0.3191309332631494
+          ],
+          "instavel": false,
+          "n": 1775,
+          "nivel": "mais_de_5_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.13079651605904183,
+            0.13044265923195256,
+            0.1026912865628987,
+            0.15513754787879966,
+            0.1556340102654378
+          ],
+          "instavel": false,
+          "n": 4432,
+          "nivel": "meio_a_1_sm",
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.021926748726144224,
+            0.06214910903023314,
+            -0.08310757644612908,
+            -0.01964069902970424,
+            -0.0008612305941604935
+          ],
+          "instavel": true,
+          "n": 795,
+          "nivel": "1",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.049770382670435466,
+            -0.1381550804610286,
+            0.18584461162162677,
+            0.04444922640096371,
+            0.0019335894210393647
+          ],
+          "instavel": true,
+          "n": 88,
+          "nivel": "10",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.05773673060338877,
+            -0.16041110151561316,
+            0.2157281880735996,
+            0.05157032922659347,
+            0.002244124978283794
+          ],
+          "instavel": true,
+          "n": 9,
+          "nivel": "11",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.06570307853634207,
+            -0.18266712257019785,
+            0.24561176452557248,
+            0.05869143205222325,
+            0.0025546605355282227
+          ],
+          "instavel": true,
+          "n": 19,
+          "nivel": "12",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.07366942646929536,
+            -0.20492314362478245,
+            0.27549534097754536,
+            0.065812534877853,
+            0.0028651960927726498
+          ],
+          "instavel": true,
+          "n": 3,
+          "nivel": "13",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.013960400793190934,
+            0.0398930879756485,
+            -0.053223999994156244,
+            -0.01251959620407447,
+            -0.000550695036916065
+          ],
+          "instavel": true,
+          "n": 2915,
+          "nivel": "2",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.12943386199996842,
+            -0.3607152910068749,
+            0.48468037614135534,
+            0.11566025465726139,
+            0.005038944993483652
+          ],
+          "instavel": true,
+          "n": 4,
+          "nivel": "20",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.005994052860237632,
+            0.017637066921063867,
+            -0.023340423542183367,
+            -0.005398493378444698,
+            -0.00024015947967163622
+          ],
+          "instavel": false,
+          "n": 4749,
+          "nivel": "3",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.0019722950727156657,
+            -0.00461895413352076,
+            0.006543152909789502,
+            0.0017226094471850723,
+            7.037607757279245e-05
+          ],
+          "instavel": false,
+          "n": 5259,
+          "nivel": "4",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.009938643005668964,
+            -0.026874975188105395,
+            0.036426729361762375,
+            0.008843712272814844,
+            0.00038091163481722114
+          ],
+          "instavel": false,
+          "n": 2948,
+          "nivel": "5",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.017904990938622266,
+            -0.049130996242690024,
+            0.06631030581373523,
+            0.015964815098444607,
+            0.0006914471920616498
+          ],
+          "instavel": true,
+          "n": 1308,
+          "nivel": "6",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.025871338871575566,
+            -0.07138701729727466,
+            0.0961938822657081,
+            0.023085917924074384,
+            0.0010019827493060783
+          ],
+          "instavel": true,
+          "n": 591,
+          "nivel": "7",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.033837686804528866,
+            -0.0936430383518593,
+            0.12607745871768097,
+            0.030207020749704157,
+            0.001312518306550507
+          ],
+          "instavel": true,
+          "n": 311,
+          "nivel": "8",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.04180403473748215,
+            -0.11589905940644393,
+            0.1559610351696538,
+            0.03732812357533391,
+            0.0016230538637949355
+          ],
+          "instavel": true,
+          "n": 183,
+          "nivel": "9",
+          "variavel": "n_moradores_uc"
+        },
+        {
+          "contribuicao_por_modelo": [
+            0.013511607109303433,
+            0.006070284158327275,
+            0.017340172271381824,
+            0.007547926032082773,
+            0.009929206423488886
+          ],
+          "instavel": false,
+          "n": 18527,
+          "nivel": "0",
+          "variavel": "tem_pizza"
+        },
+        {
+          "contribuicao_por_modelo": [
+            -0.2508620999506444,
+            -0.1738826304033838,
+            -0.4845877551074553,
+            -0.19228820011942938,
+            -0.26657233652269485
+          ],
+          "instavel": false,
+          "n": 655,
+          "nivel": "1",
+          "variavel": "tem_pizza"
+        }
+      ],
+      "importancia_global": [
+        {
+          "importancia": 0.14977761752687854,
+          "variavel": "uf"
+        },
+        {
+          "importancia": 0.12761277472568386,
+          "variavel": "idade"
+        },
+        {
+          "importancia": 0.126253566963024,
+          "variavel": "renda_pc_sm"
+        },
+        {
+          "importancia": 0.10865969924639489,
+          "variavel": "regiao"
+        },
+        {
+          "importancia": 0.10800690121866678,
+          "variavel": "dia_semana"
+        },
+        {
+          "importancia": 0.08235611343212317,
+          "variavel": "tem_pizza"
+        },
+        {
+          "importancia": 0.0755336298947837,
+          "variavel": "local"
+        },
+        {
+          "importancia": 0.06236925132889173,
+          "variavel": "faixa_horario"
+        },
+        {
+          "importancia": 0.06117261622092377,
+          "variavel": "sexo"
+        },
+        {
+          "importancia": 0.0557869037763674,
+          "variavel": "situacao"
+        },
+        {
+          "importancia": 0.0010425519131526263,
+          "variavel": "n_moradores_uc"
+        }
+      ],
+      "todas": {
+        "erros": {
+          "subestimados": [],
+          "superestimados": []
+        },
+        "resumo": {
+          "brier": 0.17461924408106008,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 1919,
+                "p_media": 0.10421374824527932,
+                "positivos": 254,
+                "taxa_observada": 0.13186652352217673
+              },
+              {
+                "n": 1866,
+                "p_media": 0.15070983410921268,
+                "positivos": 302,
+                "taxa_observada": 0.1412122441786303
+              },
+              {
+                "n": 1696,
+                "p_media": 0.17873176554498563,
+                "positivos": 335,
+                "taxa_observada": 0.1912218171619931
+              },
+              {
+                "n": 1730,
+                "p_media": 0.2005085019893149,
+                "positivos": 329,
+                "taxa_observada": 0.2009312004601391
+              },
+              {
+                "n": 1689,
+                "p_media": 0.22065909267318495,
+                "positivos": 425,
+                "taxa_observada": 0.24314963525045527
+              },
+              {
+                "n": 1744,
+                "p_media": 0.2398313022756543,
+                "positivos": 427,
+                "taxa_observada": 0.23327226985368174
+              },
+              {
+                "n": 1855,
+                "p_media": 0.26058886734489295,
+                "positivos": 493,
+                "taxa_observada": 0.28453861934982544
+              },
+              {
+                "n": 1881,
+                "p_media": 0.28428868300774307,
+                "positivos": 497,
+                "taxa_observada": 0.2526817305583348
+              },
+              {
+                "n": 2184,
+                "p_media": 0.3187644028688202,
+                "positivos": 642,
+                "taxa_observada": 0.2749581960781557
+              },
+              {
+                "n": 2618,
+                "p_media": 0.40241249626678954,
+                "positivos": 980,
+                "taxa_observada": 0.39107045532891527
+              }
+            ],
+            "inclinacao": 0.8378445173702335,
+            "intercepto_cil": -0.009054064448949264,
+            "o_e": 0.9933650227586683
+          },
+          "concentracao_topo": 0.166951590715247,
+          "log_loss": 0.5310315835082502,
+          "n": 19182,
+          "positivos": 4684,
+          "pr_auc": 0.31885409980355905,
+          "prevalencia": 0.23451548420203022,
+          "roc_auc": 0.6084211607547787
+        },
+        "segmentos": [
+          {
+            "log_loss": 0.5102546379532719,
+            "motivo": null,
+            "n": 1482,
+            "o_e": 0.980050340873724,
+            "positivos": 326,
+            "pr_auc": 0.25763118548910496,
+            "segmento": "dia_semana",
+            "valor": 1
+          },
+          {
+            "log_loss": 0.56349466773396,
+            "motivo": null,
+            "n": 3677,
+            "o_e": 1.0023420936986158,
+            "positivos": 938,
+            "pr_auc": 0.3660162018763219,
+            "segmento": "dia_semana",
+            "valor": 2
+          },
+          {
+            "log_loss": 0.5389710267241581,
+            "motivo": null,
+            "n": 2293,
+            "o_e": 0.9944120254070137,
+            "positivos": 621,
+            "pr_auc": 0.33215287080299205,
+            "segmento": "dia_semana",
+            "valor": 3
+          },
+          {
+            "log_loss": 0.5274907342392197,
+            "motivo": null,
+            "n": 4427,
+            "o_e": 0.9940897593212994,
+            "positivos": 1067,
+            "pr_auc": 0.3574582703123881,
+            "segmento": "dia_semana",
+            "valor": 4
+          },
+          {
+            "log_loss": 0.5425862935629558,
+            "motivo": null,
+            "n": 2830,
+            "o_e": 0.9994237485981466,
+            "positivos": 738,
+            "pr_auc": 0.31525196472786954,
+            "segmento": "dia_semana",
+            "valor": 5
+          },
+          {
+            "log_loss": 0.5635793451938514,
+            "motivo": null,
+            "n": 2330,
+            "o_e": 1.0036332781659165,
+            "positivos": 568,
+            "pr_auc": 0.2771872553362017,
+            "segmento": "dia_semana",
+            "valor": 6
+          },
+          {
+            "log_loss": 0.4507550977942943,
+            "motivo": null,
+            "n": 2143,
+            "o_e": 0.9579585000638712,
+            "positivos": 426,
+            "pr_auc": 0.19888653150752025,
+            "segmento": "dia_semana",
+            "valor": 7
+          },
+          {
+            "log_loss": 0.5420918737991802,
+            "motivo": null,
+            "n": 7507,
+            "o_e": 0.9913417472700135,
+            "positivos": 1851,
+            "pr_auc": 0.32570913107321914,
+            "segmento": "faixa_horario",
+            "valor": "almoco"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 49,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null,
+            "segmento": "faixa_horario",
+            "valor": "madrugada"
+          },
+          {
+            "log_loss": 0.600841850866892,
+            "motivo": null,
+            "n": 1389,
+            "o_e": 1.0211551862709918,
+            "positivos": 408,
+            "pr_auc": 0.37948021415758315,
+            "segmento": "faixa_horario",
+            "valor": "manha"
+          },
+          {
+            "log_loss": 0.515129032677288,
+            "motivo": null,
+            "n": 7056,
+            "o_e": 0.9899572669633508,
+            "positivos": 1665,
+            "pr_auc": 0.3085425123097646,
+            "segmento": "faixa_horario",
+            "valor": "noite"
+          },
+          {
+            "log_loss": 0.5181157421832127,
+            "motivo": null,
+            "n": 3181,
+            "o_e": 0.9926860161764004,
+            "positivos": 752,
+            "pr_auc": 0.2874089867372907,
+            "segmento": "faixa_horario",
+            "valor": "tarde"
+          },
+          {
+            "log_loss": 0.46798691280323557,
+            "motivo": null,
+            "n": 3150,
+            "o_e": 0.9828407725168413,
+            "positivos": 631,
+            "pr_auc": 0.2594434508720236,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.6146841936947295,
+            "motivo": null,
+            "n": 5146,
+            "o_e": 1.0060279153783747,
+            "positivos": 1525,
+            "pr_auc": 0.3996458776747011,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": 0.5751076820423384,
+            "motivo": null,
+            "n": 3041,
+            "o_e": 1.0063695419013932,
+            "positivos": 801,
+            "pr_auc": 0.3150799289749647,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.5335407541801748,
+            "motivo": null,
+            "n": 4988,
+            "o_e": 0.9866122165626844,
+            "positivos": 1249,
+            "pr_auc": 0.2915567518726806,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.44989542294144064,
+            "motivo": null,
+            "n": 2857,
+            "o_e": 0.9961371691680937,
+            "positivos": 478,
+            "pr_auc": 0.22725077042608388,
+            "segmento": "regiao",
+            "valor": "sul"
+          },
+          {
+            "log_loss": 0.5722077493439293,
+            "motivo": null,
+            "n": 4327,
+            "o_e": 1.0001598628070179,
+            "positivos": 1151,
+            "pr_auc": 0.3215660490671348,
+            "segmento": "faixa_etaria",
+            "valor": "10-17"
+          },
+          {
+            "log_loss": 0.47844826130092044,
+            "motivo": null,
+            "n": 6046,
+            "o_e": 0.9378784436732165,
+            "positivos": 1275,
+            "pr_auc": 0.2852304580347418,
+            "segmento": "faixa_etaria",
+            "valor": "18-29"
+          },
+          {
+            "log_loss": 0.5514310574819664,
+            "motivo": null,
+            "n": 5039,
+            "o_e": 1.0964646758478114,
+            "positivos": 1213,
+            "pr_auc": 0.2982014932054766,
+            "segmento": "faixa_etaria",
+            "valor": "30-44"
+          },
+          {
+            "log_loss": 0.5093493769264557,
+            "motivo": null,
+            "n": 2645,
+            "o_e": 0.8690447118993702,
+            "positivos": 651,
+            "pr_auc": 0.30780503361828504,
+            "segmento": "faixa_etaria",
+            "valor": "45-59"
+          },
+          {
+            "log_loss": 0.6076945289001306,
+            "motivo": null,
+            "n": 1125,
+            "o_e": 1.0842654097002653,
+            "positivos": 394,
+            "pr_auc": 0.45441000013627164,
+            "segmento": "faixa_etaria",
+            "valor": "60+"
+          },
+          {
+            "log_loss": 0.5505210719448745,
+            "motivo": null,
+            "n": 9772,
+            "o_e": 0.9969470674857912,
+            "positivos": 2416,
+            "pr_auc": 0.32719009366000673,
+            "segmento": "sexo",
+            "valor": "feminino"
+          },
+          {
+            "log_loss": 0.5128583865702038,
+            "motivo": null,
+            "n": 9410,
+            "o_e": 0.9896561725697465,
+            "positivos": 2268,
+            "pr_auc": 0.3106317473001598,
+            "segmento": "sexo",
+            "valor": "masculino"
+          },
+          {
+            "log_loss": 0.5461554405689525,
+            "motivo": null,
+            "n": 2116,
+            "o_e": 0.9444092894219436,
+            "positivos": 627,
+            "pr_auc": 0.3761659793353268,
+            "segmento": "faixa_renda",
+            "valor": "ate_meio_sm"
+          },
+          {
+            "log_loss": 0.5515548825516549,
+            "motivo": null,
+            "n": 5812,
+            "o_e": 1.0047586225304261,
+            "positivos": 1464,
+            "pr_auc": 0.33521994530020405,
+            "segmento": "faixa_renda",
+            "valor": "de_1_a_2_sm"
+          },
+          {
+            "log_loss": 0.5082969515387484,
+            "motivo": null,
+            "n": 5047,
+            "o_e": 0.9663324085690252,
+            "positivos": 1073,
+            "pr_auc": 0.2479647476935706,
+            "segmento": "faixa_renda",
+            "valor": "de_2_a_5_sm"
+          },
+          {
+            "log_loss": 0.42984975025373134,
+            "motivo": null,
+            "n": 1775,
+            "o_e": 0.9310146394412715,
+            "positivos": 331,
+            "pr_auc": 0.27699592916435267,
+            "segmento": "faixa_renda",
+            "valor": "mais_de_5_sm"
+          },
+          {
+            "log_loss": 0.5878873783738585,
+            "motivo": null,
+            "n": 4432,
+            "o_e": 1.0537942269011897,
+            "positivos": 1189,
+            "pr_auc": 0.3595978844358371,
+            "segmento": "faixa_renda",
+            "valor": "meio_a_1_sm"
+          },
+          {
+            "log_loss": 0.5488066031703301,
+            "motivo": null,
+            "n": 12405,
+            "o_e": 0.9942894698312459,
+            "positivos": 3272,
+            "pr_auc": 0.3361228937896434,
+            "segmento": "local",
+            "valor": "em_casa"
+          },
+          {
+            "log_loss": 0.49707843280373676,
+            "motivo": null,
+            "n": 6777,
+            "o_e": 0.9912320427684119,
+            "positivos": 1412,
+            "pr_auc": 0.2721588375241264,
+            "segmento": "local",
+            "valor": "fora_de_casa"
+          }
+        ]
+      }
+    },
+    "regiao_fora": {
+      "declaracao": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita.",
+      "ocasiao": {
+        "fora_da_dobra": [
+          {
+            "log_loss": 0.012543799607965755,
+            "motivo": null,
+            "n": 91560,
+            "o_e": 1.0317642592651577,
+            "positivos": 127,
+            "pr_auc": 0.013048248005206674,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.0036870619086465752,
+            "motivo": null,
+            "n": 247670,
+            "o_e": 0.9627563316791884,
+            "positivos": 132,
+            "pr_auc": 0.00759566303296405,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": 0.005069004643533701,
+            "motivo": null,
+            "n": 104020,
+            "o_e": 0.9561691957214425,
+            "positivos": 76,
+            "pr_auc": 0.005664373584449461,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.008792266898326911,
+            "motivo": null,
+            "n": 143500,
+            "o_e": 1.0044187693087168,
+            "positivos": 180,
+            "pr_auc": 0.031168905192690152,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.01145376639770719,
+            "motivo": null,
+            "n": 82280,
+            "o_e": 1.018288391916656,
+            "positivos": 139,
+            "pr_auc": 0.031140138975753975,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ],
+        "treinada_nas_outras_quatro": [
+          {
+            "log_loss": 0.012437189150973532,
+            "motivo": null,
+            "n": 91560,
+            "o_e": 1.6510739833416987,
+            "positivos": 127,
+            "pr_auc": 0.016406506468827423,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.003845119458522972,
+            "motivo": null,
+            "n": 247670,
+            "o_e": 0.5159322690803112,
+            "positivos": 132,
+            "pr_auc": 0.007053330612065599,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": 0.005122628867259681,
+            "motivo": null,
+            "n": 104020,
+            "o_e": 0.6979238312577027,
+            "positivos": 76,
+            "pr_auc": 0.005403610697659889,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.009104659452189487,
+            "motivo": null,
+            "n": 143500,
+            "o_e": 1.1762401114647039,
+            "positivos": 180,
+            "pr_auc": 0.021729559726435102,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.011537637421149046,
+            "motivo": null,
+            "n": 82280,
+            "o_e": 1.523926702018024,
+            "positivos": 139,
+            "pr_auc": 0.037968160234183534,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ]
+      },
+      "preferencia": {
+        "fora_da_dobra": [
+          {
+            "log_loss": 0.46798691280323557,
+            "motivo": null,
+            "n": 3150,
+            "o_e": 0.9828407725168413,
+            "positivos": 631,
+            "pr_auc": 0.2594434508720236,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.6146841936947295,
+            "motivo": null,
+            "n": 5146,
+            "o_e": 1.0060279153783747,
+            "positivos": 1525,
+            "pr_auc": 0.3996458776747011,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": 0.5751076820423384,
+            "motivo": null,
+            "n": 3041,
+            "o_e": 1.0063695419013932,
+            "positivos": 801,
+            "pr_auc": 0.3150799289749647,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.5335407541801748,
+            "motivo": null,
+            "n": 4988,
+            "o_e": 0.9866122165626844,
+            "positivos": 1249,
+            "pr_auc": 0.2915567518726806,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.44989542294144064,
+            "motivo": null,
+            "n": 2857,
+            "o_e": 0.9961371691680937,
+            "positivos": 478,
+            "pr_auc": 0.22725077042608388,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ],
+        "treinada_nas_outras_quatro": [
+          {
+            "log_loss": 0.4722494355418433,
+            "motivo": null,
+            "n": 3150,
+            "o_e": 0.8595684606521267,
+            "positivos": 631,
+            "pr_auc": 0.2630992098329964,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.6538821928055722,
+            "motivo": null,
+            "n": 5146,
+            "o_e": 1.5144147103635868,
+            "positivos": 1525,
+            "pr_auc": 0.3676248640241447,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": 0.5834461694290841,
+            "motivo": null,
+            "n": 3041,
+            "o_e": 1.2530047626024994,
+            "positivos": 801,
+            "pr_auc": 0.32106822373001154,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.5335621342333797,
+            "motivo": null,
+            "n": 4988,
+            "o_e": 1.0807670672970067,
+            "positivos": 1249,
+            "pr_auc": 0.2980971908142677,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.46821955062982284,
+            "motivo": null,
+            "n": 2857,
+            "o_e": 0.7604824264298714,
+            "positivos": 478,
+            "pr_auc": 0.20260354800389702,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ]
+      },
+      "score": {
+        "fora_da_dobra": [
+          {
+            "log_loss": 0.0020260246176762946,
+            "motivo": null,
+            "n": 91560,
+            "o_e": 0.8190291449900435,
+            "positivos": 17,
+            "pr_auc": 0.005078503508877062,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.0014604195868824661,
+            "motivo": null,
+            "n": 247670,
+            "o_e": 1.2776626922660692,
+            "positivos": 32,
+            "pr_auc": 0.0031948641786754117,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 104020,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.0011480050557050724,
+            "motivo": null,
+            "n": 143500,
+            "o_e": 0.7192182654840288,
+            "positivos": 22,
+            "pr_auc": 0.0014630152802249032,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.002369240438567102,
+            "motivo": null,
+            "n": 82280,
+            "o_e": 1.1396429092944345,
+            "positivos": 22,
+            "pr_auc": 0.008417790982737308,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ],
+        "treinada_nas_outras_quatro": [
+          {
+            "log_loss": 0.0019579496972344816,
+            "motivo": null,
+            "n": 91560,
+            "o_e": 1.0702551381166305,
+            "positivos": 17,
+            "pr_auc": 0.002664026244408524,
+            "segmento": "regiao",
+            "valor": "centro_oeste"
+          },
+          {
+            "log_loss": 0.0015004893335293019,
+            "motivo": null,
+            "n": 247670,
+            "o_e": 1.3037017377850546,
+            "positivos": 32,
+            "pr_auc": 0.0024018196064182896,
+            "segmento": "regiao",
+            "valor": "nordeste"
+          },
+          {
+            "log_loss": null,
+            "motivo": "positivos insuficientes",
+            "n": 104020,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null,
+            "segmento": "regiao",
+            "valor": "norte"
+          },
+          {
+            "log_loss": 0.001163912946775474,
+            "motivo": null,
+            "n": 143500,
+            "o_e": 0.529997804534233,
+            "positivos": 22,
+            "pr_auc": 0.002025375796301442,
+            "segmento": "regiao",
+            "valor": "sudeste"
+          },
+          {
+            "log_loss": 0.0023170892078883446,
+            "motivo": null,
+            "n": 82280,
+            "o_e": 1.598766099666441,
+            "positivos": 22,
+            "pr_auc": 0.03031084487333232,
+            "segmento": "regiao",
+            "valor": "sul"
+          }
+        ]
+      }
+    },
+    "score": {
+      "calibrado": false,
+      "erros": {
+        "subestimados": [
+          {
+            "dia_semana": 6,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 992,
+            "positivos": 2,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.003092590256109841,
+            "taxa_prevista": 4.617237676602487e-05,
+            "z": 8.710187587553435
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 1792,
+            "positivos": 2,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0024771079316939907,
+            "taxa_prevista": 5.707478106522473e-05,
+            "z": 8.319380109676782
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 656,
+            "positivos": 2,
+            "regiao": "norte",
+            "taxa_observada": 0.00692963571354405,
+            "taxa_prevista": 0.00025703722712618917,
+            "z": 7.841342163787419
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "tarde",
+            "local": "em_casa",
+            "n": 1372,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0017400912190719082,
+            "taxa_prevista": 4.864226858743291e-05,
+            "z": 6.31510183291744
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "manha",
+            "local": "fora_de_casa",
+            "n": 6234,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0006899952330757761,
+            "taxa_prevista": 3.226831179223591e-05,
+            "z": 6.285279033453234
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "almoco",
+            "local": "fora_de_casa",
+            "n": 657,
+            "positivos": 1,
+            "regiao": "sul",
+            "taxa_observada": 0.002228482557159768,
+            "taxa_prevista": 7.186229556114786e-05,
+            "z": 4.943648071639217
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 924,
+            "positivos": 5,
+            "regiao": "sul",
+            "taxa_observada": 0.012159467264339556,
+            "taxa_prevista": 0.004231726741947907,
+            "z": 2.7564468092202543
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 2859,
+            "positivos": 1,
+            "regiao": "norte",
+            "taxa_observada": 0.00033354012911684017,
+            "taxa_prevista": 2.303552406499839e-05,
+            "z": 2.635127176474739
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 924,
+            "positivos": 5,
+            "regiao": "sul",
+            "taxa_observada": 0.007771121403377995,
+            "taxa_prevista": 0.002784829802554028,
+            "z": 2.1631128597972222
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2839,
+            "positivos": 3,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0013943800031424214,
+            "taxa_prevista": 0.00036242591900506827,
+            "z": 2.0440766000787485
+          }
+        ],
+        "superestimados": [
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2092,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0006169742204345063,
+            "taxa_prevista": 0.0025328189182234366,
+            "z": -1.2402836988102885
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 935,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.002322607415446768,
+            "z": -1.0692858516499113
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1487,
+            "positivos": 0,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0016339099988721428,
+            "z": -1.0275263117034648
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2839,
+            "positivos": 0,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0006824800860079496,
+            "z": -0.993071260544176
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1473,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0010917846211009122,
+            "z": -0.8710081436416187
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2859,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.00045005422063440704,
+            "z": -0.8416900124905459
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 935,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0013603598742193141,
+            "z": -0.8298043859102426
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1145,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0011289887744755432,
+            "z": -0.8219686543405932
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2503,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0004488894779037692,
+            "z": -0.8141888120011785
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2378,
+            "positivos": 0,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0006604592107824575,
+            "z": -0.8090133357058088
+          }
+        ]
+      },
+      "explicacao": "o score é o produto: ver a importância e a estabilidade de cada parte",
+      "resumo": {
+        "brier": 0.0001812594406387761,
+        "calibracao": {
+          "curva": [
+            {
+              "n": 76935,
+              "p_media": 2.616869624366987e-06,
+              "positivos": 0,
+              "taxa_observada": 0.0
+            },
+            {
+              "n": 72746,
+              "p_media": 6.6154949211180215e-06,
+              "positivos": 0,
+              "taxa_observada": 0.0
+            },
+            {
+              "n": 68786,
+              "p_media": 1.0817171946988494e-05,
+              "positivos": 0,
+              "taxa_observada": 0.0
+            },
+            {
+              "n": 66483,
+              "p_media": 1.587751786818698e-05,
+              "positivos": 0,
+              "taxa_observada": 0.0
+            },
+            {
+              "n": 66138,
+              "p_media": 2.2689674243663833e-05,
+              "positivos": 2,
+              "taxa_observada": 4.035822222028834e-05
+            },
+            {
+              "n": 64941,
+              "p_media": 3.2962025073047825e-05,
+              "positivos": 2,
+              "taxa_observada": 3.7014295079340175e-05
+            },
+            {
+              "n": 63015,
+              "p_media": 5.153886841883528e-05,
+              "positivos": 6,
+              "taxa_observada": 0.0001116069937205409
+            },
+            {
+              "n": 63308,
+              "p_media": 9.97958347130428e-05,
+              "positivos": 1,
+              "taxa_observada": 1.1928275340025695e-05
+            },
+            {
+              "n": 65989,
+              "p_media": 0.00027781874547311384,
+              "positivos": 17,
+              "taxa_observada": 0.0001950308825495856
+            },
+            {
+              "n": 60689,
+              "p_media": 0.0014114764778643618,
+              "positivos": 73,
+              "taxa_observada": 0.0014189250801491143
+            }
+          ],
+          "inclinacao": 1.008164776399079,
+          "intercepto_cil": -0.016016662946927218,
+          "o_e": 0.9392726304304123
+        },
+        "concentracao_topo": 0.7818361854962781,
+        "corte_alta": {
+          "f1": 0.0016124495208837439,
+          "matriz": {
+            "fn": 63301.32239930001,
+            "fp": 629652100.4641967,
+            "vn": 2520481230.48451,
+            "vp": 508512.09904242
+          },
+          "precision": 0.0008069563360585136,
+          "recall": 0.8892972427270112
+        },
+        "log_loss": 0.0014623509434004468,
+        "n": 669030,
+        "positivos": 101,
+        "pr_auc": 0.0026265402791704404,
+        "prevalencia": 0.00018148744336278735,
+        "roc_auc": 0.9144609649249164
+      },
+      "segmentos": [
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 50130,
+          "o_e": null,
+          "positivos": 6,
+          "pr_auc": null,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.0009866959558815075,
+          "motivo": null,
+          "n": 146990,
+          "o_e": 0.7907815400684806,
+          "positivos": 14,
+          "pr_auc": 0.0010530599329448625,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 86860,
+          "o_e": null,
+          "positivos": 5,
+          "pr_auc": null,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.001208243782546875,
+          "motivo": null,
+          "n": 173830,
+          "o_e": 1.3331700949129546,
+          "positivos": 17,
+          "pr_auc": 0.0011468833294041678,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.0009305561807957699,
+          "motivo": null,
+          "n": 103140,
+          "o_e": 0.47298914773815115,
+          "positivos": 14,
+          "pr_auc": 0.005287242387377233,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.005021487675633089,
+          "motivo": null,
+          "n": 64300,
+          "o_e": 1.3605794692981361,
+          "positivos": 30,
+          "pr_auc": 0.004657358078990377,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.002095652098685417,
+          "motivo": null,
+          "n": 43780,
+          "o_e": 0.9868332369140955,
+          "positivos": 15,
+          "pr_auc": 0.005138445422425178,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 133806,
+          "o_e": null,
+          "positivos": 2,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 133806,
+          "o_e": null,
+          "positivos": 0,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 133806,
+          "o_e": null,
+          "positivos": 2,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.006131521529089808,
+          "motivo": null,
+          "n": 133806,
+          "o_e": 0.9770435502803195,
+          "positivos": 89,
+          "pr_auc": 0.002917076184784984,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 133806,
+          "o_e": null,
+          "positivos": 8,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.0020260246176762946,
+          "motivo": null,
+          "n": 91560,
+          "o_e": 0.8190291449900435,
+          "positivos": 17,
+          "pr_auc": 0.005078503508877062,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.0014604195868824661,
+          "motivo": null,
+          "n": 247670,
+          "o_e": 1.2776626922660692,
+          "positivos": 32,
+          "pr_auc": 0.0031948641786754117,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 104020,
+          "o_e": null,
+          "positivos": 8,
+          "pr_auc": null,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.0011480050557050724,
+          "motivo": null,
+          "n": 143500,
+          "o_e": 0.7192182654840288,
+          "positivos": 22,
+          "pr_auc": 0.0014630152802249032,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.002369240438567102,
+          "motivo": null,
+          "n": 82280,
+          "o_e": 1.1396429092944345,
+          "positivos": 22,
+          "pr_auc": 0.008417790982737308,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.0023194527368631157,
+          "motivo": null,
+          "n": 122720,
+          "o_e": 1.1760555671160007,
+          "positivos": 20,
+          "pr_auc": 0.005057738554193688,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.001326541011495277,
+          "motivo": null,
+          "n": 163500,
+          "o_e": 0.6437231423973233,
+          "positivos": 30,
+          "pr_auc": 0.0015897128217167034,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.002036460600704667,
+          "motivo": null,
+          "n": 175830,
+          "o_e": 1.4953077608423926,
+          "positivos": 31,
+          "pr_auc": 0.0043775087450775045,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.0008871387157951861,
+          "motivo": null,
+          "n": 121720,
+          "o_e": 0.6800541378696866,
+          "positivos": 16,
+          "pr_auc": 0.0023763873494364886,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 85260,
+          "o_e": null,
+          "positivos": 4,
+          "pr_auc": null,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.0015204451602963576,
+          "motivo": null,
+          "n": 360430,
+          "o_e": 0.9445149662564764,
+          "positivos": 57,
+          "pr_auc": 0.0033631960413829085,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.001399820505529806,
+          "motivo": null,
+          "n": 308600,
+          "o_e": 0.9327310546559447,
+          "positivos": 44,
+          "pr_auc": 0.0022991944725392773,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 153120,
+          "o_e": null,
+          "positivos": 0,
+          "pr_auc": null,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.0011660112769925686,
+          "motivo": null,
+          "n": 180570,
+          "o_e": 0.6810633745845603,
+          "positivos": 21,
+          "pr_auc": 0.002548379709018925,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.001999312659646753,
+          "motivo": null,
+          "n": 117800,
+          "o_e": 0.9935064787235499,
+          "positivos": 41,
+          "pr_auc": 0.005743949252159619,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": 0.002850665203694595,
+          "motivo": null,
+          "n": 37100,
+          "o_e": 1.060636932377242,
+          "positivos": 16,
+          "pr_auc": 0.0030085590137235514,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.0018592471182071206,
+          "motivo": null,
+          "n": 180440,
+          "o_e": 1.6145513418738788,
+          "positivos": 23,
+          "pr_auc": 0.002608026859006992,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.0016518629053382382,
+          "motivo": null,
+          "n": 334515,
+          "o_e": 0.8638354087826645,
+          "positivos": 49,
+          "pr_auc": 0.0029955458423750535,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.0012728389814626558,
+          "motivo": null,
+          "n": 334515,
+          "o_e": 1.073760981468103,
+          "positivos": 52,
+          "pr_auc": 0.0027266643027933734,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ],
+      "tipo": "produto"
+    },
+    "status": "ok"
+  },
+  "natureza": "exploratório",
+  "nome": "avaliacao_2008",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}
