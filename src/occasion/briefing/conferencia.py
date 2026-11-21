@@ -5,21 +5,18 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
-# Termos que o briefing não pode conter (comparados sem acento e sem diferença de maiúsculas,
-# como palavra inteira). A lista é rigorosa de propósito: "por causa de" também reprova.
-# "causal" não entra: o aviso do modelo diz "não é efeito causal" e o texto pode repeti-lo.
+# Termos que o briefing não pode conter. A lista é rigorosa de propósito: "por causa de" também
+# reprova. Cada termo vale também para as formas derivadas, pelo padrão de `_FORMAS` (impacto,
+# impactos, impactar; causa, causas, causar, causado; garante, garantia, garantido; vendem mais).
+# "causal" e "causalidade" não reprovam: o aviso do modelo diz "efeito causal" e o texto pode
+# repeti-lo para negar o efeito. A comparação é sem acento e sem diferença de maiúsculas.
 TERMOS_PROIBIDOS: tuple[str, ...] = (
     "vende mais",
     "aumenta as vendas",
     "aumentar as vendas",
     "causa",
-    "causar",
-    "causou",
-    "causam",
-    "causando",
     "garante",
     "garantir",
-    "garantem",
     "impacto",
     "eficácia",
     "antarctica",
@@ -28,6 +25,19 @@ TERMOS_PROIBIDOS: tuple[str, ...] = (
     "pepsi",
     "kuat",
 )
+
+# Padrão (já sem acento, em minúsculas) de cada termo, com as formas derivadas.
+# O que não está aqui vale como a palavra inteira.
+_FORMAS: dict[str, str] = {
+    "vende mais": r"vend(?:e|em|eu|endo)\s+mais",
+    "aumenta as vendas": r"aument(?:a|am|ou|ando)\s+(?:as\s+)?vendas",
+    "aumentar as vendas": r"aumentar\s+(?:as\s+)?vendas",
+    "causa": r"caus(?:a|as|ar|ara|aria|ou|am|ando|ado|ada|ados|adas|e|em)",
+    "garante": r"garant\w*",
+    "garantir": r"garant\w*",
+    "impacto": r"impact\w*",
+    "eficácia": r"eficaci\w*|eficaz(?:es)?",
+}
 
 # Número com vírgula ou ponto decimal; o `%` não entra no padrão, porque só muda a escala
 # e a escala já é tratada na comparação (x ou 100·x). Separador de milhar ("1.234") não é
@@ -85,7 +95,10 @@ def _existe_na_entrada(token: str, candidatos: list[float]) -> bool:
 
 
 def _padrao_do_termo(termo: str) -> re.Pattern[str]:
-    corpo = r"\s+".join(re.escape(p) for p in _sem_acento(termo).split())
+    corpo = _FORMAS.get(termo)
+    if corpo is None:
+        corpo = r"\s+".join(re.escape(p) for p in _sem_acento(termo).split())
+    corpo = f"(?:{corpo})"
     return re.compile(rf"(?<![a-z0-9]){corpo}(?![a-z0-9])")
 
 

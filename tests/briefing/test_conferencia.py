@@ -32,12 +32,38 @@ def test_reprova_numero_inventado(contexto: Contexto, resultado: Resultado) -> N
         "A eficácia é alta.",
         "Isso causa mais consumo.",
         "Vai garantir o resultado.",
+        "Os impactos são grandes.",
+        "Vamos impactar o público.",
+        "Isso causou mais consumo.",
+        "Há muitas causas para isso.",
+        "O efeito causado é claro.",
+        "Há garantia de resultado.",
+        "Um resultado garantido.",
+        "Os combos vendem mais pizza.",
+        "Elas aumentam as vendas.",
+        "Isso aumentou as vendas.",
+        "Ação eficaz neste contexto.",
     ],
 )
 def test_reprova_termo_proibido(contexto: Contexto, resultado: Resultado, texto: str) -> None:
     r = conferir(texto, entrada_do_briefing(contexto, resultado))
     assert not r.aprovado
     assert r.motivos
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "Não há leitura causal aqui.",
+        "A causalidade não é estimada.",
+        "Só a clausura e a pausa.",
+    ],
+)
+def test_nao_reprova_causal_nem_palavra_parecida(
+    contexto: Contexto, resultado: Resultado, texto: str
+) -> None:
+    r = conferir(texto, entrada_do_briefing(contexto, resultado))
+    assert r.aprovado, r.motivos
 
 
 def test_termo_nao_casa_dentro_de_outra_palavra(contexto: Contexto, resultado: Resultado) -> None:
