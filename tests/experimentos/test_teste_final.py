@@ -568,9 +568,16 @@ def test_teste_final_nao_muda_receita_nem_artefato(repo_com_tag: Path, artefato_
 
 
 def test_referencia_do_teste_real_e_a_do_claude_md() -> None:
-    # tabela "Números de referência" do CLAUDE.md: 85.018 dias-pessoa; 16.122 ocasiões com
-    # refrigerante, das quais 10 saem da base da parte 2 por local indeterminado
-    assert REFERENCIA_TESTE == {"dias_pessoa": 85_018, "linhas_ocasioes_refri": 16_112}
+    # tabela "Números de referência" do CLAUDE.md: 85.018 dias-pessoa; 797 dias com pizza e
+    # refrigerante, menos 1 dia sem célula positiva por local indeterminado (reports/bases.json);
+    # 180 dias com pizza e guaraná, ou 179 se esse dia tiver guaraná; 16.122 ocasiões com
+    # refrigerante, das quais 10 saem da base da parte 2 por local indeterminado (Ruling R-v)
+    assert REFERENCIA_TESTE == {
+        "dias_pessoa": 85_018,
+        "dias_pizza_refri": 796,
+        "dias_pizza_guarana": frozenset({179, 180}),
+        "linhas_ocasioes_refri": 16_112,
+    }
     padrao = teste_final.rodar_teste_final.__kwdefaults__
     assert padrao is not None and padrao["referencia"] is REFERENCIA_TESTE
 
@@ -652,3 +659,39 @@ def test_tag_anotada_grava_o_objeto_da_tag_e_o_commit(tmp_path: Path) -> None:
     assert tag["commit"] == rev("HEAD")
     assert tag["objeto"] == rev(TAG_RECEITA)
     assert tag["objeto"] != tag["commit"]
+
+
+@pytest.mark.parametrize(("guarana", "aceita"), [(180, True), (179, True), (178, False)])
+def test_dias_com_pizza_e_guarana_aceitam_o_conjunto_da_referencia(
+    guarana: int, aceita: bool
+) -> None:
+    """Na referência real, 179 e 180 passam e 178 é recusado; o resto fica fixo."""
+    encontrado = {
+        "dias_pessoa": 85_018,
+        "dias_pizza_refri": 796,
+        "dias_pizza_guarana": guarana,
+        "linhas_ocasioes_refri": 16_112,
+    }
+    contagens = {nome: (lambda cel, oc, v=v: v) for nome, v in encontrado.items()}
+    vazio = pd.DataFrame()
+    with pytest.MonkeyPatch.context() as m:
+        m.setattr(teste_final, "_CONTAGENS", contagens)
+        if aceita:
+            assert _conferir_contagens(vazio, vazio, REFERENCIA_TESTE) == encontrado
+        else:
+            with pytest.raises(acesso.TesteBloqueado, match="dias_pizza_guarana"):
+                _conferir_contagens(vazio, vazio, REFERENCIA_TESTE)
+
+
+def test_contagem_com_conjunto_nas_bases() -> None:
+    celulas = pd.DataFrame(
+        {"id_dia": ["a", "a", "b"], "y_pizza_refri": [1, 0, 1], "y_pizza_guarana": [1, 0, 0]}
+    )
+    ocasioes = pd.DataFrame({"id_dia": ["a"]})
+    esperado = {"dias_pizza_guarana": frozenset({1, 2}), "dias_pizza_refri": 2}
+    assert _conferir_contagens(celulas, ocasioes, esperado) == {
+        "dias_pizza_guarana": 1,
+        "dias_pizza_refri": 2,
+    }
+    with pytest.raises(acesso.TesteBloqueado, match="dias_pizza_guarana"):
+        _conferir_contagens(celulas, ocasioes, {"dias_pizza_guarana": frozenset({2, 3})})

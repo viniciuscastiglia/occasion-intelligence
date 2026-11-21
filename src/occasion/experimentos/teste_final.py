@@ -85,9 +85,20 @@ _RELATORIOS_DE_VALIDACAO: dict[str, str] = {
 # Contagens de referência de 2017-2018 nas bases que o teste final lê, tiradas da tabela "Números
 # de referência" do `CLAUDE.md` (conferidas nos microdados e já testadas no parser do Plano 1):
 #   - dias_pessoa: 85.018 dias-pessoa (`id_dia` distintos nas células; cada dia tem 10 células);
+#   - dias_pizza_refri: dias com alguma célula com `y_pizza_refri == 1`;
+#   - dias_pizza_guarana: dias com alguma célula com `y_pizza_guarana == 1`;
 #   - linhas_ocasioes_refri: as 16.122 ocasiões com refrigerante, menos as 10 de local
 #     indeterminado, que ficam fora da base da parte 2 (16.112 linhas).
-REFERENCIA_TESTE: dict[str, int] = {"dias_pessoa": 85_018, "linhas_ocasioes_refri": 16_112}
+# Cada valor é um inteiro ou o conjunto dos valores aceitos.
+Contagem = int | frozenset[int]
+REFERENCIA_TESTE: dict[str, Contagem] = {
+    "dias_pessoa": 85_018,
+    # 797 da tabela menos 1 dia excluído por local indeterminado (reports/bases.json)
+    "dias_pizza_refri": 796,
+    # 180 da tabela; 179 se o dia excluído tiver guaraná, o que só se sabe lendo o alvo
+    "dias_pizza_guarana": frozenset({179, 180}),
+    "linhas_ocasioes_refri": 16_112,
+}
 
 
 def _dias(celulas: pd.DataFrame, alvo: str | None = None) -> int:
@@ -225,20 +236,36 @@ def _conferir_versoes(esperadas: Mapping[str, str] = VERSOES_DA_RECEITA) -> None
         )
 
 
+def _aceita(esperado: Contagem, valor: int) -> bool:
+    if isinstance(esperado, frozenset):
+        return valor in esperado
+    return valor == esperado
+
+
 def _conferir_contagens(
-    celulas: pd.DataFrame, ocasioes_refri: pd.DataFrame, esperado: Mapping[str, int]
+    celulas: pd.DataFrame, ocasioes_refri: pd.DataFrame, esperado: Mapping[str, Contagem]
 ) -> dict[str, int]:
-    """Confere as contagens de referência nas bases de 2017-2018; devolve as encontradas."""
+    """Confere as contagens de referência nas bases de 2017-2018; devolve as encontradas.
+
+    Cada contagem esperada é um inteiro ou o conjunto dos valores aceitos.
+    """
     if not esperado:
         raise ValueError("nenhuma contagem de referência para conferir")
     desconhecidas = sorted(set(esperado) - set(_CONTAGENS))
     if desconhecidas:
         raise ValueError(f"contagens de referência desconhecidas: {desconhecidas}")
     encontrado = {nome: _CONTAGENS[nome](celulas, ocasioes_refri) for nome in esperado}
-    if encontrado != dict(esperado):
+    divergentes = sorted(
+        nome for nome, valor in encontrado.items() if not _aceita(esperado[nome], valor)
+    )
+    if divergentes:
+        legivel = {
+            nome: sorted(v) if isinstance(v, frozenset) else v for nome, v in esperado.items()
+        }
         raise TesteBloqueado(
-            f"as bases de {EDICAO_TESTE} não batem com as contagens de referência: esperado "
-            f"{dict(esperado)}, encontrado {encontrado}. Confira o código das bases e refaça "
+            f"as bases de {EDICAO_TESTE} não batem com as contagens de referência em "
+            f"{divergentes}: esperado {legivel}, encontrado {encontrado}. Confira o código das "
+            "bases e refaça "
             "`make bases` antes do teste final"
         )
     return encontrado
@@ -368,7 +395,7 @@ def rodar_teste_final(
     raiz: Path = RAIZ,
     *,
     b: int = B_PADRAO,
-    referencia: Mapping[str, int] = REFERENCIA_TESTE,
+    referencia: Mapping[str, Contagem] = REFERENCIA_TESTE,
 ) -> Path:
     """Roda o teste final (H8 e o relatado à parte) e devolve o caminho do relatório gravado.
 
