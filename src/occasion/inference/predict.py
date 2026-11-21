@@ -64,6 +64,10 @@ class ArtefatoModelo:
     referencia: ReferenciaScore
     ufs_midia_regional: frozenset[str]
     metadados: MetadadosModelo
+    # campos do Plano 2; o padrão é atributo de classe, então artefatos antigos continuam valendo
+    calibracao_score: tuple[float, float] | None = None
+    modelo_direto: Any = None
+    assinatura_receita: str | None = None
 
 
 def _exigir_so_treino(base: pd.DataFrame, nome: str) -> None:
@@ -174,7 +178,9 @@ def contexto_para_linha(contexto: Contexto) -> pd.DataFrame:
 
 def pontuar(X: pd.DataFrame, artefato: ArtefatoModelo) -> pd.DataFrame:
     """Probabilidades, posições e score (posição do produto) de cada linha de contexto."""
-    p = probabilidades(X, artefato.modelo_p1, artefato.modelo_p2)
+    p = probabilidades(
+        X, artefato.modelo_p1, artefato.modelo_p2, artefato.calibracao_score, artefato.modelo_direto
+    )
     if p.isna().any().any():
         raise ValueError("probabilidade NaN: o contexto não pôde ser pontuado")
     ref = artefato.referencia
@@ -196,10 +202,13 @@ def _texto_do_valor(variavel: str, valor: Any) -> str:
 
 def _top_fatores(linha: pd.DataFrame, artefato: ArtefatoModelo) -> list[Fator]:
     candidatos: list[Fator] = []
-    partes = (
-        ("ocasiao", artefato.modelo_p1, linha),
-        ("preferencia", artefato.modelo_p2, linha.assign(tem_pizza=1)),
-    )
+    if artefato.modelo_direto is not None:
+        partes = (("direto", artefato.modelo_direto, linha),)
+    else:
+        partes = (
+            ("ocasiao", artefato.modelo_p1, linha),
+            ("preferencia", artefato.modelo_p2, linha.assign(tem_pizza=1)),
+        )
     for parte, modelo, X in partes:
         contribuicoes = modelo.contribuicoes(X)
         for variavel in modelo.variaveis:

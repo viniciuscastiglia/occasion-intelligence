@@ -10,6 +10,7 @@ from pathlib import Path
 import pandas as pd
 
 from occasion.audit.auditoria import rodar_auditoria
+from occasion.bases.acesso import carregar_base
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
 from occasion.config import (
@@ -23,7 +24,9 @@ from occasion.config import (
     RELATORIOS,
 )
 from occasion.inference.predict import salvar_artefato, treinar_baseline
+from occasion.inference.treino import treinar_avaliado
 from occasion.ingest.parse import gravar_interim_2008, gravar_interim_2017
+from occasion.receita import carregar_receita
 
 _INTERIM_POR_EDICAO = {
     "2008-2009": gravar_interim_2008,
@@ -119,6 +122,28 @@ def _baseline(pasta_dados: Path = DADOS_PROCESSADOS, pasta_modelos: Path = MODEL
     print(f"UFs de mídia regional: {sorted(artefato.ufs_midia_regional)}")
 
 
+def _avaliado(pasta_modelos: Path = MODELOS) -> None:
+    """Monta o artefato avaliado a partir de `reports/receita.json` e grava em `<modelos>/avaliado`.
+
+    A assinatura da receita (tarefa 14) ainda não é ligada: grava `None`.
+    """
+    # importação local: `experimentos.registro` importa `commit_da_receita` deste módulo
+    from occasion.experimentos.registro import carregar_resultado
+
+    receita = carregar_receita(RELATORIOS / "receita.json")
+    celulas = carregar_base("celulas", EDICAO_TREINO)
+    ocasioes_refri = carregar_base("ocasioes_refri", EDICAO_TREINO)
+    partes = ["ocasiao", "preferencia", *(["direto"] if receita.direto is not None else [])]
+    selecoes = {parte: carregar_resultado(f"selecao_{parte}") for parte in partes}
+    commit = commit_da_receita(RAIZ)
+    artefato = treinar_avaliado(receita, celulas, ocasioes_refri, selecoes, commit, None)
+    destino = salvar_artefato(artefato, pasta_modelos / "avaliado")
+    print(f"gravado: {destino}")
+    print(f"degrau: {artefato.metadados.degrau}")
+    print(f"calibração do score: {artefato.calibracao_score}")
+    print(f"UFs de mídia regional: {sorted(artefato.ufs_midia_regional)}")
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="occasion.pipeline", description=__doc__)
     subcomandos = parser.add_subparsers(dest="comando", required=True)
@@ -136,6 +161,9 @@ def main(argv: Sequence[str] | None = None) -> None:
     modelagem.add_argument("--edicao", choices=EDICOES, help="padrão: as duas edições")
     subcomandos.add_parser("auditoria", help="audita os dados e grava reports/auditoria.json")
     subcomandos.add_parser("baseline", help="treina o degrau A em 2008-2009 e grava o artefato")
+    subcomandos.add_parser(
+        "avaliado", help="monta o artefato avaliado a partir de reports/receita.json"
+    )
     args = parser.parse_args(argv)
     if args.comando == "interim":
         _interim(args.edicao)
@@ -150,6 +178,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         print(f"gravado: {RELATORIOS / 'auditoria.json'}")
     elif args.comando == "baseline":
         _baseline()
+    elif args.comando == "avaliado":
+        _avaliado()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita experimentos
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita experimentos avaliado
 
 ambiente:
 	uv sync
@@ -26,6 +26,9 @@ auditoria:
 
 baseline:
 	uv run python -m occasion.pipeline baseline
+
+avaliado:
+	uv run python -m occasion.pipeline avaliado
 
 tudo: dados-brutos bases auditoria baseline
 

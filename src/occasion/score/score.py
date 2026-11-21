@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from occasion.inference.contract import Classificacao
+from occasion.models.base import logit, sigmoide
 
 CORTE_ALTA = 80.0
 CORTE_MEDIA = 50.0
@@ -40,19 +41,41 @@ class ReferenciaScore:
         return float(self.peso_acumulado[qual][indice - 1] * 100.0)
 
 
-def probabilidades(X: pd.DataFrame, modelo_p1: ModeloProba, modelo_p2: ModeloProba) -> pd.DataFrame:
-    """Probabilidade de cada parte e o produto; a parte 2 usa `tem_pizza = 1` em todas as linhas."""
+def probabilidades(
+    X: pd.DataFrame,
+    modelo_p1: ModeloProba,
+    modelo_p2: ModeloProba,
+    calibracao_score: tuple[float, float] | None = None,
+    modelo_direto: ModeloProba | None = None,
+) -> pd.DataFrame:
+    """Probabilidade de cada parte e o score bruto; a parte 2 usa `tem_pizza = 1` em todas as linhas.
+
+    `p_produto` é `p1 · p2` ou, com `modelo_direto`, a previsão dele. Com `calibracao_score`
+    `(inclinacao, intercepto)`, passa pela sigmoide `sigmoide(inclinacao · logit(p) + intercepto)`,
+    uma transformação monótona (se a inclinação for positiva): as posições não mudam.
+    """
     X2 = X.assign(tem_pizza=1)
     p1 = np.asarray(modelo_p1.predict_proba(X), dtype=float)
     p2 = np.asarray(modelo_p2.predict_proba(X2), dtype=float)
-    return pd.DataFrame({"p_ocasiao": p1, "p_preferencia": p2, "p_produto": p1 * p2}, index=X.index)
+    if modelo_direto is None:
+        produto = p1 * p2
+    else:
+        produto = np.asarray(modelo_direto.predict_proba(X), dtype=float)
+    if calibracao_score is not None:
+        inclinacao, intercepto = calibracao_score
+        produto = sigmoide(inclinacao * logit(produto) + intercepto)
+    return pd.DataFrame({"p_ocasiao": p1, "p_preferencia": p2, "p_produto": produto}, index=X.index)
 
 
 def construir_referencia(
-    celulas: pd.DataFrame, modelo_p1: ModeloProba, modelo_p2: ModeloProba
+    celulas: pd.DataFrame,
+    modelo_p1: ModeloProba,
+    modelo_p2: ModeloProba,
+    calibracao_score: tuple[float, float] | None = None,
+    modelo_direto: ModeloProba | None = None,
 ) -> ReferenciaScore:
     """Referência a partir de todas as linhas da base de células, ponderada por `peso_final`."""
-    p = probabilidades(celulas, modelo_p1, modelo_p2)
+    p = probabilidades(celulas, modelo_p1, modelo_p2, calibracao_score, modelo_direto)
     pesos = np.asarray(celulas["peso_final"], dtype=float)
     series: dict[str, np.ndarray] = {}
     acumulados: dict[str, np.ndarray] = {}
