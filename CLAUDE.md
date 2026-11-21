@@ -10,7 +10,7 @@ O Plano 1 foi executado na branch `plano-1`: ingestão, bases, auditoria, tabela
 - `make dados-brutos`: baixa, confere os checksums e extrai os microdados em `data/raw` (não baixa de novo o que já existe).
 - `make bases`: gera os parquets de `data/interim` e `data/processed` (consumo, ocasiões, pessoa x dia, células e ocasiões com refrigerante).
 - `make auditoria`: grava `reports/auditoria.json` (disponibilidade, tamanho de amostra, validação adversarial).
-- `make baseline`: ajusta a tabela de taxas em 2008-2009 e grava o artefato em `models/avaliado/artefato.joblib`.
+- `make baseline`: ajusta a tabela de taxas do Plano 1 em 2008-2009 e grava o artefato em `models/baseline/artefato.joblib`.
 - `make tudo`: `dados-brutos`, `bases`, `auditoria` e `baseline` em sequência (cerca de 34 s com os zips já baixados).
 - `make investigacao-datas`: grava `reports/investigacao_datas.json` (reconstrução da data de calendário e amostra em feriados; seção 26 do registro de decisões). Precisa de `make bases`.
 - `make app`: abre a tela (`streamlit run app/streamlit_app.py`).
@@ -18,9 +18,19 @@ O Plano 1 foi executado na branch `plano-1`: ingestão, bases, auditoria, tabela
 - `make teste-dados`: todos os testes, inclusive os que leem `data/` e conferem os números de referência.
 - `make qualidade`: `ruff check .` e `pyright`.
 
-Formatar só `src/`, `tests/`, `app/` e `scripts/`; nunca `ruff format .` na raiz (ver "Armadilhas").
+Formatar só `src/`, `tests/`, `app/`, `scripts/` e `notebooks/`; nunca `ruff format .` na raiz (ver "Armadilhas").
 
-**Plano 2 em execução** na branch `plano-2` (o `plano-1` já está na `main`): `docs/superpowers/plans/2026-11-20-plano-2-modelos-teste-e-servido.md`, executado com `superpowers:subagent-driven-development`. O progresso, as decisões de execução e o ponto de retomada ficam no ledger `.superpowers/sdd/2026-11-20-plano-2-modelos-teste-e-servido/progress.md` (fora do git): ler antes de continuar. O pré-registro aprovado está em `docs/pre-registro.md`; a seção 27 do registro de decisões traz as decisões do Plano 2. O bloco do Google Trends (H10) foi cortado em 20/11/2026.
+Comandos do Plano 2 (todos gravam JSON em `reports/experimentos/` ou `reports/`, e resultados intermediários em `data/experimentos/`, fora do git):
+
+- `make eda`: executa `notebooks/eda_2008.ipynb` (2008-2009 apenas).
+- `make experimentos`: a cadeia de 2008-2009 em ordem: `dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008`. A `escada` leva horas (o LightGBM da ocasião, ~90 min); o resto, minutos. Grava `reports/receita.json`.
+- `make avaliado`: artefato da receita em `models/avaliado/`; exige a árvore limpa nos arquivos assinados.
+- `make teste-final`: H8 em 2017-2018 (`reports/teste_final.json`; rodar de novo grava `teste_final_reexecucao.json`, sem sobrescrever).
+- `make pos-teste` (H9 e diagnóstico), `make servido` (`models/servido/`, que a tela prefere), `make curva-aprendizado` (exploratória), `make hipoteses` (`reports/hipoteses.json`, H1 a H10).
+
+**Plano 2 executado** na branch `plano-2` (o `plano-1` já está na `main`): `docs/superpowers/plans/2026-11-20-plano-2-modelos-teste-e-servido.md`. O ledger `.superpowers/sdd/2026-11-20-plano-2-modelos-teste-e-servido/progress.md` (fora do git) tem cada decisão de execução. O pré-registro está em `docs/pre-registro.md`; a seção 27 do registro de decisões traz as decisões do Plano 2, inclusive a aprovação da receita em 21/11/2026. Resultados: `reports/hipoteses.json` (H1 a H10; H10 cortada) e `reports/teste_final.json` (H8 refutada: o score empata com o produto das tabelas do degrau A em 2017-2018; a parte de ocasião vence a tabela, a de preferência não). Receita: degrau C (logística com curvas e interações) nas duas partes, score = produto, sem calibração; o modelo servido é a mesma receita reajustada em 2008-2009 e 2017-2018 (H9).
+
+**A receita está congelada** pela tag `receita-congelada` (commit `fa700be`). A assinatura (`src/occasion/bases/assinatura.py`, `ARQUIVOS_DA_RECEITA`) cobre `config.py`, `features/`, `models/`, `score/`, `validacao/`, `avaliacao/`, `ingest/`, `bases/{modelagem,ocasioes,assinatura}.py`, `eda/descritivas.py`, `receita.py`, `versoes_da_receita.py`, `inference/{artefato,treino}.py`, `experimentos/{especificacao,teste_final,regras,registro}.py` e `reports/receita.json`. Mudar qualquer um deles bloqueia `make avaliado` e o teste final. O Plano 3 pode mexer em `predict.py`, `contract.py`, `pipeline.py`, `app/`, `pyproject.toml` e `uv.lock`, mas o `uv lock` não pode mudar a versão de numpy, pandas, scipy, scikit-learn, lightgbm ou pyarrow (o teste final confere contra `versoes_da_receita.py`).
 
 O que existe:
 
@@ -176,6 +186,11 @@ Esses percentuais são da edição de teste e já foram vistos. Eles não orient
 - **Base antiga:** a edição mais recente é de 2017-2018, anterior à expansão do delivery.
 - **Método de coleta diferente:** 2008-2009 usou registro alimentar preenchido pelo morador; 2017-2018 usou recordatório de 24 horas. A queda de desempenho no teste mistura mudança de hábito com mudança de método.
 - **Renda em reais não é comparável entre as edições:** usar a renda por pessoa em salários mínimos da data de referência de cada edição.
+- **Alvo de 2017-2018 só depois da tag:** a única porta de leitura é `carregar_base` (`bases/acesso.py`), que recusa as colunas `y_*` e `tem_pizza` de 2017-2018 sem a tag; o que usa o teste depois dele exige `exigir_teste_commitado`.
+- **`-dirty` nos JSON da cadeia:** `commit` vem de `git describe --dirty`, e a própria cadeia reescreve `reports/`, então as etapas depois da primeira gravam `-dirty`. Esperado; comparar números com o script de conferência, ignorando `data_hora`, `commit` e tempos.
+- **scikit-learn 1.9:** `penalty` da `LogisticRegression` está depreciado; L2 é `l1_ratio=0.0` (com `solver="newton-cholesky"`, que aceita matriz esparsa e peso).
+- **Execuções longas:** `caffeinate -i` não impede o sono com a tampa fechada nem salva a bateria; rodar a escada na tomada e com a tampa aberta (a máquina dormiu duas vezes no Plano 2).
+- **Tela no Playwright:** o rádio do Streamlit não aceita clique direto; clicar no rótulo dentro de `stSidebarUserContent`. A captura de página inteira só pega a primeira tela; ler o resto pelo snapshot. Apagar `.playwright-mcp/` depois (não está no `.gitignore`); `reports/capturas/` é ignorado.
 
 ## Fluxo de trabalho com o superpowers
 
