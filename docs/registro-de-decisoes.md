@@ -812,6 +812,14 @@ Decisões tomadas ao escrever e executar o Plano 2: até o pré-registro (`docs/
 
 **Alternativas descartadas:** a lista literal do plano (os dois furos); assinar `acesso.py` (a tarefa 17 o modifica, por isso a assinatura foi para um módulo próprio); ler a base pessoa x dia de 2017-2018 para conferir as contagens exatas de pizza (abriria uma segunda porta de leitura do alvo fora de `carregar_base`).
 
+### Reexecução do zero e `identico_ao_original`
+
+**Decisão (escolha do executor).** No fechamento do plano (tarefa 20), as bases foram reconstruídas dos microdados e saíram idênticas às anteriores (hash de conteúdo das 12 tabelas). O artefato avaliado foi refeito e o teste final rodou de novo. `reports/teste_final_reexecucao.json` saiu com `identico_ao_original: false`, e a única diferença é `configuracao.artefato.receita_commit`, o commit em que o artefato foi remontado (o da tag é `fa700be`); a assinatura da receita é a mesma e todas as métricas, intervalos, segmentos e erros são idênticos. A reexecução fica registrada como veio.
+
+**Motivo.** O campo que difere é proveniência do artefato, não resultado. A comparação de `teste_final.py` ignora `data_hora` e `commit` no topo, mas não esse commit aninhado; como o arquivo é assinado, não se muda depois da tag. A cadeia de experimentos não foi repetida nessa reexecução porque já tinha sido reproduzida do zero antes da tag, com os mesmos números, e as bases reconstruídas são idênticas.
+
+**Alternativas descartadas:** remontar o artefato no commit da tag só para o campo sair `true` (esconderia que a reexecução foi do zero); alterar `teste_final.py` depois da tag (quebraria a assinatura).
+
 ---
 
 ## Fontes consultadas

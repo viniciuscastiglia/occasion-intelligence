@@ -1,0 +1,5842 @@
+{
+  "assinatura_receita": "3da52ca3afe619559ada4286d674b206abdf70aa9a41aab87cea666a817872b8",
+  "chaves_diferentes": [
+    "configuracao"
+  ],
+  "commit": "receita-congelada-10-g19de61e9b778",
+  "configuracao": {
+    "artefato": {
+      "calibracao_score": null,
+      "degrau": "ocasião: C (logística com curvas e interações); preferência: C (logística com curvas e interações)",
+      "receita_commit": "receita-congelada-9-g0daae69afa2a"
+    },
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "nivel": 0.95,
+      "unidade": "cod_upa"
+    },
+    "constante": {
+      "ocasiao": 0.0013027905562964716,
+      "preferencia": 0.23451548420203022,
+      "score": 0.00018148744336278735
+    },
+    "constante_declaracao": "prevalência ponderada de 2008-2009 de cada alvo; no recorte de pizza da preferência, a de todas as ocasiões com refrigerante (a base em que a parte é treinada)",
+    "degrau_a": "construir('A', parte, receita.referencia_a[parte]) ajustado em 2008-2009, com o usar_peso de H5 (receita.<parte>.usar_peso), sem sigmoide",
+    "hipotese": "H8: a receita congelada ordena os contextos de 2017-2018 melhor que a tabela de taxas",
+    "metrica": "ganho da receita sobre a referência na PR-AUC ponderada (peso_final) contra y_pizza_guarana nas células de 2017-2018",
+    "partes": "relatadas à parte, sem entrar na regra; a parte que já é a tabela A é comparada com a constante",
+    "posicoes": "em relação à referência de 2008-2009: a do artefato para a receita; para o degrau A, uma referência equivalente nas células de 2008-2009 com as tabelas A; a preferência nas ocasiões com refrigerante não tem posição (a referência é de células)",
+    "queda": "a queda em relação à validação é o efeito conjunto de dez anos e da mudança do método de coleta (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018); o projeto não separa os dois",
+    "receita": {
+      "calibrar_score": false,
+      "direto": null,
+      "ocasiao": {
+        "calibrar": false,
+        "degrau": "C",
+        "parametros": {
+          "C": 0.13894954943731375,
+          "interacoes": "pre_declarado"
+        },
+        "usar_peso": true
+      },
+      "preferencia": {
+        "calibrar": false,
+        "degrau": "C",
+        "parametros": {
+          "C": 0.02682695795279726,
+          "interacoes": "pre_declarado"
+        },
+        "usar_peso": true
+      },
+      "referencia_a": {
+        "ocasiao": {
+          "dimensoes": [
+            "fim_de_semana",
+            "faixa_horario",
+            "local"
+          ],
+          "suavizacao": 1000
+        },
+        "preferencia": {
+          "dimensoes": [
+            "uf"
+          ],
+          "suavizacao": 100
+        }
+      },
+      "score": "produto"
+    },
+    "referencia": "produto das tabelas do degrau A",
+    "regra": "superioridade: o intervalo do ganho precisa excluir zero a favor da receita"
+  },
+  "dados": {
+    "artefato": "models/avaliado/artefato.joblib",
+    "celulas_teste": {
+      "edicao": "2017-2018",
+      "n": 850180,
+      "positivos": 180,
+      "setores": 5404
+    },
+    "celulas_treino": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 101,
+      "setores": 4328
+    },
+    "contagens_de_referencia": {
+      "2008-2009": {
+        "encontrado": {
+          "dias_pessoa": 66903,
+          "dias_pizza_guarana": 101,
+          "dias_pizza_refri": 651,
+          "linhas_celulas": 669030,
+          "linhas_ocasioes_refri": 19182
+        },
+        "esperado": {
+          "dias_pessoa": 66903,
+          "dias_pizza_guarana": 101,
+          "dias_pizza_refri": 651,
+          "linhas_celulas": 669030,
+          "linhas_ocasioes_refri": 19182
+        }
+      },
+      "2017-2018": {
+        "encontrado": {
+          "dias_pessoa": 85018,
+          "dias_pizza_guarana": 180,
+          "dias_pizza_refri": 796,
+          "linhas_celulas": 850180,
+          "linhas_ocasioes_refri": 16112
+        },
+        "esperado": {
+          "dias_pessoa": 85018,
+          "dias_pizza_guarana": [
+            170,
+            171,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180
+          ],
+          "dias_pizza_refri": 796,
+          "linhas_celulas": 850180,
+          "linhas_ocasioes_refri": 16112
+        }
+      }
+    },
+    "ocasioes_refri_teste": {
+      "edicao": "2017-2018",
+      "n": 16112,
+      "positivos": 4595,
+      "setores": 3671
+    },
+    "ocasioes_refri_teste_com_pizza": {
+      "edicao": "2017-2018",
+      "n": 802,
+      "positivos": 181,
+      "setores": 475
+    },
+    "ocasioes_refri_treino": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    },
+    "receita": "reports/receita.json",
+    "validacao": {
+      "reports/avaliacao_2008.json": "c14d993c8637f0654b0e86f608d37d18f02fcd90c8b544643e66e9b91215f593",
+      "reports/experimentos/cortes.json": "f0fb913d3ba7b7faa119cd3a576cec82f04aefaf6b9414f143a1b7c11eb6e032",
+      "reports/experimentos/escada_ocasiao.json": "6d5140a288f8feb025321758cb2c2fd13831722d4eca695900ff5e04f88cd97a",
+      "reports/experimentos/escada_preferencia.json": "8f652e46658a380323972f2cea82da9e50c74522f8bd7188379956ef8b6557ba",
+      "reports/experimentos/h6_h7_produto.json": "90bd00d62a47bbcad585adfa51e6f9dfc23f82cee318ff98cf05bfb153716e1d"
+    }
+  },
+  "data_hora": "2026-11-21T13:35:08-03:00",
+  "identico_ao_original": false,
+  "metricas": {
+    "H8": {
+      "ganho": {
+        "b": 1000,
+        "estimativa": -3.3917355937003674e-05,
+        "ic_inf": -0.0009390730938606067,
+        "ic_sup": 0.0007684133449660467,
+        "nivel": 0.95
+      },
+      "pr_auc": {
+        "receita": 0.0018773494154979832,
+        "referencia": 0.0019112667714349869
+      },
+      "referencia": "produto das tabelas do degrau A",
+      "veredito": "refutada"
+    },
+    "concentracao_topo": {
+      "ocasiao": {
+        "constante": 0.1,
+        "degrau_a": 0.6592229473807264,
+        "receita": 0.7814874192453728
+      },
+      "score": {
+        "constante": 0.10000000000000002,
+        "degrau_a": 0.6167338175641792,
+        "receita": 0.664781500957079
+      }
+    },
+    "erros": {
+      "ocasiao": {
+        "subestimados": [
+          {
+            "dia_semana": 5,
+            "faixa_horario": "manha",
+            "local": "em_casa",
+            "n": 2234,
+            "positivos": 3,
+            "regiao": "nordeste",
+            "taxa_observada": 0.003989674537080652,
+            "taxa_prevista": 3.812490987031352e-05,
+            "z": 22.135157585210152
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 5997,
+            "positivos": 69,
+            "regiao": "nordeste",
+            "taxa_observada": 0.014796376863069241,
+            "taxa_prevista": 0.00440611583425645,
+            "z": 9.652683964546425
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 1992,
+            "positivos": 1,
+            "regiao": "norte",
+            "taxa_observada": 0.0027319366219832665,
+            "taxa_prevista": 8.729223203464874e-05,
+            "z": 8.14022893819932
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 5997,
+            "positivos": 42,
+            "regiao": "nordeste",
+            "taxa_observada": 0.00768669367731879,
+            "taxa_prevista": 0.002492117386622563,
+            "z": 6.301279973588484
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2527,
+            "positivos": 21,
+            "regiao": "norte",
+            "taxa_observada": 0.01310067588045351,
+            "taxa_prevista": 0.0030217032727171775,
+            "z": 5.205906929951836
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 5641,
+            "positivos": 26,
+            "regiao": "nordeste",
+            "taxa_observada": 0.005216269689958943,
+            "taxa_prevista": 0.0016227546020900398,
+            "z": 5.1888270858140295
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1843,
+            "positivos": 18,
+            "regiao": "sul",
+            "taxa_observada": 0.016082648769077914,
+            "taxa_prevista": 0.005271255831123242,
+            "z": 4.867755061326147
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1967,
+            "positivos": 10,
+            "regiao": "norte",
+            "taxa_observada": 0.009894218312805795,
+            "taxa_prevista": 0.0018951839823176408,
+            "z": 4.623683359616826
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "almoco",
+            "local": "fora_de_casa",
+            "n": 718,
+            "positivos": 1,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.003608725419236426,
+            "taxa_prevista": 0.0002855254452734488,
+            "z": 3.6923997344123207
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 1928,
+            "positivos": 3,
+            "regiao": "sul",
+            "taxa_observada": 0.00380300011249061,
+            "taxa_prevista": 0.0008644566834964232,
+            "z": 3.4066394519337018
+          }
+        ],
+        "superestimados": [
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 3911,
+            "positivos": 8,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0014520790006284535,
+            "taxa_prevista": 0.005959647331403399,
+            "z": -2.3096618760688203
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 718,
+            "positivos": 4,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0031519940924895867,
+            "taxa_prevista": 0.014050428984490037,
+            "z": -1.7393342259288225
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 2169,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.00261677767750758,
+            "z": -1.7367135970859549
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 3911,
+            "positivos": 0,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0019607890276568322,
+            "z": -1.7315009809968958
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 5997,
+            "positivos": 0,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.000738518004443512,
+            "z": -1.6694946068162504
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2169,
+            "positivos": 7,
+            "regiao": "sul",
+            "taxa_observada": 0.003955109681128851,
+            "taxa_prevista": 0.008178384632899369,
+            "z": -1.6181869244859433
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 901,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.006261867347156873,
+            "z": -1.5794738036851634
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 3394,
+            "positivos": 3,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0010438823483066152,
+            "taxa_prevista": 0.0031233173673179404,
+            "z": -1.5484338962991735
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 948,
+            "positivos": 2,
+            "regiao": "norte",
+            "taxa_observada": 0.0028487066485134212,
+            "taxa_prevista": 0.01063484806032278,
+            "z": -1.523082864790003
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 1981,
+            "positivos": 0,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.002836459162943933,
+            "z": -1.4941984090818772
+          }
+        ]
+      },
+      "preferencia_com_pizza": {
+        "subestimados": [],
+        "superestimados": []
+      },
+      "preferencia_todas": {
+        "subestimados": [
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 533,
+            "positivos": 176,
+            "regiao": "nordeste",
+            "taxa_observada": 0.3344718353357239,
+            "taxa_prevista": 0.26748869257546287,
+            "z": 2.626969834703075
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 534,
+            "positivos": 90,
+            "regiao": "sul",
+            "taxa_observada": 0.17094857369560373,
+            "taxa_prevista": 0.1304867340995919,
+            "z": 2.3066148136467275
+          }
+        ],
+        "superestimados": []
+      },
+      "score": {
+        "subestimados": [
+          {
+            "dia_semana": 5,
+            "faixa_horario": "almoco",
+            "local": "fora_de_casa",
+            "n": 718,
+            "positivos": 1,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.003608725419236426,
+            "taxa_prevista": 4.512102623382932e-05,
+            "z": 10.515704151516463
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "tarde",
+            "local": "fora_de_casa",
+            "n": 3710,
+            "positivos": 1,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0012330543103809836,
+            "taxa_prevista": 4.077079468198315e-05,
+            "z": 7.837602634261454
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 5997,
+            "positivos": 23,
+            "regiao": "nordeste",
+            "taxa_observada": 0.004743411902988054,
+            "taxa_prevista": 0.0009759290411510374,
+            "z": 7.389861564265291
+          },
+          {
+            "dia_semana": 4,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 3719,
+            "positivos": 7,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0043553010053664284,
+            "taxa_prevista": 0.0004944181707059203,
+            "z": 7.06862847900409
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "almoco",
+            "local": "em_casa",
+            "n": 1928,
+            "positivos": 1,
+            "regiao": "sul",
+            "taxa_observada": 0.002221207704275467,
+            "taxa_prevista": 0.00010890417158400286,
+            "z": 6.883281691531837
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1771,
+            "positivos": 4,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.005507467567544318,
+            "taxa_prevista": 0.0005434366569985377,
+            "z": 6.634426963327454
+          },
+          {
+            "dia_semana": 2,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1967,
+            "positivos": 1,
+            "regiao": "norte",
+            "taxa_observada": 0.0050669254223582455,
+            "taxa_prevista": 0.0003841589404010618,
+            "z": 6.16277101606691
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "manha",
+            "local": "em_casa",
+            "n": 2169,
+            "positivos": 1,
+            "regiao": "sul",
+            "taxa_observada": 0.0006734770667188364,
+            "taxa_prevista": 3.323496727996858e-05,
+            "z": 3.660125045632229
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 5997,
+            "positivos": 13,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0018273268219321562,
+            "taxa_prevista": 0.0005288990547089493,
+            "z": 3.3887337154557584
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1646,
+            "positivos": 3,
+            "regiao": "norte",
+            "taxa_observada": 0.005274039724528264,
+            "taxa_prevista": 0.0008742509703410611,
+            "z": 3.270517242074306
+          }
+        ],
+        "superestimados": [
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2169,
+            "positivos": 3,
+            "regiao": "sul",
+            "taxa_observada": 0.00023172385530677381,
+            "taxa_prevista": 0.0016309656027275387,
+            "z": -1.1418740757572148
+          },
+          {
+            "dia_semana": 7,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2169,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0010872349005081566,
+            "z": -1.113185845744008
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 2234,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.00012486406221577138,
+            "taxa_prevista": 0.001115023254106444,
+            "z": -1.0222668293832038
+          },
+          {
+            "dia_semana": 6,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 948,
+            "positivos": 0,
+            "regiao": "norte",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.002148750823854876,
+            "z": -0.9434105434206652
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 1928,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0007674355644932365,
+            "z": -0.9426059900981834
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 718,
+            "positivos": 0,
+            "regiao": "centro_oeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0021213773975712344,
+            "z": -0.9089722098871454
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "noite",
+            "local": "em_casa",
+            "n": 4470,
+            "positivos": 1,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0001086861188184881,
+            "taxa_prevista": 0.0004650017913395787,
+            "z": -0.83026743043136
+          },
+          {
+            "dia_semana": 3,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 3394,
+            "positivos": 0,
+            "regiao": "sudeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0003894914271745934,
+            "z": -0.8203784707537778
+          },
+          {
+            "dia_semana": 5,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 2234,
+            "positivos": 0,
+            "regiao": "nordeste",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0005556248709646875,
+            "z": -0.810376654025639
+          },
+          {
+            "dia_semana": 1,
+            "faixa_horario": "noite",
+            "local": "fora_de_casa",
+            "n": 1928,
+            "positivos": 0,
+            "regiao": "sul",
+            "taxa_observada": 0.0,
+            "taxa_prevista": 0.0005040391285063689,
+            "z": -0.7802803997656893
+          }
+        ]
+      }
+    },
+    "partes": {
+      "ocasiao": {
+        "ganho": {
+          "b": 1000,
+          "estimativa": 0.004198678112491187,
+          "ic_inf": 0.0021156609800571393,
+          "ic_sup": 0.008206478057538982,
+          "nivel": 0.95
+        },
+        "pr_auc": {
+          "receita": 0.013040156393712081,
+          "referencia": 0.008841478281220894
+        },
+        "referencia": "tabela do degrau A",
+        "veredito": "confirmada"
+      },
+      "preferencia_com_pizza": {
+        "ganho": {
+          "b": 1000,
+          "estimativa": 0.006864858105539551,
+          "ic_inf": -0.05160032524401289,
+          "ic_sup": 0.057943150681223396,
+          "nivel": 0.95
+        },
+        "pr_auc": {
+          "receita": 0.2397936557857613,
+          "referencia": 0.23292879768022176
+        },
+        "referencia": "tabela do degrau A",
+        "veredito": "refutada"
+      },
+      "preferencia_todas": {
+        "ganho": {
+          "b": 1000,
+          "estimativa": 0.0120838309156589,
+          "ic_inf": -0.004223567592921748,
+          "ic_sup": 0.028555809254064098,
+          "nivel": 0.95
+        },
+        "pr_auc": {
+          "receita": 0.3187469594963846,
+          "referencia": 0.3066631285807257
+        },
+        "referencia": "tabela do degrau A",
+        "veredito": "refutada"
+      }
+    },
+    "queda": {
+      "declaracao": "a queda em relação à validação é o efeito conjunto de dez anos e da mudança do método de coleta (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018); o projeto não separa os dois",
+      "ocasiao": {
+        "degrau_a": {
+          "diferenca": {
+            "brier": -0.00013269394760047348,
+            "concentracao_topo": 0.037300390402675854,
+            "log_loss": -0.0009312175353661072,
+            "pr_auc": -0.00024048272905961322,
+            "prevalencia": -0.0001333498899765116,
+            "roc_auc": 0.020811626046964515
+          },
+          "fonte": "escada_ocasiao.json",
+          "teste": {
+            "brier": 0.0011612835105566956,
+            "concentracao_topo": 0.6592229473807264,
+            "log_loss": 0.007437460767335426,
+            "pr_auc": 0.008841478281220894,
+            "prevalencia": 0.00116944066631996,
+            "roc_auc": 0.9031864441022182
+          },
+          "validacao": {
+            "brier": 0.001293977458157169,
+            "concentracao_topo": 0.6219225569780505,
+            "log_loss": 0.008368678302701533,
+            "pr_auc": 0.009081961010280507,
+            "prevalencia": 0.0013027905562964716,
+            "roc_auc": 0.8823748180552536
+          }
+        },
+        "receita": {
+          "diferenca": {
+            "brier": -0.00012285208439309853,
+            "concentracao_topo": -0.002413846508456108,
+            "log_loss": -0.00044509361223557184,
+            "pr_auc": -0.010726801934018489,
+            "prevalencia": -0.0001333498899765116,
+            "roc_auc": -0.0040777566418721545
+          },
+          "fonte": "avaliacao_2008.json",
+          "teste": {
+            "brier": 0.0011622147319110018,
+            "concentracao_topo": 0.7814874192453728,
+            "log_loss": 0.007325369553624094,
+            "pr_auc": 0.013040156393712081,
+            "prevalencia": 0.00116944066631996,
+            "roc_auc": 0.913591987416642
+          },
+          "validacao": {
+            "brier": 0.0012850668163041003,
+            "concentracao_topo": 0.7839012657538289,
+            "log_loss": 0.0077704631658596654,
+            "pr_auc": 0.02376695832773057,
+            "prevalencia": 0.0013027905562964716,
+            "roc_auc": 0.9176697440585142
+          }
+        }
+      },
+      "preferencia_com_pizza": {
+        "degrau_a": {
+          "diferenca": {
+            "brier": 0.054470629673669,
+            "concentracao_topo": -0.12838610811429851,
+            "log_loss": 0.12349737079680789,
+            "pr_auc": -0.014529762780758376,
+            "prevalencia": 0.09249440331190467,
+            "roc_auc": -0.04111416360554132
+          },
+          "fonte": "escada_preferencia.json",
+          "teste": {
+            "brier": 0.1801525164742446,
+            "concentracao_topo": 0.08381370991927846,
+            "log_loss": 0.547093440344239,
+            "pr_auc": 0.23292879768022176,
+            "prevalencia": 0.23171616648656476,
+            "roc_auc": 0.5026922435478113
+          },
+          "validacao": {
+            "brier": 0.1256818868005756,
+            "concentracao_topo": 0.21219981803357696,
+            "log_loss": 0.4235960695474311,
+            "pr_auc": 0.24745856046098014,
+            "prevalencia": 0.1392217631746601,
+            "roc_auc": 0.5438064071533526
+          }
+        },
+        "receita": {
+          "diferenca": {
+            "brier": 0.06684558214207575,
+            "concentracao_topo": -0.06353931540164509,
+            "log_loss": 0.171032268565818,
+            "pr_auc": 0.07540168492060453,
+            "prevalencia": 0.09249440331190467,
+            "roc_auc": 0.006419959922414509
+          },
+          "fonte": "avaliacao_2008.json",
+          "teste": {
+            "brier": 0.18948060304209952,
+            "concentracao_topo": 0.07128834471701784,
+            "log_loss": 0.5844431407286689,
+            "pr_auc": 0.2397936557857613,
+            "prevalencia": 0.23171616648656476,
+            "roc_auc": 0.5332714714907827
+          },
+          "validacao": {
+            "brier": 0.12263502090002376,
+            "concentracao_topo": 0.13482766011866293,
+            "log_loss": 0.4134108721628509,
+            "pr_auc": 0.16439197086515678,
+            "prevalencia": 0.1392217631746601,
+            "roc_auc": 0.5268515115683682
+          }
+        }
+      },
+      "preferencia_todas": {
+        "degrau_a": {
+          "diferenca": {
+            "brier": 0.01840359634312494,
+            "concentracao_topo": -0.012485391810814539,
+            "log_loss": 0.04206325133963462,
+            "pr_auc": 0.02473537413796939,
+            "prevalencia": 0.03366799812390453,
+            "roc_auc": -0.0038221439232656307
+          },
+          "fonte": "escada_preferencia.json",
+          "teste": {
+            "brier": 0.19575371206801245,
+            "concentracao_topo": 0.13475986610846752,
+            "log_loss": 0.5808780488716574,
+            "pr_auc": 0.3066631285807257,
+            "prevalencia": 0.26818348232593475,
+            "roc_auc": 0.5512523532434767
+          },
+          "validacao": {
+            "brier": 0.1773501157248875,
+            "concentracao_topo": 0.14724525791928206,
+            "log_loss": 0.5388147975320228,
+            "pr_auc": 0.2819277544427563,
+            "prevalencia": 0.23451548420203022,
+            "roc_auc": 0.5550744971667423
+          }
+        },
+        "receita": {
+          "diferenca": {
+            "brier": 0.022156695428179024,
+            "concentracao_topo": -0.04165850840830809,
+            "log_loss": 0.05426402698082011,
+            "pr_auc": -0.0001071403071744581,
+            "prevalencia": 0.03366799812390453,
+            "roc_auc": -0.037276857699399146
+          },
+          "fonte": "avaliacao_2008.json",
+          "teste": {
+            "brier": 0.1967759395092391,
+            "concentracao_topo": 0.12529308230693892,
+            "log_loss": 0.5852956104890703,
+            "pr_auc": 0.3187469594963846,
+            "prevalencia": 0.26818348232593475,
+            "roc_auc": 0.5711443030553796
+          },
+          "validacao": {
+            "brier": 0.17461924408106008,
+            "concentracao_topo": 0.166951590715247,
+            "log_loss": 0.5310315835082502,
+            "pr_auc": 0.31885409980355905,
+            "prevalencia": 0.23451548420203022,
+            "roc_auc": 0.6084211607547787
+          }
+        }
+      },
+      "score": {
+        "degrau_a": {
+          "diferenca": null,
+          "fonte": null,
+          "motivo": "o produto das tabelas do degrau A não foi medido fora da dobra em 2008-2009",
+          "teste": {
+            "brier": 0.0002689491517067167,
+            "concentracao_topo": 0.6167338175641792,
+            "log_loss": 0.0021453440373493137,
+            "pr_auc": 0.0019112667714349869,
+            "prevalencia": 0.00026930567342217925,
+            "roc_auc": 0.8884547821471881
+          },
+          "validacao": null
+        },
+        "receita": {
+          "diferenca": {
+            "brier": 8.779823457299402e-05,
+            "concentracao_topo": -0.1170546845391991,
+            "log_loss": 0.0007286545420967904,
+            "pr_auc": -0.0007491908636724572,
+            "prevalencia": 8.78182300593919e-05,
+            "roc_auc": -0.018962380137603208
+          },
+          "fonte": "cortes.json",
+          "teste": {
+            "brier": 0.00026905767521177013,
+            "concentracao_topo": 0.664781500957079,
+            "log_loss": 0.0021910054854972372,
+            "pr_auc": 0.0018773494154979832,
+            "prevalencia": 0.00026930567342217925,
+            "roc_auc": 0.8954985847873131
+          },
+          "validacao": {
+            "brier": 0.0001812594406387761,
+            "concentracao_topo": 0.7818361854962781,
+            "log_loss": 0.0014623509434004468,
+            "pr_auc": 0.0026265402791704404,
+            "prevalencia": 0.00018148744336278735,
+            "roc_auc": 0.9144609649249164
+          }
+        },
+        "validacao_h6_h7": {
+          "H6": {
+            "log_loss": {
+              "direto": 0.0015280667313681481,
+              "produto": 0.0014623509434004468
+            },
+            "pr_auc": {
+              "direto": 0.0019825543484407876,
+              "produto": 0.0026265402791704404
+            },
+            "roc_auc": {
+              "direto": 0.8897528487548665,
+              "produto": 0.9144609649249164
+            }
+          },
+          "H7": {
+            "log_loss_antes": 0.0014623509434004468,
+            "log_loss_depois": 0.0014677157127345848
+          }
+        }
+      }
+    },
+    "queda_por_segmento": {
+      "ocasiao": [
+        {
+          "diferenca": {
+            "log_loss": -0.0005929956260300445,
+            "o_e": 0.12893442944154154,
+            "pr_auc": 0.002709432448230658
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.0056388072042295135,
+            "n": 131790,
+            "o_e": 1.1102627411424493,
+            "positivos": 85,
+            "pr_auc": 0.009732364842283556
+          },
+          "validacao": {
+            "log_loss": 0.006231802830259558,
+            "n": 50130,
+            "o_e": 0.9813283117009077,
+            "positivos": 40,
+            "pr_auc": 0.007022932394052898
+          },
+          "valor": 1
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0007650229789327436,
+            "o_e": -0.06177099032040867,
+            "pr_auc": -0.01928154812961122
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.004806533247306794,
+            "n": 146680,
+            "o_e": 0.9412718872198951,
+            "positivos": 80,
+            "pr_auc": 0.005970382567026558
+          },
+          "validacao": {
+            "log_loss": 0.005571556226239538,
+            "n": 146990,
+            "o_e": 1.0030428775403037,
+            "positivos": 91,
+            "pr_auc": 0.025251930696637778
+          },
+          "valor": 2
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0013913051717616273,
+            "o_e": -0.1428922590310211,
+            "pr_auc": -0.013240859963527118
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.004844186827051035,
+            "n": 142810,
+            "o_e": 0.832566416434004,
+            "positivos": 80,
+            "pr_auc": 0.006851419548142184
+          },
+          "validacao": {
+            "log_loss": 0.006235491998812662,
+            "n": 86860,
+            "o_e": 0.9754586754650251,
+            "positivos": 53,
+            "pr_auc": 0.020092279511669302
+          },
+          "valor": 3
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.002330223974944366,
+            "o_e": 0.6892856326672939,
+            "pr_auc": 0.0021124195618238834
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.006964216069229049,
+            "n": 147990,
+            "o_e": 1.6707034624880923,
+            "positivos": 114,
+            "pr_auc": 0.010578792937177974
+          },
+          "validacao": {
+            "log_loss": 0.004633992094284683,
+            "n": 173830,
+            "o_e": 0.9814178298207984,
+            "positivos": 120,
+            "pr_auc": 0.00846637337535409
+          },
+          "valor": 4
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00040227889603274697,
+            "o_e": 0.02160652500646809,
+            "pr_auc": -0.05192926370820957
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.008742528392683354,
+            "n": 76440,
+            "o_e": 1.0296351778498127,
+            "positivos": 84,
+            "pr_auc": 0.02643352113668184
+          },
+          "validacao": {
+            "log_loss": 0.008340249496650607,
+            "n": 103140,
+            "o_e": 1.0080286528433446,
+            "positivos": 103,
+            "pr_auc": 0.07836278484489141
+          },
+          "valor": 5
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0038858011364028503,
+            "o_e": -0.2696974338456659,
+            "pr_auc": -0.009277196374891595
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.013011036388693316,
+            "n": 38620,
+            "o_e": 0.7420677310983075,
+            "positivos": 67,
+            "pr_auc": 0.023471121226477234
+          },
+          "validacao": {
+            "log_loss": 0.016896837525096166,
+            "n": 64300,
+            "o_e": 1.0117651649439734,
+            "positivos": 141,
+            "pr_auc": 0.03274831760136883
+          },
+          "valor": 6
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.003576498768845863,
+            "o_e": -0.01604214153953354,
+            "pr_auc": -0.008016409015809193
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.011210709514610728,
+            "n": 165850,
+            "o_e": 1.0187503978871804,
+            "positivos": 290,
+            "pr_auc": 0.014866715344888006
+          },
+          "validacao": {
+            "log_loss": 0.014787208283456591,
+            "n": 43780,
+            "o_e": 1.034792539426714,
+            "positivos": 106,
+            "pr_auc": 0.0228831243606972
+          },
+          "valor": 7
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0021895049635191387,
+            "o_e": -0.6978234519683153,
+            "pr_auc": -0.002520499246535081
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.001704752281179109,
+            "n": 170036,
+            "o_e": 0.30952123344228794,
+            "positivos": 16,
+            "pr_auc": 0.00027584758420355317
+          },
+          "validacao": {
+            "log_loss": 0.0038942572446982477,
+            "n": 133806,
+            "o_e": 1.0073446854106032,
+            "positivos": 42,
+            "pr_auc": 0.002796346830738634
+          },
+          "valor": "almoco"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 170036,
+            "o_e": null,
+            "positivos": 1,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 133806,
+            "o_e": null,
+            "positivos": 1,
+            "pr_auc": null
+          },
+          "valor": "madrugada"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0001316316114534931,
+            "o_e": 0.14768494745196858,
+            "pr_auc": 5.243728112186338e-05
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.0009276461056693122,
+            "n": 170036,
+            "o_e": 0.8247339637742557,
+            "positivos": 15,
+            "pr_auc": 0.0003162643138454945
+          },
+          "validacao": {
+            "log_loss": 0.0007960144942158191,
+            "n": 133806,
+            "o_e": 0.6770490163222871,
+            "positivos": 17,
+            "pr_auc": 0.0002638270327236311
+          },
+          "valor": "manha"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0005843800589607623,
+            "o_e": 0.10801488047224694,
+            "pr_auc": -0.012518229304139834
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.03212098761514647,
+            "n": 170036,
+            "o_e": 1.1290856704622965,
+            "positivos": 737,
+            "pr_auc": 0.014063136947211268
+          },
+          "validacao": {
+            "log_loss": 0.03153660755618571,
+            "n": 133806,
+            "o_e": 1.0210707899900495,
+            "positivos": 556,
+            "pr_auc": 0.026581366251351102
+          },
+          "valor": "noite"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.00039679481740563234,
+            "o_e": -0.16191674506107012,
+            "pr_auc": 0.00010338872904916511
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.0017726508743775,
+            "n": 170036,
+            "o_e": 0.7870131991397504,
+            "positivos": 31,
+            "pr_auc": 0.00040849721787133037
+          },
+          "validacao": {
+            "log_loss": 0.0021694456917831324,
+            "n": 133806,
+            "o_e": 0.9489299442008206,
+            "positivos": 38,
+            "pr_auc": 0.00030510848882216526
+          },
+          "valor": "tarde"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.004126617239847384,
+            "o_e": -0.2729893435372802,
+            "pr_auc": 0.004561492586126533
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.008417182368118371,
+            "n": 103800,
+            "o_e": 0.7587749157278775,
+            "positivos": 115,
+            "pr_auc": 0.017609740591333207
+          },
+          "validacao": {
+            "log_loss": 0.012543799607965755,
+            "n": 91560,
+            "o_e": 1.0317642592651577,
+            "positivos": 127,
+            "pr_auc": 0.013048248005206674
+          },
+          "valor": "centro_oeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.002885739380274605,
+            "o_e": 1.011894681530725,
+            "pr_auc": 0.006079654196581879
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.00657280128892118,
+            "n": 296900,
+            "o_e": 1.9746510132099135,
+            "positivos": 268,
+            "pr_auc": 0.013675317229545928
+          },
+          "validacao": {
+            "log_loss": 0.0036870619086465752,
+            "n": 247670,
+            "o_e": 0.9627563316791884,
+            "positivos": 132,
+            "pr_auc": 0.00759566303296405
+          },
+          "valor": "nordeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.001094495688152725,
+            "o_e": 0.37502380838613225,
+            "pr_auc": 0.005919675049820952
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.006163500331686426,
+            "n": 128070,
+            "o_e": 1.3311930041075748,
+            "positivos": 98,
+            "pr_auc": 0.011584048634270414
+          },
+          "validacao": {
+            "log_loss": 0.005069004643533701,
+            "n": 104020,
+            "o_e": 0.9561691957214425,
+            "positivos": 76,
+            "pr_auc": 0.005664373584449461
+          },
+          "valor": "norte"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0017794669081452946,
+            "o_e": -0.1683459289751701,
+            "pr_auc": -0.018637770242690296
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.0070127999901816165,
+            "n": 210880,
+            "o_e": 0.8360728403335467,
+            "positivos": 173,
+            "pr_auc": 0.012531134949999854
+          },
+          "validacao": {
+            "log_loss": 0.008792266898326911,
+            "n": 143500,
+            "o_e": 1.0044187693087168,
+            "positivos": 180,
+            "pr_auc": 0.031168905192690152
+          },
+          "valor": "sudeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0017026600721240532,
+            "o_e": -0.018930202497657644,
+            "pr_auc": -0.011552875906980144
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.009751106325583138,
+            "n": 110530,
+            "o_e": 0.9993581894189985,
+            "positivos": 146,
+            "pr_auc": 0.01958726306877383
+          },
+          "validacao": {
+            "log_loss": 0.01145376639770719,
+            "n": 82280,
+            "o_e": 1.018288391916656,
+            "positivos": 139,
+            "pr_auc": 0.031140138975753975
+          },
+          "valor": "sul"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0011066467394054667,
+            "o_e": -0.16508640408818176,
+            "pr_auc": -0.03420320308811878
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.008125646730691436,
+            "n": 124790,
+            "o_e": 0.9449599125639668,
+            "positivos": 148,
+            "pr_auc": 0.014689851765601034
+          },
+          "validacao": {
+            "log_loss": 0.009232293470096903,
+            "n": 122720,
+            "o_e": 1.1100463166521486,
+            "positivos": 149,
+            "pr_auc": 0.048893054853719815
+          },
+          "valor": "10-17"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0010016834594292062,
+            "o_e": 0.12974999605369741,
+            "pr_auc": -0.006983066871038907
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.011172343376342172,
+            "n": 163600,
+            "o_e": 1.0959114920771116,
+            "positivos": 244,
+            "pr_auc": 0.015000350178465623
+          },
+          "validacao": {
+            "log_loss": 0.010170659916912966,
+            "n": 163500,
+            "o_e": 0.9661614960234142,
+            "positivos": 204,
+            "pr_auc": 0.02198341704950453
+          },
+          "valor": "18-29"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00015393456015802207,
+            "o_e": 0.11427334840796699,
+            "pr_auc": -0.004422896890595215
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.008435486266870957,
+            "n": 217020,
+            "o_e": 1.14442927369762,
+            "positivos": 241,
+            "pr_auc": 0.014497456961055564
+          },
+          "validacao": {
+            "log_loss": 0.008281551706712935,
+            "n": 175830,
+            "o_e": 1.030155925289653,
+            "positivos": 192,
+            "pr_auc": 0.01892035385165078
+          },
+          "valor": "30-44"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.001136315095940141,
+            "o_e": -0.23336347550232317,
+            "pr_auc": -0.018016715056749226
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.005366437946846431,
+            "n": 188870,
+            "o_e": 0.9528673281555576,
+            "positivos": 125,
+            "pr_auc": 0.009892264187143633
+          },
+          "validacao": {
+            "log_loss": 0.006502753042786572,
+            "n": 121720,
+            "o_e": 1.1862308036578808,
+            "positivos": 88,
+            "pr_auc": 0.02790897924389286
+          },
+          "valor": "45-59"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0008867490312245659,
+            "o_e": 0.33144198216104215,
+            "pr_auc": 0.010390769996524713
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.0031572159044760384,
+            "n": 155900,
+            "o_e": 0.7202794600947651,
+            "positivos": 42,
+            "pr_auc": 0.013109817180875206
+          },
+          "validacao": {
+            "log_loss": 0.0022704668732514725,
+            "n": 85260,
+            "o_e": 0.3888374779337229,
+            "positivos": 21,
+            "pr_auc": 0.002719047184350494
+          },
+          "valor": "60+"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0012701598581933852,
+            "o_e": -0.09436184189335384,
+            "pr_auc": -0.012510712239439453
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.006606113222094634,
+            "n": 455890,
+            "o_e": 0.9036764145788898,
+            "positivos": 412,
+            "pr_auc": 0.011511163860311034
+          },
+          "validacao": {
+            "log_loss": 0.007876273080288019,
+            "n": 360430,
+            "o_e": 0.9980382564722436,
+            "positivos": 348,
+            "pr_auc": 0.024021876099750487
+          },
+          "valor": "feminino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0004590397524964051,
+            "o_e": 0.14398038184758244,
+            "pr_auc": -0.011032650399051054
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.008115613091902011,
+            "n": 394290,
+            "o_e": 1.1540130782098947,
+            "positivos": 388,
+            "pr_auc": 0.015039458053557032
+          },
+          "validacao": {
+            "log_loss": 0.007656573339405606,
+            "n": 308600,
+            "o_e": 1.0100326963623123,
+            "positivos": 306,
+            "pr_auc": 0.026072108452608087
+          },
+          "valor": "masculino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0011272254387300513,
+            "o_e": 0.3395494539141757,
+            "pr_auc": 0.002869254467590684
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.003496790841310141,
+            "n": 171380,
+            "o_e": 1.0094271244133712,
+            "positivos": 77,
+            "pr_auc": 0.005354503013531864
+          },
+          "validacao": {
+            "log_loss": 0.0023695654025800896,
+            "n": 153120,
+            "o_e": 0.6698776704991956,
+            "positivos": 43,
+            "pr_auc": 0.00248524854594118
+          },
+          "valor": "ate_meio_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00032275489921693157,
+            "o_e": 0.1991378514784552,
+            "pr_auc": -0.014732900271008771
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.008655207054179766,
+            "n": 259980,
+            "o_e": 1.3248530757094394,
+            "positivos": 293,
+            "pr_auc": 0.018864766448370124
+          },
+          "validacao": {
+            "log_loss": 0.008332452154962835,
+            "n": 180570,
+            "o_e": 1.1257152242309842,
+            "positivos": 190,
+            "pr_auc": 0.033597666719378895
+          },
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 4.855084245638901e-05,
+            "o_e": 0.11437365058722182,
+            "pr_auc": -0.002691410246862565
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.010189767489866856,
+            "n": 146180,
+            "o_e": 0.9664435720900821,
+            "positivos": 223,
+            "pr_auc": 0.015020163443386794
+          },
+          "validacao": {
+            "log_loss": 0.010141216647410467,
+            "n": 117800,
+            "o_e": 0.8520699215028603,
+            "positivos": 213,
+            "pr_auc": 0.01771157369024936
+          },
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.008983385369180467,
+            "o_e": -0.6516532619771211,
+            "pr_auc": -0.028365101038313353
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.009954171544003056,
+            "n": 39170,
+            "o_e": 0.5909458746029252,
+            "positivos": 56,
+            "pr_auc": 0.01578279576721676
+          },
+          "validacao": {
+            "log_loss": 0.018937556913183523,
+            "n": 37100,
+            "o_e": 1.2425991365800464,
+            "positivos": 128,
+            "pr_auc": 0.044147896805530114
+          },
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00027977498337044583,
+            "o_e": 0.0931796278649043,
+            "pr_auc": -0.002214030185121202
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.005244662384192386,
+            "n": 233470,
+            "o_e": 1.0196507724576889,
+            "positivos": 151,
+            "pr_auc": 0.007323952516170889
+          },
+          "validacao": {
+            "log_loss": 0.00496488740082194,
+            "n": 180440,
+            "o_e": 0.9264711445927846,
+            "positivos": 80,
+            "pr_auc": 0.00953798270129209
+          },
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00033755122616738013,
+            "o_e": 0.1080702184728608,
+            "pr_auc": -0.014288077758335519
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.010007952502607028,
+            "n": 425090,
+            "o_e": 1.111906895939634,
+            "positivos": 534,
+            "pr_auc": 0.015512606619222904
+          },
+          "validacao": {
+            "log_loss": 0.009670401276439648,
+            "n": 334515,
+            "o_e": 1.0038366774667733,
+            "positivos": 363,
+            "pr_auc": 0.029800684377558423
+          },
+          "valor": "em_casa"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0012277384506385264,
+            "o_e": -0.1472838302699513,
+            "pr_auc": -0.005493632056419739
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.00464278660464116,
+            "n": 425090,
+            "o_e": 0.8562119679005518,
+            "positivos": 266,
+            "pr_auc": 0.007890525558211554
+          },
+          "validacao": {
+            "log_loss": 0.005870525055279687,
+            "n": 334515,
+            "o_e": 1.003495798170503,
+            "positivos": 291,
+            "pr_auc": 0.013384157614631293
+          },
+          "valor": "fora_de_casa"
+        }
+      ],
+      "preferencia_com_pizza": [
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.40815180636863063,
+            "n": 85,
+            "o_e": 1.0048021071741033,
+            "positivos": 11,
+            "pr_auc": 0.21593108923517573
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 40,
+            "o_e": null,
+            "positivos": 6,
+            "pr_auc": null
+          },
+          "valor": 1
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.3272186896162148,
+            "o_e": 1.2154634726836853,
+            "pr_auc": 0.12272028120547707
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.7445672586393238,
+            "n": 80,
+            "o_e": 1.8722940526859821,
+            "positivos": 18,
+            "pr_auc": 0.30998202603609415
+          },
+          "validacao": {
+            "log_loss": 0.417348569023109,
+            "n": 91,
+            "o_e": 0.6568305800022969,
+            "positivos": 14,
+            "pr_auc": 0.18726174483061708
+          },
+          "valor": 2
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.6974229294311308,
+            "n": 80,
+            "o_e": 1.6675200834063566,
+            "positivos": 24,
+            "pr_auc": 0.2738448649144094
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 53,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "valor": 3
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.1373008165165579,
+            "o_e": 0.43987277504371614,
+            "pr_auc": 0.12860916401200204
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.7100812157886364,
+            "n": 114,
+            "o_e": 1.9055519577945839,
+            "positivos": 26,
+            "pr_auc": 0.3526496159223854
+          },
+          "validacao": {
+            "log_loss": 0.5727803992720785,
+            "n": 120,
+            "o_e": 1.4656791827508677,
+            "positivos": 17,
+            "pr_auc": 0.22404045191038338
+          },
+          "valor": 4
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.2113215831689299,
+            "o_e": 0.4241558854287508,
+            "pr_auc": 0.07027762147024205
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.47114512697010924,
+            "n": 84,
+            "o_e": 0.9784894778088019,
+            "positivos": 15,
+            "pr_auc": 0.24575063934776867
+          },
+          "validacao": {
+            "log_loss": 0.25982354380117934,
+            "n": 103,
+            "o_e": 0.5543335923800511,
+            "positivos": 14,
+            "pr_auc": 0.17547301787752662
+          },
+          "valor": 5
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.16392457500537894,
+            "o_e": -0.4117827010200904,
+            "pr_auc": 0.014601191343641212
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.42734123339257535,
+            "n": 68,
+            "o_e": 0.8719505287847026,
+            "positivos": 12,
+            "pr_auc": 0.2045746705603488
+          },
+          "validacao": {
+            "log_loss": 0.5912658083979543,
+            "n": 141,
+            "o_e": 1.283733229804793,
+            "positivos": 30,
+            "pr_auc": 0.1899734792167076
+          },
+          "valor": 6
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.28374525146526614,
+            "o_e": 0.7199054584639493,
+            "pr_auc": -0.016233506254354213
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5847294336775569,
+            "n": 291,
+            "o_e": 1.7670546874832223,
+            "positivos": 75,
+            "pr_auc": 0.2737309499686156
+          },
+          "validacao": {
+            "log_loss": 0.3009841822122908,
+            "n": 107,
+            "o_e": 1.047149229019273,
+            "positivos": 15,
+            "pr_auc": 0.2899644562229698
+          },
+          "valor": 7
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 16,
+            "o_e": null,
+            "positivos": 3,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 43,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null
+          },
+          "valor": "almoco"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 1,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 1,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "valor": "madrugada"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 15,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 17,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null
+          },
+          "valor": "manha"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.15906938322724334,
+            "o_e": 0.5758086585338762,
+            "pr_auc": 0.0672143704300413
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.5740323945939495,
+            "n": 739,
+            "o_e": 1.5403504566390096,
+            "positivos": 168,
+            "pr_auc": 0.24958878338138268
+          },
+          "validacao": {
+            "log_loss": 0.41496301136670616,
+            "n": 556,
+            "o_e": 0.9645417981051334,
+            "positivos": 89,
+            "pr_auc": 0.18237441295134138
+          },
+          "valor": "noite"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 31,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 38,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "valor": "tarde"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.23116307540027792,
+            "o_e": 1.1462031950328946,
+            "pr_auc": 0.08504329548271145
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.6021385477938508,
+            "n": 115,
+            "o_e": 1.8576814365824663,
+            "positivos": 25,
+            "pr_auc": 0.21560555868512504
+          },
+          "validacao": {
+            "log_loss": 0.37097547239357287,
+            "n": 128,
+            "o_e": 0.7114782415495717,
+            "positivos": 17,
+            "pr_auc": 0.1305622632024136
+          },
+          "valor": "centro_oeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.1622677398997494,
+            "o_e": -0.5115466348961241,
+            "pr_auc": -0.13055647354292102
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.5632370653773884,
+            "n": 268,
+            "o_e": 0.9242269226569731,
+            "positivos": 66,
+            "pr_auc": 0.1992223199185912
+          },
+          "validacao": {
+            "log_loss": 0.7255048052771378,
+            "n": 132,
+            "o_e": 1.4357735575530972,
+            "positivos": 32,
+            "pr_auc": 0.32977879346151223
+          },
+          "valor": "nordeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.5189701602700679,
+            "n": 99,
+            "o_e": 1.3908574571608072,
+            "positivos": 20,
+            "pr_auc": 0.4674687253417545
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 76,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "valor": "norte"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.3403449516538229,
+            "o_e": 1.6771439041149439,
+            "pr_auc": 0.2779796402585343
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.6702108607473186,
+            "n": 174,
+            "o_e": 2.3581218975576608,
+            "positivos": 43,
+            "pr_auc": 0.3406111808978172
+          },
+          "validacao": {
+            "log_loss": 0.3298659090934957,
+            "n": 180,
+            "o_e": 0.6809779934427168,
+            "positivos": 22,
+            "pr_auc": 0.06263154063928295
+          },
+          "valor": "sudeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.021126578198747692,
+            "o_e": 0.12388449010683567,
+            "pr_auc": 0.08775050374585358
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.45279859252392696,
+            "n": 146,
+            "o_e": 1.2538770350841129,
+            "positivos": 27,
+            "pr_auc": 0.2581699492117153
+          },
+          "validacao": {
+            "log_loss": 0.47392517072267465,
+            "n": 139,
+            "o_e": 1.1299925449772772,
+            "positivos": 22,
+            "pr_auc": 0.17041944546586174
+          },
+          "valor": "sul"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.16324789056479616,
+            "o_e": 0.5948267033470249,
+            "pr_auc": 0.11975928130925229
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.680128541400672,
+            "n": 148,
+            "o_e": 1.5951583912021976,
+            "positivos": 40,
+            "pr_auc": 0.30943422489750894
+          },
+          "validacao": {
+            "log_loss": 0.5168806508358759,
+            "n": 150,
+            "o_e": 1.0003316878551727,
+            "positivos": 20,
+            "pr_auc": 0.18967494358825665
+          },
+          "valor": "10-17"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.338803496454105,
+            "o_e": 0.975263086715703,
+            "pr_auc": 0.039542152952118825
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.6332231600856182,
+            "n": 245,
+            "o_e": 1.6852016443434306,
+            "positivos": 51,
+            "pr_auc": 0.2170068985635928
+          },
+          "validacao": {
+            "log_loss": 0.2944196636315132,
+            "n": 204,
+            "o_e": 0.7099385576277275,
+            "positivos": 30,
+            "pr_auc": 0.17746474561147396
+          },
+          "valor": "18-29"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.032759468307657524,
+            "o_e": 0.2612744573196466,
+            "pr_auc": 0.05284395073665346
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.5647895956675091,
+            "n": 241,
+            "o_e": 1.6161910183242298,
+            "positivos": 57,
+            "pr_auc": 0.27280713250374056
+          },
+          "validacao": {
+            "log_loss": 0.5320301273598516,
+            "n": 192,
+            "o_e": 1.3549165610045832,
+            "positivos": 31,
+            "pr_auc": 0.2199631817670871
+          },
+          "valor": "30-44"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.23309934337369154,
+            "o_e": 0.7671518879693819,
+            "pr_auc": 0.14173139285077874
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.5501818184832106,
+            "n": 126,
+            "o_e": 1.3679393958662895,
+            "positivos": 29,
+            "pr_auc": 0.29266415705450477
+          },
+          "validacao": {
+            "log_loss": 0.31708247510951904,
+            "n": 88,
+            "o_e": 0.6007875078969076,
+            "positivos": 16,
+            "pr_auc": 0.15093276420372603
+          },
+          "valor": "45-59"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": null,
+            "n": 42,
+            "o_e": null,
+            "positivos": 4,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 21,
+            "o_e": null,
+            "positivos": 4,
+            "pr_auc": null
+          },
+          "valor": "60+"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.21232428862448383,
+            "o_e": 0.621666663430431,
+            "pr_auc": 0.08021902259908159
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.6542753433433183,
+            "n": 413,
+            "o_e": 1.5629611057851582,
+            "positivos": 100,
+            "pr_auc": 0.23711177424564395
+          },
+          "validacao": {
+            "log_loss": 0.44195105471883445,
+            "n": 349,
+            "o_e": 0.9412944423547273,
+            "positivos": 57,
+            "pr_auc": 0.15689275164656236
+          },
+          "valor": "feminino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.1433414793767166,
+            "o_e": 0.5552100477811733,
+            "pr_auc": 0.0684911502498575
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.525367607357242,
+            "n": 389,
+            "o_e": 1.4638208546935048,
+            "positivos": 81,
+            "pr_auc": 0.26720332734702645
+          },
+          "validacao": {
+            "log_loss": 0.3820261279805254,
+            "n": 306,
+            "o_e": 0.9086108069123314,
+            "positivos": 44,
+            "pr_auc": 0.19871217709716896
+          },
+          "valor": "masculino"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.9486483056424074,
+            "n": 78,
+            "o_e": 1.9927544965790638,
+            "positivos": 15,
+            "pr_auc": 0.310563402678536
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 44,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "valor": "ate_meio_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.23092025654430554,
+            "o_e": 1.0813129710777498,
+            "pr_auc": 0.23024112559826046
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.6204876955661149,
+            "n": 293,
+            "o_e": 1.6687887118441553,
+            "positivos": 74,
+            "pr_auc": 0.30098530584706706
+          },
+          "validacao": {
+            "log_loss": 0.3895674390218094,
+            "n": 190,
+            "o_e": 0.5874757407664054,
+            "positivos": 21,
+            "pr_auc": 0.0707441802488066
+          },
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.013127136321159305,
+            "o_e": -0.2744310930374749,
+            "pr_auc": -0.18872292125950846
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.3994348816563833,
+            "n": 223,
+            "o_e": 0.9057681058551623,
+            "positivos": 35,
+            "pr_auc": 0.12090693050904612
+          },
+          "validacao": {
+            "log_loss": 0.4125620179775426,
+            "n": 213,
+            "o_e": 1.1801991988926372,
+            "positivos": 41,
+            "pr_auc": 0.30962985176855456
+          },
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": null,
+            "n": 57,
+            "o_e": null,
+            "positivos": 9,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": 0.269098461382216,
+            "n": 128,
+            "o_e": 0.7976886524281578,
+            "positivos": 16,
+            "pr_auc": 0.5007353258633882
+          },
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.028896451113883392,
+            "o_e": 0.1602187312301797,
+            "pr_auc": 0.05142818283551309
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.7746995837213361,
+            "n": 151,
+            "o_e": 1.8283082234238506,
+            "positivos": 48,
+            "pr_auc": 0.3325833869510333
+          },
+          "validacao": {
+            "log_loss": 0.8035960348352195,
+            "n": 80,
+            "o_e": 1.6680894921936709,
+            "positivos": 23,
+            "pr_auc": 0.2811552041155202
+          },
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.21581359261879673,
+            "o_e": 0.7176652902323823,
+            "pr_auc": 0.13455517847026588
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.6201740989011768,
+            "n": 536,
+            "o_e": 1.6194113933160712,
+            "positivos": 123,
+            "pr_auc": 0.2458746224389805
+          },
+          "validacao": {
+            "log_loss": 0.40436050628238007,
+            "n": 364,
+            "o_e": 0.9017461030836889,
+            "positivos": 49,
+            "pr_auc": 0.11131944396871463
+          },
+          "valor": "em_casa"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.06525580596448549,
+            "o_e": 0.2898901094907108,
+            "pr_auc": 0.012903415459349532
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.49575401089860477,
+            "n": 266,
+            "o_e": 1.2545482006349626,
+            "positivos": 58,
+            "pr_auc": 0.27209285972346836
+          },
+          "validacao": {
+            "log_loss": 0.4304982049341193,
+            "n": 291,
+            "o_e": 0.9646580911442518,
+            "positivos": 52,
+            "pr_auc": 0.25918944426411883
+          },
+          "valor": "fora_de_casa"
+        }
+      ],
+      "preferencia_todas": [
+        {
+          "diferenca": {
+            "log_loss": 0.0785284088142475,
+            "o_e": 0.2743489197704927,
+            "pr_auc": 0.11501153584283391
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5887830467675194,
+            "n": 2290,
+            "o_e": 1.2543992606442167,
+            "positivos": 662,
+            "pr_auc": 0.3726427213319389
+          },
+          "validacao": {
+            "log_loss": 0.5102546379532719,
+            "n": 1482,
+            "o_e": 0.980050340873724,
+            "positivos": 326,
+            "pr_auc": 0.25763118548910496
+          },
+          "valor": 1
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.04548368917836432,
+            "o_e": 0.05102305229354087,
+            "pr_auc": -0.03560059563739615
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.6089783569123243,
+            "n": 2176,
+            "o_e": 1.0533651459921567,
+            "positivos": 656,
+            "pr_auc": 0.33041560623892574
+          },
+          "validacao": {
+            "log_loss": 0.56349466773396,
+            "n": 3677,
+            "o_e": 1.0023420936986158,
+            "positivos": 938,
+            "pr_auc": 0.3660162018763219
+          },
+          "valor": 2
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.026184895641390704,
+            "o_e": 0.05237675256172092,
+            "pr_auc": -0.006479230117159673
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5651559223655488,
+            "n": 2001,
+            "o_e": 1.0467887779687346,
+            "positivos": 573,
+            "pr_auc": 0.3256736406858324
+          },
+          "validacao": {
+            "log_loss": 0.5389710267241581,
+            "n": 2293,
+            "o_e": 0.9944120254070137,
+            "positivos": 621,
+            "pr_auc": 0.33215287080299205
+          },
+          "valor": 3
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.06764629658050103,
+            "o_e": 0.15876530251315502,
+            "pr_auc": -0.02802772790324204
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5951370308197207,
+            "n": 2203,
+            "o_e": 1.1528550618344544,
+            "positivos": 638,
+            "pr_auc": 0.32943054240914604
+          },
+          "validacao": {
+            "log_loss": 0.5274907342392197,
+            "n": 4427,
+            "o_e": 0.9940897593212994,
+            "positivos": 1067,
+            "pr_auc": 0.3574582703123881
+          },
+          "valor": 4
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.00923526379985462,
+            "o_e": -0.05520260548440559,
+            "pr_auc": -0.05173041377175158
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5333510297631012,
+            "n": 1276,
+            "o_e": 0.9442211431137411,
+            "positivos": 329,
+            "pr_auc": 0.26352155095611796
+          },
+          "validacao": {
+            "log_loss": 0.5425862935629558,
+            "n": 2830,
+            "o_e": 0.9994237485981466,
+            "positivos": 738,
+            "pr_auc": 0.31525196472786954
+          },
+          "valor": 5
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.005795938216058394,
+            "o_e": 0.029295433084654654,
+            "pr_auc": 0.013093810612355816
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5693752834099098,
+            "n": 828,
+            "o_e": 1.0329287112505712,
+            "positivos": 211,
+            "pr_auc": 0.2902810659485575
+          },
+          "validacao": {
+            "log_loss": 0.5635793451938514,
+            "n": 2330,
+            "o_e": 1.0036332781659165,
+            "positivos": 568,
+            "pr_auc": 0.2771872553362017
+          },
+          "valor": 6
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.14322795191197485,
+            "o_e": 0.4889863780818423,
+            "pr_auc": 0.13522766671767114
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.5939830497062691,
+            "n": 5338,
+            "o_e": 1.4469448781457135,
+            "positivos": 1526,
+            "pr_auc": 0.3341141982251914
+          },
+          "validacao": {
+            "log_loss": 0.4507550977942943,
+            "n": 2143,
+            "o_e": 0.9579585000638712,
+            "positivos": 426,
+            "pr_auc": 0.19888653150752025
+          },
+          "valor": 7
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.022920615793739718,
+            "o_e": 0.11441248532678627,
+            "pr_auc": -0.008572402029376924
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.5650124895929199,
+            "n": 7145,
+            "o_e": 1.1057542325967997,
+            "positivos": 1984,
+            "pr_auc": 0.3171367290438422
+          },
+          "validacao": {
+            "log_loss": 0.5420918737991802,
+            "n": 7507,
+            "o_e": 0.9913417472700135,
+            "positivos": 1851,
+            "pr_auc": 0.32570913107321914
+          },
+          "valor": "almoco"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.5282049478120799,
+            "n": 56,
+            "o_e": 1.2145690189247669,
+            "positivos": 17,
+            "pr_auc": 0.5099821139624009
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 49,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "valor": "madrugada"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.007758566627412811,
+            "o_e": -0.07548769879320838,
+            "pr_auc": -0.012588691609049851
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.6086004174943048,
+            "n": 680,
+            "o_e": 0.9456674874777834,
+            "positivos": 243,
+            "pr_auc": 0.3668915225485333
+          },
+          "validacao": {
+            "log_loss": 0.600841850866892,
+            "n": 1389,
+            "o_e": 1.0211551862709918,
+            "positivos": 408,
+            "pr_auc": 0.37948021415758315
+          },
+          "valor": "manha"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.08287174894049976,
+            "o_e": 0.2961863077126713,
+            "pr_auc": 0.01597924282146862
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.5980007816177878,
+            "n": 5900,
+            "o_e": 1.2861435746760221,
+            "positivos": 1648,
+            "pr_auc": 0.3245217551312332
+          },
+          "validacao": {
+            "log_loss": 0.515129032677288,
+            "n": 7056,
+            "o_e": 0.9899572669633508,
+            "positivos": 1665,
+            "pr_auc": 0.3085425123097646
+          },
+          "valor": "noite"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0908513004552276,
+            "o_e": 0.23918106137786155,
+            "pr_auc": 0.0232099684062424
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.6089670426384403,
+            "n": 2331,
+            "o_e": 1.231867077554262,
+            "positivos": 703,
+            "pr_auc": 0.3106189551435331
+          },
+          "validacao": {
+            "log_loss": 0.5181157421832127,
+            "n": 3181,
+            "o_e": 0.9926860161764004,
+            "positivos": 752,
+            "pr_auc": 0.2874089867372907
+          },
+          "valor": "tarde"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.16118645278997923,
+            "o_e": 0.5196695720750553,
+            "pr_auc": 0.03664386214264109
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.6291733655932148,
+            "n": 2449,
+            "o_e": 1.5025103445918966,
+            "positivos": 695,
+            "pr_auc": 0.2960873130146647
+          },
+          "validacao": {
+            "log_loss": 0.46798691280323557,
+            "n": 3150,
+            "o_e": 0.9828407725168413,
+            "positivos": 631,
+            "pr_auc": 0.2594434508720236
+          },
+          "valor": "centro_oeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.025092321844575327,
+            "o_e": 0.10067263178101249,
+            "pr_auc": -0.024115731935237916
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.6397765155393048,
+            "n": 4587,
+            "o_e": 1.1067005471593871,
+            "positivos": 1510,
+            "pr_auc": 0.3755301457394632
+          },
+          "validacao": {
+            "log_loss": 0.6146841936947295,
+            "n": 5146,
+            "o_e": 1.0060279153783747,
+            "positivos": 1525,
+            "pr_auc": 0.3996458776747011
+          },
+          "valor": "nordeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.07036292124878762,
+            "o_e": 0.25072859623256494,
+            "pr_auc": 0.03404359320894723
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.645470603291126,
+            "n": 1949,
+            "o_e": 1.257098138133958,
+            "positivos": 584,
+            "pr_auc": 0.3491235221839119
+          },
+          "validacao": {
+            "log_loss": 0.5751076820423384,
+            "n": 3041,
+            "o_e": 1.0063695419013932,
+            "positivos": 801,
+            "pr_auc": 0.3150799289749647
+          },
+          "valor": "norte"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.06965682774533621,
+            "o_e": 0.22680191078905143,
+            "pr_auc": 0.00647209964234452
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.603197581925511,
+            "n": 3993,
+            "o_e": 1.2134141273517358,
+            "positivos": 1242,
+            "pr_auc": 0.2980288515150251
+          },
+          "validacao": {
+            "log_loss": 0.5335407541801748,
+            "n": 4988,
+            "o_e": 0.9866122165626844,
+            "positivos": 1249,
+            "pr_auc": 0.2915567518726806
+          },
+          "valor": "sudeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00861452531602519,
+            "o_e": 0.03367160717832196,
+            "pr_auc": -0.04260160399523799
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.4585099482574658,
+            "n": 3134,
+            "o_e": 1.0298087763464157,
+            "positivos": 564,
+            "pr_auc": 0.1846491664308459
+          },
+          "validacao": {
+            "log_loss": 0.44989542294144064,
+            "n": 2857,
+            "o_e": 0.9961371691680937,
+            "positivos": 478,
+            "pr_auc": 0.22725077042608388
+          },
+          "valor": "sul"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.04859268647367421,
+            "o_e": 0.17085064872281053,
+            "pr_auc": 0.004129085433791813
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.6208004358176035,
+            "n": 3397,
+            "o_e": 1.1710105115298284,
+            "positivos": 1080,
+            "pr_auc": 0.32569513450092663
+          },
+          "validacao": {
+            "log_loss": 0.5722077493439293,
+            "n": 4327,
+            "o_e": 1.0001598628070179,
+            "positivos": 1151,
+            "pr_auc": 0.3215660490671348
+          },
+          "valor": "10-17"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.07370245245277707,
+            "o_e": 0.26953547103754716,
+            "pr_auc": 0.023784577762857362
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.5521507137536975,
+            "n": 4204,
+            "o_e": 1.2074139147107636,
+            "positivos": 1098,
+            "pr_auc": 0.30901503579759915
+          },
+          "validacao": {
+            "log_loss": 0.47844826130092044,
+            "n": 6046,
+            "o_e": 0.9378784436732165,
+            "positivos": 1275,
+            "pr_auc": 0.2852304580347418
+          },
+          "valor": "18-29"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.03469386588772572,
+            "o_e": 0.15693070387434283,
+            "pr_auc": 0.016634728520681152
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.5861249233696921,
+            "n": 4226,
+            "o_e": 1.2533953797221542,
+            "positivos": 1182,
+            "pr_auc": 0.31483622172615777
+          },
+          "validacao": {
+            "log_loss": 0.5514310574819664,
+            "n": 5039,
+            "o_e": 1.0964646758478114,
+            "positivos": 1213,
+            "pr_auc": 0.2982014932054766
+          },
+          "valor": "30-44"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0614223569295228,
+            "o_e": 0.22760939018669213,
+            "pr_auc": 0.0017370805762355612
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.5707717338559785,
+            "n": 2755,
+            "o_e": 1.0966541020860623,
+            "positivos": 749,
+            "pr_auc": 0.3095421141945206
+          },
+          "validacao": {
+            "log_loss": 0.5093493769264557,
+            "n": 2645,
+            "o_e": 0.8690447118993702,
+            "positivos": 651,
+            "pr_auc": 0.30780503361828504
+          },
+          "valor": "45-59"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.01885089048820099,
+            "o_e": 0.0439344343163981,
+            "pr_auc": -0.09736312759766841
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.6265454193883316,
+            "n": 1530,
+            "o_e": 1.1281998440166634,
+            "positivos": 486,
+            "pr_auc": 0.35704687253860323
+          },
+          "validacao": {
+            "log_loss": 0.6076945289001306,
+            "n": 1125,
+            "o_e": 1.0842654097002653,
+            "positivos": 394,
+            "pr_auc": 0.45441000013627164
+          },
+          "valor": "60+"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.046600093240073415,
+            "o_e": 0.1807054752897037,
+            "pr_auc": 0.005444166602681655
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.597121165184948,
+            "n": 7945,
+            "o_e": 1.177652542775495,
+            "positivos": 2302,
+            "pr_auc": 0.3326342602626884
+          },
+          "validacao": {
+            "log_loss": 0.5505210719448745,
+            "n": 9772,
+            "o_e": 0.9969470674857912,
+            "positivos": 2416,
+            "pr_auc": 0.32719009366000673
+          },
+          "valor": "feminino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.062409174398640244,
+            "o_e": 0.19611524685008586,
+            "pr_auc": -0.004508374790731018
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.575267560968844,
+            "n": 8167,
+            "o_e": 1.1857714194198323,
+            "positivos": 2293,
+            "pr_auc": 0.3061233725094288
+          },
+          "validacao": {
+            "log_loss": 0.5128583865702038,
+            "n": 9410,
+            "o_e": 0.9896561725697465,
+            "positivos": 2268,
+            "pr_auc": 0.3106317473001598
+          },
+          "valor": "masculino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.11461966782728306,
+            "o_e": 0.38149117106676256,
+            "pr_auc": -0.023607184129233127
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.6607751083962355,
+            "n": 2064,
+            "o_e": 1.3259004604887061,
+            "positivos": 697,
+            "pr_auc": 0.3525587952060937
+          },
+          "validacao": {
+            "log_loss": 0.5461554405689525,
+            "n": 2116,
+            "o_e": 0.9444092894219436,
+            "positivos": 627,
+            "pr_auc": 0.3761659793353268
+          },
+          "valor": "ate_meio_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.028058042366640223,
+            "o_e": 0.10424900433639683,
+            "pr_auc": -0.02766063417161968
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.5796129249182951,
+            "n": 5570,
+            "o_e": 1.109007626866823,
+            "positivos": 1538,
+            "pr_auc": 0.30755931112858437
+          },
+          "validacao": {
+            "log_loss": 0.5515548825516549,
+            "n": 5812,
+            "o_e": 1.0047586225304261,
+            "positivos": 1464,
+            "pr_auc": 0.33521994530020405
+          },
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.043310847280784825,
+            "o_e": 0.2403420309016533,
+            "pr_auc": 0.026974323930734928
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.5516077988195333,
+            "n": 3542,
+            "o_e": 1.2066744394706785,
+            "positivos": 838,
+            "pr_auc": 0.27493907162430553
+          },
+          "validacao": {
+            "log_loss": 0.5082969515387484,
+            "n": 5047,
+            "o_e": 0.9663324085690252,
+            "positivos": 1073,
+            "pr_auc": 0.2479647476935706
+          },
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.10223482194763994,
+            "o_e": 0.31871853463832345,
+            "pr_auc": -0.037520102449051906
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.5320845722013713,
+            "n": 858,
+            "o_e": 1.249733174079595,
+            "positivos": 195,
+            "pr_auc": 0.23947582671530077
+          },
+          "validacao": {
+            "log_loss": 0.42984975025373134,
+            "n": 1775,
+            "o_e": 0.9310146394412715,
+            "positivos": 331,
+            "pr_auc": 0.27699592916435267
+          },
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.024468295349342695,
+            "o_e": 0.13567902586979796,
+            "pr_auc": 0.005481556900558238
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.6123556737232012,
+            "n": 4078,
+            "o_e": 1.1894732527709877,
+            "positivos": 1327,
+            "pr_auc": 0.36507944133639536
+          },
+          "validacao": {
+            "log_loss": 0.5878873783738585,
+            "n": 4432,
+            "o_e": 1.0537942269011897,
+            "positivos": 1189,
+            "pr_auc": 0.3595978844358371
+          },
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.04367897512030694,
+            "o_e": 0.16346712779401318,
+            "pr_auc": -0.01486921461720181
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.5924855782906371,
+            "n": 11375,
+            "o_e": 1.157756597625259,
+            "positivos": 3309,
+            "pr_auc": 0.3212536791724416
+          },
+          "validacao": {
+            "log_loss": 0.5488066031703301,
+            "n": 12405,
+            "o_e": 0.9942894698312459,
+            "positivos": 3272,
+            "pr_auc": 0.3361228937896434
+          },
+          "valor": "em_casa"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.06956180425007241,
+            "o_e": 0.2652434044116009,
+            "pr_auc": 0.04150471642461556
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.5666402370538092,
+            "n": 4737,
+            "o_e": 1.2564754471800128,
+            "positivos": 1286,
+            "pr_auc": 0.31366355394874196
+          },
+          "validacao": {
+            "log_loss": 0.49707843280373676,
+            "n": 6777,
+            "o_e": 0.9912320427684119,
+            "positivos": 1412,
+            "pr_auc": 0.2721588375241264
+          },
+          "valor": "fora_de_casa"
+        }
+      ],
+      "score": [
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.0011168971070808352,
+            "n": 131790,
+            "o_e": 1.157087720571852,
+            "positivos": 11,
+            "pr_auc": 0.0005016639608503572
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 50130,
+            "o_e": null,
+            "positivos": 6,
+            "pr_auc": null
+          },
+          "valor": 1
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0010095205161589186,
+            "o_e": 0.9794214863553921,
+            "pr_auc": 0.0003288450757212983
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.001996216472040426,
+            "n": 146680,
+            "o_e": 1.7702030264238726,
+            "positivos": 18,
+            "pr_auc": 0.0013819050086661608
+          },
+          "validacao": {
+            "log_loss": 0.0009866959558815075,
+            "n": 146990,
+            "o_e": 0.7907815400684806,
+            "positivos": 14,
+            "pr_auc": 0.0010530599329448625
+          },
+          "valor": 2
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.0016489513092085484,
+            "n": 142810,
+            "o_e": 1.5110773861727904,
+            "positivos": 24,
+            "pr_auc": 0.007837115865696792
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 86860,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "valor": 3
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.001380681949316331,
+            "o_e": 1.9388954469410031,
+            "pr_auc": 0.0012150410380327855
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.002588925731863206,
+            "n": 147990,
+            "o_e": 3.2720655418539577,
+            "positivos": 26,
+            "pr_auc": 0.0023619243674369533
+          },
+          "validacao": {
+            "log_loss": 0.001208243782546875,
+            "n": 173830,
+            "o_e": 1.3331700949129546,
+            "positivos": 17,
+            "pr_auc": 0.0011468833294041678
+          },
+          "valor": 4
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0010631660418200127,
+            "o_e": 0.6754031409350685,
+            "pr_auc": -0.0027187141763545036
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.0019937222226157824,
+            "n": 76440,
+            "o_e": 1.1483922886732196,
+            "positivos": 15,
+            "pr_auc": 0.0025685282110227293
+          },
+          "validacao": {
+            "log_loss": 0.0009305561807957699,
+            "n": 103140,
+            "o_e": 0.47298914773815115,
+            "positivos": 14,
+            "pr_auc": 0.005287242387377233
+          },
+          "valor": 5
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.002314647096699724,
+            "o_e": -0.6730201337084224,
+            "pr_auc": -0.002563266056973597
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.002706840578933365,
+            "n": 38620,
+            "o_e": 0.6875593355897137,
+            "positivos": 12,
+            "pr_auc": 0.00209409202201678
+          },
+          "validacao": {
+            "log_loss": 0.005021487675633089,
+            "n": 64300,
+            "o_e": 1.3605794692981361,
+            "positivos": 30,
+            "pr_auc": 0.004657358078990377
+          },
+          "valor": 6
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0011697652692269343,
+            "o_e": 0.9764176367061563,
+            "pr_auc": -0.0021011886706409845
+          },
+          "segmento": "dia_semana",
+          "teste": {
+            "log_loss": 0.0032654173679123513,
+            "n": 165850,
+            "o_e": 1.9632508736202519,
+            "positivos": 74,
+            "pr_auc": 0.003037256751784194
+          },
+          "validacao": {
+            "log_loss": 0.002095652098685417,
+            "n": 43780,
+            "o_e": 0.9868332369140955,
+            "positivos": 15,
+            "pr_auc": 0.005138445422425178
+          },
+          "valor": 7
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 170036,
+            "o_e": null,
+            "positivos": 3,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 133806,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null
+          },
+          "valor": "almoco"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 170036,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 133806,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "valor": "madrugada"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 170036,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 133806,
+            "o_e": null,
+            "positivos": 2,
+            "pr_auc": null
+          },
+          "valor": "manha"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.003512455420828899,
+            "o_e": 0.8299980511498047,
+            "pr_auc": -0.0008985455719694919
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": 0.009643976949918706,
+            "n": 170036,
+            "o_e": 1.8070416014301243,
+            "positivos": 167,
+            "pr_auc": 0.002018530612815492
+          },
+          "validacao": {
+            "log_loss": 0.006131521529089808,
+            "n": 133806,
+            "o_e": 0.9770435502803195,
+            "positivos": 89,
+            "pr_auc": 0.002917076184784984
+          },
+          "valor": "noite"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_horario",
+          "teste": {
+            "log_loss": null,
+            "n": 170036,
+            "o_e": null,
+            "positivos": 5,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 133806,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "valor": "tarde"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0005275544010698604,
+            "o_e": 0.5422676369486807,
+            "pr_auc": -0.0027097442707199287
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.002553579018746155,
+            "n": 103800,
+            "o_e": 1.3612967819387243,
+            "positivos": 25,
+            "pr_auc": 0.002368759238157133
+          },
+          "validacao": {
+            "log_loss": 0.0020260246176762946,
+            "n": 91560,
+            "o_e": 0.8190291449900435,
+            "positivos": 17,
+            "pr_auc": 0.005078503508877062
+          },
+          "valor": "centro_oeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00033259838315127517,
+            "o_e": 0.3817238128086573,
+            "pr_auc": -0.0005318026126650841
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.0017930179700337413,
+            "n": 296900,
+            "o_e": 1.6593865050747265,
+            "positivos": 66,
+            "pr_auc": 0.0026630615660103276
+          },
+          "validacao": {
+            "log_loss": 0.0014604195868824661,
+            "n": 247670,
+            "o_e": 1.2776626922660692,
+            "positivos": 32,
+            "pr_auc": 0.0031948641786754117
+          },
+          "valor": "nordeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.0017627205646747212,
+            "n": 128070,
+            "o_e": 1.6722823931551296,
+            "positivos": 20,
+            "pr_auc": 0.0015193416626073394
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 104020,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "valor": "norte"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0012588179942152773,
+            "o_e": 1.2391674403034143,
+            "pr_auc": 0.0002738648660853718
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.0024068230499203497,
+            "n": 210880,
+            "o_e": 1.958385705787443,
+            "positivos": 42,
+            "pr_auc": 0.001736880146310275
+          },
+          "validacao": {
+            "log_loss": 0.0011480050557050724,
+            "n": 143500,
+            "o_e": 0.7192182654840288,
+            "positivos": 22,
+            "pr_auc": 0.0014630152802249032
+          },
+          "valor": "sudeste"
+        },
+        {
+          "diferenca": {
+            "log_loss": -7.1059777160889515e-06,
+            "o_e": 0.0628636571786525,
+            "pr_auc": -0.005165041073966445
+          },
+          "segmento": "regiao",
+          "teste": {
+            "log_loss": 0.002362134460851013,
+            "n": 110530,
+            "o_e": 1.202506566473087,
+            "positivos": 27,
+            "pr_auc": 0.0032527499087708625
+          },
+          "validacao": {
+            "log_loss": 0.002369240438567102,
+            "n": 82280,
+            "o_e": 1.1396429092944345,
+            "positivos": 22,
+            "pr_auc": 0.008417790982737308
+          },
+          "valor": "sul"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0007610007262340941,
+            "o_e": 0.5560473885337012,
+            "pr_auc": -0.002879925626306861
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.00308045346309721,
+            "n": 124790,
+            "o_e": 1.7321029556497018,
+            "positivos": 40,
+            "pr_auc": 0.002177812927886827
+          },
+          "validacao": {
+            "log_loss": 0.0023194527368631157,
+            "n": 122720,
+            "o_e": 1.1760555671160007,
+            "positivos": 20,
+            "pr_auc": 0.005057738554193688
+          },
+          "valor": "10-17"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0022312987756127503,
+            "o_e": 1.4344710474831124,
+            "pr_auc": 0.0012703573386831086
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.0035578397871080273,
+            "n": 163600,
+            "o_e": 2.0781941898804357,
+            "positivos": 51,
+            "pr_auc": 0.002860070160399812
+          },
+          "validacao": {
+            "log_loss": 0.001326541011495277,
+            "n": 163500,
+            "o_e": 0.6437231423973233,
+            "positivos": 30,
+            "pr_auc": 0.0015897128217167034
+          },
+          "valor": "18-29"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0004915875834142535,
+            "o_e": 0.471675923338684,
+            "pr_auc": -0.0018870120391198822
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.0025280481841189204,
+            "n": 217020,
+            "o_e": 1.9669836841810766,
+            "positivos": 57,
+            "pr_auc": 0.0024904967059576223
+          },
+          "validacao": {
+            "log_loss": 0.002036460600704667,
+            "n": 175830,
+            "o_e": 1.4953077608423926,
+            "positivos": 31,
+            "pr_auc": 0.0043775087450775045
+          },
+          "valor": "30-44"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0005658003484045797,
+            "o_e": 0.6382728872302333,
+            "pr_auc": -0.0005651408293147254
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": 0.0014529390641997658,
+            "n": 188870,
+            "o_e": 1.31832702509992,
+            "positivos": 28,
+            "pr_auc": 0.0018112465201217632
+          },
+          "validacao": {
+            "log_loss": 0.0008871387157951861,
+            "n": 121720,
+            "o_e": 0.6800541378696866,
+            "positivos": 16,
+            "pr_auc": 0.0023763873494364886
+          },
+          "valor": "45-59"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_etaria",
+          "teste": {
+            "log_loss": null,
+            "n": 155900,
+            "o_e": null,
+            "positivos": 4,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 85260,
+            "o_e": null,
+            "positivos": 4,
+            "pr_auc": null
+          },
+          "valor": "60+"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0006112237216921855,
+            "o_e": 0.6278946457770443,
+            "pr_auc": -0.001095320795778544
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.002131668881988543,
+            "n": 455890,
+            "o_e": 1.5724096120335207,
+            "positivos": 100,
+            "pr_auc": 0.0022678752456043645
+          },
+          "validacao": {
+            "log_loss": 0.0015204451602963576,
+            "n": 360430,
+            "o_e": 0.9445149662564764,
+            "positivos": 57,
+            "pr_auc": 0.0033631960413829085
+          },
+          "valor": "feminino"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0008563778263152616,
+            "o_e": 0.8002019182512333,
+            "pr_auc": -0.000694423998787145
+          },
+          "segmento": "sexo",
+          "teste": {
+            "log_loss": 0.0022561983318450675,
+            "n": 394290,
+            "o_e": 1.732932972907178,
+            "positivos": 80,
+            "pr_auc": 0.0016047704737521323
+          },
+          "validacao": {
+            "log_loss": 0.001399820505529806,
+            "n": 308600,
+            "o_e": 0.9327310546559447,
+            "positivos": 44,
+            "pr_auc": 0.0022991944725392773
+          },
+          "valor": "masculino"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.0014131737506343535,
+            "n": 171380,
+            "o_e": 2.12629427272111,
+            "positivos": 15,
+            "pr_auc": 0.00309930749441547
+          },
+          "validacao": {
+            "log_loss": null,
+            "n": 153120,
+            "o_e": null,
+            "positivos": 0,
+            "pr_auc": null
+          },
+          "valor": "ate_meio_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.0018492723744821867,
+            "o_e": 1.5462243488028329,
+            "pr_auc": -0.00021043451379616903
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.0030152836514747553,
+            "n": 259980,
+            "o_e": 2.227287723387393,
+            "positivos": 74,
+            "pr_auc": 0.002337945195222756
+          },
+          "validacao": {
+            "log_loss": 0.0011660112769925686,
+            "n": 180570,
+            "o_e": 0.6810633745845603,
+            "positivos": 21,
+            "pr_auc": 0.002548379709018925
+          },
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": -0.0002852314926631329,
+            "o_e": -0.06131088708552046,
+            "pr_auc": -0.002619172106127461
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.0017140811669836202,
+            "n": 146180,
+            "o_e": 0.9321955916380295,
+            "positivos": 35,
+            "pr_auc": 0.0031247771460321577
+          },
+          "validacao": {
+            "log_loss": 0.001999312659646753,
+            "n": 117800,
+            "o_e": 0.9935064787235499,
+            "positivos": 41,
+            "pr_auc": 0.005743949252159619
+          },
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": null,
+            "o_e": null,
+            "pr_auc": null
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": null,
+            "n": 39170,
+            "o_e": null,
+            "positivos": 8,
+            "pr_auc": null
+          },
+          "validacao": {
+            "log_loss": 0.002850665203694595,
+            "n": 37100,
+            "o_e": 1.060636932377242,
+            "positivos": 16,
+            "pr_auc": 0.0030085590137235514
+          },
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.00039549063697742553,
+            "o_e": 0.504935658859931,
+            "pr_auc": -0.0006194777149906147
+          },
+          "segmento": "faixa_renda",
+          "teste": {
+            "log_loss": 0.002254737755184546,
+            "n": 233470,
+            "o_e": 2.11948700073381,
+            "positivos": 48,
+            "pr_auc": 0.0019885491440163774
+          },
+          "validacao": {
+            "log_loss": 0.0018592471182071206,
+            "n": 180440,
+            "o_e": 1.6145513418738788,
+            "positivos": 23,
+            "pr_auc": 0.002608026859006992
+          },
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "diferenca": {
+            "log_loss": 0.001540681238894502,
+            "o_e": 1.084010009171405,
+            "pr_auc": -0.0005671996685563691
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.00319254414423274,
+            "n": 425090,
+            "o_e": 1.9478454179540696,
+            "positivos": 122,
+            "pr_auc": 0.0024283461738186843
+          },
+          "validacao": {
+            "log_loss": 0.0016518629053382382,
+            "n": 334515,
+            "o_e": 0.8638354087826645,
+            "positivos": 49,
+            "pr_auc": 0.0029955458423750535
+          },
+          "valor": "em_casa"
+        },
+        {
+          "diferenca": {
+            "log_loss": -8.337215470092044e-05,
+            "o_e": 0.032715225002564186,
+            "pr_auc": -0.0017278935116881388
+          },
+          "segmento": "local",
+          "teste": {
+            "log_loss": 0.0011894668267617354,
+            "n": 425090,
+            "o_e": 1.1064762064706672,
+            "positivos": 58,
+            "pr_auc": 0.0009987707911052347
+          },
+          "validacao": {
+            "log_loss": 0.0012728389814626558,
+            "n": 334515,
+            "o_e": 1.073760981468103,
+            "positivos": 52,
+            "pr_auc": 0.0027266643027933734
+          },
+          "valor": "fora_de_casa"
+        }
+      ]
+    },
+    "resumos": {
+      "ocasiao": {
+        "constante": {
+          "brier": 0.0011680908570410743,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 850180,
+                "p_media": 0.0013027905562964716,
+                "positivos": 800,
+                "taxa_observada": 0.00116944066631996
+              }
+            ],
+            "inclinacao": 1.015888906848783,
+            "intercepto_cil": -0.10759038666273467,
+            "o_e": 0.8976428794851
+          },
+          "concentracao_topo": 0.1,
+          "log_loss": 0.009070998282542332,
+          "n": 850180,
+          "positivos": 800,
+          "pr_auc": 0.0011694406663203686,
+          "prevalencia": 0.00116944066631996,
+          "roc_auc": 0.5
+        },
+        "degrau_a": {
+          "brier": 0.0011612835105566956,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 113854,
+                "p_media": 2.8784963110936598e-05,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 56927,
+                "p_media": 3.3591522239594665e-05,
+                "positivos": 4,
+                "taxa_observada": 4.762577921274195e-05
+              },
+              {
+                "n": 84273,
+                "p_media": 8.947553750574164e-05,
+                "positivos": 9,
+                "taxa_observada": 0.00012855711335535135
+              },
+              {
+                "n": 113854,
+                "p_media": 0.00020469108635346286,
+                "positivos": 5,
+                "taxa_observada": 4.368969753971365e-05
+              },
+              {
+                "n": 56927,
+                "p_media": 0.0002245872861100703,
+                "positivos": 9,
+                "taxa_observada": 0.00013689528562465356
+              },
+              {
+                "n": 85018,
+                "p_media": 0.0002502861177407491,
+                "positivos": 13,
+                "taxa_observada": 0.00023137505246405664
+              },
+              {
+                "n": 84273,
+                "p_media": 0.0002982854366965679,
+                "positivos": 12,
+                "taxa_observada": 8.371443310062735e-05
+              },
+              {
+                "n": 85018,
+                "p_media": 0.0007513669472262771,
+                "positivos": 11,
+                "taxa_observada": 0.00021940817878635723
+              },
+              {
+                "n": 113854,
+                "p_media": 0.0032732173634890953,
+                "positivos": 320,
+                "taxa_observada": 0.0037037107574044645
+              },
+              {
+                "n": 56182,
+                "p_media": 0.009976200415625565,
+                "positivos": 417,
+                "taxa_observada": 0.008842536915879308
+              }
+            ],
+            "inclinacao": 1.1248371666061197,
+            "intercepto_cil": -0.09905267079943282,
+            "o_e": 0.9058583749555633
+          },
+          "concentracao_topo": 0.6592229473807264,
+          "corte_alta": {
+            "f1": 0.010786439078412582,
+            "matriz": {
+              "fn": 275850.39043624996,
+              "fp": 649437607.1737401,
+              "vn": 2611643600.860001,
+              "vp": 3542255.6388692204
+            },
+            "precision": 0.005424754790463989,
+            "recall": 0.9277520350878187
+          },
+          "log_loss": 0.007437460767335426,
+          "n": 850180,
+          "positivos": 800,
+          "pr_auc": 0.008841478281220894,
+          "prevalencia": 0.00116944066631996,
+          "roc_auc": 0.9031864441022182
+        },
+        "receita": {
+          "brier": 0.0011622147319110018,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 107574,
+                "p_media": 1.3137662417200705e-05,
+                "positivos": 4,
+                "taxa_observada": 3.9206169761313836e-05
+              },
+              {
+                "n": 98279,
+                "p_media": 3.123170072649263e-05,
+                "positivos": 6,
+                "taxa_observada": 9.885142796077617e-05
+              },
+              {
+                "n": 90855,
+                "p_media": 5.17251957181326e-05,
+                "positivos": 3,
+                "taxa_observada": 4.343098696483942e-05
+              },
+              {
+                "n": 85187,
+                "p_media": 7.837021014781967e-05,
+                "positivos": 7,
+                "taxa_observada": 5.649420832058288e-05
+              },
+              {
+                "n": 80935,
+                "p_media": 0.00011626821353533013,
+                "positivos": 7,
+                "taxa_observada": 4.213109202949507e-05
+              },
+              {
+                "n": 77495,
+                "p_media": 0.0001766884094664691,
+                "positivos": 6,
+                "taxa_observada": 0.0001701523160275976
+              },
+              {
+                "n": 75467,
+                "p_media": 0.0002921223676137404,
+                "positivos": 17,
+                "taxa_observada": 0.00017894839363803147
+              },
+              {
+                "n": 79344,
+                "p_media": 0.0005888569115506168,
+                "positivos": 30,
+                "taxa_observada": 0.0003104806460513932
+              },
+              {
+                "n": 83628,
+                "p_media": 0.0016321039623943593,
+                "positivos": 154,
+                "taxa_observada": 0.0016157441872220156
+              },
+              {
+                "n": 71416,
+                "p_media": 0.008441099398240089,
+                "positivos": 566,
+                "taxa_observada": 0.009138686408891296
+              }
+            ],
+            "inclinacao": 0.9477302295567734,
+            "intercepto_cil": 0.0240714108200136,
+            "o_e": 1.0238622861713167
+          },
+          "concentracao_topo": 0.7814874192453728,
+          "corte_alta": {
+            "f1": 0.010680086690329625,
+            "matriz": {
+              "fn": 306800.71162822004,
+              "fp": 650213063.6324744,
+              "vn": 2610868144.4012666,
+              "vp": 3511305.31767725
+            },
+            "precision": 0.005371232104007732,
+            "recall": 0.9196458376814568
+          },
+          "log_loss": 0.007325369553624094,
+          "n": 850180,
+          "positivos": 800,
+          "pr_auc": 0.013040156393712081,
+          "prevalencia": 0.00116944066631996,
+          "roc_auc": 0.913591987416642
+        }
+      },
+      "preferencia_com_pizza": {
+        "constante": {
+          "brier": 0.17803162085500746,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 802,
+                "p_media": 0.2345154842020302,
+                "positivos": 181,
+                "taxa_observada": 0.23171616648656476
+              }
+            ],
+            "inclinacao": 1.0077016964064132,
+            "intercepto_cil": -0.015636079298678704,
+            "o_e": 0.9880633992037222
+          },
+          "concentracao_topo": 0.1,
+          "log_loss": 0.5413635902441681,
+          "n": 802,
+          "positivos": 181,
+          "pr_auc": 0.23171616648656487,
+          "prevalencia": 0.23171616648656476,
+          "roc_auc": 0.5
+        },
+        "degrau_a": {
+          "brier": 0.1801525164742446,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 93,
+                "p_media": 0.1237122846839302,
+                "positivos": 17,
+                "taxa_observada": 0.1278315461977247
+              },
+              {
+                "n": 119,
+                "p_media": 0.1796734842038011,
+                "positivos": 29,
+                "taxa_observada": 0.2789460421906284
+              },
+              {
+                "n": 69,
+                "p_media": 0.2145085423422744,
+                "positivos": 27,
+                "taxa_observada": 0.44864934963878705
+              },
+              {
+                "n": 61,
+                "p_media": 0.22642208675781175,
+                "positivos": 6,
+                "taxa_observada": 0.0776113110493071
+              },
+              {
+                "n": 65,
+                "p_media": 0.23069049280880957,
+                "positivos": 12,
+                "taxa_observada": 0.24888732279119194
+              },
+              {
+                "n": 64,
+                "p_media": 0.23914755017494913,
+                "positivos": 21,
+                "taxa_observada": 0.2743328766867469
+              },
+              {
+                "n": 63,
+                "p_media": 0.24261773598706154,
+                "positivos": 11,
+                "taxa_observada": 0.23808681251035899
+              },
+              {
+                "n": 17,
+                "p_media": 0.2426241585119512,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 156,
+                "p_media": 0.2635332917656287,
+                "positivos": 35,
+                "taxa_observada": 0.26616731427779394
+              },
+              {
+                "n": 95,
+                "p_media": 0.33682359564462155,
+                "positivos": 23,
+                "taxa_observada": 0.19364091778396905
+              }
+            ],
+            "inclinacao": 0.21375691832942978,
+            "intercepto_cil": 0.015452229683262484,
+            "o_e": 1.01171807970277
+          },
+          "concentracao_topo": 0.08381370991927846,
+          "log_loss": 0.547093440344239,
+          "n": 802,
+          "positivos": 181,
+          "pr_auc": 0.23292879768022176,
+          "prevalencia": 0.23171616648656476,
+          "roc_auc": 0.5026922435478113
+        },
+        "receita": {
+          "brier": 0.18948060304209952,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 74,
+                "p_media": 0.06874813375323495,
+                "positivos": 15,
+                "taxa_observada": 0.178397100270147
+              },
+              {
+                "n": 51,
+                "p_media": 0.08943106415064848,
+                "positivos": 17,
+                "taxa_observada": 0.32149281095138815
+              },
+              {
+                "n": 68,
+                "p_media": 0.10203101864770903,
+                "positivos": 10,
+                "taxa_observada": 0.0676987220523025
+              },
+              {
+                "n": 53,
+                "p_media": 0.11401254509447721,
+                "positivos": 11,
+                "taxa_observada": 0.18745424445170278
+              },
+              {
+                "n": 43,
+                "p_media": 0.12623638974884924,
+                "positivos": 9,
+                "taxa_observada": 0.26090945689338557
+              },
+              {
+                "n": 69,
+                "p_media": 0.13900936385278465,
+                "positivos": 17,
+                "taxa_observada": 0.31312045033837577
+              },
+              {
+                "n": 98,
+                "p_media": 0.15891128028690174,
+                "positivos": 23,
+                "taxa_observada": 0.23329545569785642
+              },
+              {
+                "n": 101,
+                "p_media": 0.1871742062589938,
+                "positivos": 27,
+                "taxa_observada": 0.3196923115148255
+              },
+              {
+                "n": 128,
+                "p_media": 0.22450052394214623,
+                "positivos": 30,
+                "taxa_observada": 0.27554176202499586
+              },
+              {
+                "n": 117,
+                "p_media": 0.32063040025636413,
+                "positivos": 22,
+                "taxa_observada": 0.16534410786954173
+              }
+            ],
+            "inclinacao": 0.09495328579760734,
+            "intercepto_cil": 0.5381162684433489,
+            "o_e": 1.5137205862053562
+          },
+          "concentracao_topo": 0.07128834471701784,
+          "log_loss": 0.5844431407286689,
+          "n": 802,
+          "positivos": 181,
+          "pr_auc": 0.2397936557857613,
+          "prevalencia": 0.23171616648656476,
+          "roc_auc": 0.5332714714907827
+        }
+      },
+      "preferencia_todas": {
+        "constante": {
+          "brier": 0.19739463623114104,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 16112,
+                "p_media": 0.2345154842020302,
+                "positivos": 4595,
+                "taxa_observada": 0.26818348232593475
+              }
+            ],
+            "inclinacao": 0.9116854591869563,
+            "intercepto_cil": 0.1790867383818852,
+            "o_e": 1.1435640731291767
+          },
+          "concentracao_topo": 0.1,
+          "log_loss": 0.5845039643330612,
+          "n": 16112,
+          "positivos": 4595,
+          "pr_auc": 0.26818348232593336,
+          "prevalencia": 0.26818348232593475,
+          "roc_auc": 0.5
+        },
+        "degrau_a": {
+          "brier": 0.19575371206801245,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 1810,
+                "p_media": 0.12440598794792183,
+                "positivos": 293,
+                "taxa_observada": 0.14924806518343595
+              },
+              {
+                "n": 2719,
+                "p_media": 0.18511406723478144,
+                "positivos": 725,
+                "taxa_observada": 0.27978112210169337
+              },
+              {
+                "n": 1530,
+                "p_media": 0.21668417298927797,
+                "positivos": 544,
+                "taxa_observada": 0.34088262144259224
+              },
+              {
+                "n": 848,
+                "p_media": 0.22650148929226824,
+                "positivos": 225,
+                "taxa_observada": 0.2672472581639776
+              },
+              {
+                "n": 2255,
+                "p_media": 0.23306116944215793,
+                "positivos": 533,
+                "taxa_observada": 0.21746630570630943
+              },
+              {
+                "n": 1502,
+                "p_media": 0.24261773598706143,
+                "positivos": 441,
+                "taxa_observada": 0.25660272914210797
+              },
+              {
+                "n": 399,
+                "p_media": 0.24262415851195118,
+                "positivos": 130,
+                "taxa_observada": 0.2873825898622244
+              },
+              {
+                "n": 3035,
+                "p_media": 0.2624589864980384,
+                "positivos": 972,
+                "taxa_observada": 0.32434119744144124
+              },
+              {
+                "n": 2014,
+                "p_media": 0.33860828613940314,
+                "positivos": 732,
+                "taxa_observada": 0.358268004014704
+              }
+            ],
+            "inclinacao": 0.6979843173706759,
+            "intercepto_cil": 0.20065174626115456,
+            "o_e": 1.159115514609878
+          },
+          "concentracao_topo": 0.13475986610846752,
+          "log_loss": 0.5808780488716574,
+          "n": 16112,
+          "positivos": 4595,
+          "pr_auc": 0.3066631285807257,
+          "prevalencia": 0.26818348232593475,
+          "roc_auc": 0.5512523532434767
+        },
+        "receita": {
+          "brier": 0.1967759395092391,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 1439,
+                "p_media": 0.09656735489806015,
+                "positivos": 254,
+                "taxa_observada": 0.18237307294843194
+              },
+              {
+                "n": 1492,
+                "p_media": 0.1371737059184181,
+                "positivos": 338,
+                "taxa_observada": 0.20331259462405024
+              },
+              {
+                "n": 1459,
+                "p_media": 0.16648990873361946,
+                "positivos": 367,
+                "taxa_observada": 0.2356029797032201
+              },
+              {
+                "n": 1479,
+                "p_media": 0.18967806031681778,
+                "positivos": 366,
+                "taxa_observada": 0.2406108215367363
+              },
+              {
+                "n": 1600,
+                "p_media": 0.21159304816055693,
+                "positivos": 442,
+                "taxa_observada": 0.27778795815762286
+              },
+              {
+                "n": 1577,
+                "p_media": 0.23281290402703292,
+                "positivos": 445,
+                "taxa_observada": 0.2729745153721235
+              },
+              {
+                "n": 1602,
+                "p_media": 0.25488412924103715,
+                "positivos": 521,
+                "taxa_observada": 0.30391383975078795
+              },
+              {
+                "n": 1554,
+                "p_media": 0.2788072824312784,
+                "positivos": 512,
+                "taxa_observada": 0.3201140239883758
+              },
+              {
+                "n": 1858,
+                "p_media": 0.30997698452864825,
+                "positivos": 595,
+                "taxa_observada": 0.30915897600618086
+              },
+              {
+                "n": 2052,
+                "p_media": 0.39107287162889726,
+                "positivos": 755,
+                "taxa_observada": 0.33595690654295984
+              }
+            ],
+            "inclinacao": 0.5131180420000485,
+            "intercepto_cil": 0.23187738791627238,
+            "o_e": 1.1818717925533448
+          },
+          "concentracao_topo": 0.12529308230693892,
+          "log_loss": 0.5852956104890703,
+          "n": 16112,
+          "positivos": 4595,
+          "pr_auc": 0.3187469594963846,
+          "prevalencia": 0.26818348232593475,
+          "roc_auc": 0.5711443030553796
+        }
+      },
+      "score": {
+        "constante": {
+          "brier": 0.0002692408599179727,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 850180,
+                "p_media": 0.00018148744336278738,
+                "positivos": 180,
+                "taxa_observada": 0.00026930567342217925
+              }
+            ],
+            "inclinacao": 0.9548076216520498,
+            "intercepto_cil": 0.40611092980664754,
+            "o_e": 1.4838804736691682
+          },
+          "concentracao_topo": 0.10000000000000002,
+          "log_loss": 0.0025013413840939734,
+          "n": 850180,
+          "positivos": 180,
+          "pr_auc": 0.00026930567342227325,
+          "prevalencia": 0.00026930567342217925,
+          "roc_auc": 0.5
+        },
+        "degrau_a": {
+          "brier": 0.0002689491517067167,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 81246,
+                "p_media": 6.009577639930002e-06,
+                "positivos": 1,
+                "taxa_observada": 7.620155361868356e-06
+              },
+              {
+                "n": 90563,
+                "p_media": 8.252979280187736e-06,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 80049,
+                "p_media": 2.0197578852010002e-05,
+                "positivos": 2,
+                "taxa_observada": 2.339452755988048e-05
+              },
+              {
+                "n": 95538,
+                "p_media": 3.979750970730716e-05,
+                "positivos": 4,
+                "taxa_observada": 3.59534272574297e-05
+              },
+              {
+                "n": 73483,
+                "p_media": 5.1494415331338324e-05,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 89838,
+                "p_media": 6.067166624016848e-05,
+                "positivos": 1,
+                "taxa_observada": 9.612192457572449e-05
+              },
+              {
+                "n": 83069,
+                "p_media": 7.642540467432599e-05,
+                "positivos": 3,
+                "taxa_observada": 7.6043061793582685e-06
+              },
+              {
+                "n": 86067,
+                "p_media": 0.000177572442588059,
+                "positivos": 2,
+                "taxa_observada": 6.281246827581332e-05
+              },
+              {
+                "n": 86928,
+                "p_media": 0.0006498908634956364,
+                "positivos": 54,
+                "taxa_observada": 0.0007955084216604862
+              },
+              {
+                "n": 83399,
+                "p_media": 0.0019658015317385435,
+                "positivos": 113,
+                "taxa_observada": 0.0016621829856130262
+              }
+            ],
+            "inclinacao": 1.0180164310451714,
+            "intercepto_cil": -0.10252600463180513,
+            "o_e": 0.8793671440088687
+          },
+          "concentracao_topo": 0.6167338175641792,
+          "corte_alta": {
+            "f1": 0.0024290683153409378,
+            "matriz": {
+              "fn": 75858.70467559001,
+              "fp": 659803233.2088091,
+              "vn": 2604216824.945808,
+              "vp": 803397.2037537699
+            },
+            "precision": 0.001216150681460813,
+            "recall": 0.913723975069899
+          },
+          "log_loss": 0.0021453440373493137,
+          "n": 850180,
+          "positivos": 180,
+          "pr_auc": 0.0019112667714349869,
+          "prevalencia": 0.00026930567342217925,
+          "roc_auc": 0.8884547821471881
+        },
+        "receita": {
+          "brier": 0.00026905767521177013,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 97579,
+                "p_media": 3.352652738959179e-06,
+                "positivos": 1,
+                "taxa_observada": 6.964010035291044e-06
+              },
+              {
+                "n": 90059,
+                "p_media": 7.0328294431895024e-06,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 85687,
+                "p_media": 1.0854270343998355e-05,
+                "positivos": 1,
+                "taxa_observada": 4.01496426947277e-06
+              },
+              {
+                "n": 83789,
+                "p_media": 1.5549286758074378e-05,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 82822,
+                "p_media": 2.191878363317276e-05,
+                "positivos": 2,
+                "taxa_observada": 0.0001170826410757052
+              },
+              {
+                "n": 82008,
+                "p_media": 3.152845973575738e-05,
+                "positivos": 1,
+                "taxa_observada": 5.3829265634118415e-06
+              },
+              {
+                "n": 81115,
+                "p_media": 4.919101510146361e-05,
+                "positivos": 5,
+                "taxa_observada": 3.8110894712737085e-05
+              },
+              {
+                "n": 82516,
+                "p_media": 9.67784465222052e-05,
+                "positivos": 8,
+                "taxa_observada": 0.00013043040830777947
+              },
+              {
+                "n": 84607,
+                "p_media": 0.00026460520506548185,
+                "positivos": 38,
+                "taxa_observada": 0.0006007719796232475
+              },
+              {
+                "n": 79998,
+                "p_media": 0.001136417476832761,
+                "positivos": 124,
+                "taxa_observada": 0.001790292563254943
+              }
+            ],
+            "inclinacao": 0.9322612439395506,
+            "intercepto_cil": 0.4823062231298778,
+            "o_e": 1.644886028872757
+          },
+          "concentracao_topo": 0.664781500957079,
+          "corte_alta": {
+            "f1": 0.0024134537076270827,
+            "matriz": {
+              "fn": 98595.72488451001,
+              "fp": 645263769.3118764,
+              "vn": 2618756288.842741,
+              "vp": 780660.18354485
+            },
+            "precision": 0.0012083691893366643,
+            "recall": 0.887864586476724
+          },
+          "log_loss": 0.0021910054854972372,
+          "n": 850180,
+          "positivos": 180,
+          "pr_auc": 0.0018773494154979832,
+          "prevalencia": 0.00026930567342217925,
+          "roc_auc": 0.8954985847873131
+        }
+      }
+    },
+    "segmentos": {
+      "ocasiao": [
+        {
+          "log_loss": 0.0056388072042295135,
+          "motivo": null,
+          "n": 131790,
+          "o_e": 1.1102627411424493,
+          "positivos": 85,
+          "pr_auc": 0.009732364842283556,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.004806533247306794,
+          "motivo": null,
+          "n": 146680,
+          "o_e": 0.9412718872198951,
+          "positivos": 80,
+          "pr_auc": 0.005970382567026558,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": 0.004844186827051035,
+          "motivo": null,
+          "n": 142810,
+          "o_e": 0.832566416434004,
+          "positivos": 80,
+          "pr_auc": 0.006851419548142184,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.006964216069229049,
+          "motivo": null,
+          "n": 147990,
+          "o_e": 1.6707034624880923,
+          "positivos": 114,
+          "pr_auc": 0.010578792937177974,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.008742528392683354,
+          "motivo": null,
+          "n": 76440,
+          "o_e": 1.0296351778498127,
+          "positivos": 84,
+          "pr_auc": 0.02643352113668184,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.013011036388693316,
+          "motivo": null,
+          "n": 38620,
+          "o_e": 0.7420677310983075,
+          "positivos": 67,
+          "pr_auc": 0.023471121226477234,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.011210709514610728,
+          "motivo": null,
+          "n": 165850,
+          "o_e": 1.0187503978871804,
+          "positivos": 290,
+          "pr_auc": 0.014866715344888006,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": 0.001704752281179109,
+          "motivo": null,
+          "n": 170036,
+          "o_e": 0.30952123344228794,
+          "positivos": 16,
+          "pr_auc": 0.00027584758420355317,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 170036,
+          "o_e": null,
+          "positivos": 1,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": 0.0009276461056693122,
+          "motivo": null,
+          "n": 170036,
+          "o_e": 0.8247339637742557,
+          "positivos": 15,
+          "pr_auc": 0.0003162643138454945,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.03212098761514647,
+          "motivo": null,
+          "n": 170036,
+          "o_e": 1.1290856704622965,
+          "positivos": 737,
+          "pr_auc": 0.014063136947211268,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": 0.0017726508743775,
+          "motivo": null,
+          "n": 170036,
+          "o_e": 0.7870131991397504,
+          "positivos": 31,
+          "pr_auc": 0.00040849721787133037,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.008417182368118371,
+          "motivo": null,
+          "n": 103800,
+          "o_e": 0.7587749157278775,
+          "positivos": 115,
+          "pr_auc": 0.017609740591333207,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.00657280128892118,
+          "motivo": null,
+          "n": 296900,
+          "o_e": 1.9746510132099135,
+          "positivos": 268,
+          "pr_auc": 0.013675317229545928,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": 0.006163500331686426,
+          "motivo": null,
+          "n": 128070,
+          "o_e": 1.3311930041075748,
+          "positivos": 98,
+          "pr_auc": 0.011584048634270414,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.0070127999901816165,
+          "motivo": null,
+          "n": 210880,
+          "o_e": 0.8360728403335467,
+          "positivos": 173,
+          "pr_auc": 0.012531134949999854,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.009751106325583138,
+          "motivo": null,
+          "n": 110530,
+          "o_e": 0.9993581894189985,
+          "positivos": 146,
+          "pr_auc": 0.01958726306877383,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.008125646730691436,
+          "motivo": null,
+          "n": 124790,
+          "o_e": 0.9449599125639668,
+          "positivos": 148,
+          "pr_auc": 0.014689851765601034,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.011172343376342172,
+          "motivo": null,
+          "n": 163600,
+          "o_e": 1.0959114920771116,
+          "positivos": 244,
+          "pr_auc": 0.015000350178465623,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.008435486266870957,
+          "motivo": null,
+          "n": 217020,
+          "o_e": 1.14442927369762,
+          "positivos": 241,
+          "pr_auc": 0.014497456961055564,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.005366437946846431,
+          "motivo": null,
+          "n": 188870,
+          "o_e": 0.9528673281555576,
+          "positivos": 125,
+          "pr_auc": 0.009892264187143633,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": 0.0031572159044760384,
+          "motivo": null,
+          "n": 155900,
+          "o_e": 0.7202794600947651,
+          "positivos": 42,
+          "pr_auc": 0.013109817180875206,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.006606113222094634,
+          "motivo": null,
+          "n": 455890,
+          "o_e": 0.9036764145788898,
+          "positivos": 412,
+          "pr_auc": 0.011511163860311034,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.008115613091902011,
+          "motivo": null,
+          "n": 394290,
+          "o_e": 1.1540130782098947,
+          "positivos": 388,
+          "pr_auc": 0.015039458053557032,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": 0.003496790841310141,
+          "motivo": null,
+          "n": 171380,
+          "o_e": 1.0094271244133712,
+          "positivos": 77,
+          "pr_auc": 0.005354503013531864,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.008655207054179766,
+          "motivo": null,
+          "n": 259980,
+          "o_e": 1.3248530757094394,
+          "positivos": 293,
+          "pr_auc": 0.018864766448370124,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.010189767489866856,
+          "motivo": null,
+          "n": 146180,
+          "o_e": 0.9664435720900821,
+          "positivos": 223,
+          "pr_auc": 0.015020163443386794,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": 0.009954171544003056,
+          "motivo": null,
+          "n": 39170,
+          "o_e": 0.5909458746029252,
+          "positivos": 56,
+          "pr_auc": 0.01578279576721676,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.005244662384192386,
+          "motivo": null,
+          "n": 233470,
+          "o_e": 1.0196507724576889,
+          "positivos": 151,
+          "pr_auc": 0.007323952516170889,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.010007952502607028,
+          "motivo": null,
+          "n": 425090,
+          "o_e": 1.111906895939634,
+          "positivos": 534,
+          "pr_auc": 0.015512606619222904,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.00464278660464116,
+          "motivo": null,
+          "n": 425090,
+          "o_e": 0.8562119679005518,
+          "positivos": 266,
+          "pr_auc": 0.007890525558211554,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ],
+      "preferencia_com_pizza": [
+        {
+          "log_loss": 0.40815180636863063,
+          "motivo": null,
+          "n": 85,
+          "o_e": 1.0048021071741033,
+          "positivos": 11,
+          "pr_auc": 0.21593108923517573,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.7445672586393238,
+          "motivo": null,
+          "n": 80,
+          "o_e": 1.8722940526859821,
+          "positivos": 18,
+          "pr_auc": 0.30998202603609415,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": 0.6974229294311308,
+          "motivo": null,
+          "n": 80,
+          "o_e": 1.6675200834063566,
+          "positivos": 24,
+          "pr_auc": 0.2738448649144094,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.7100812157886364,
+          "motivo": null,
+          "n": 114,
+          "o_e": 1.9055519577945839,
+          "positivos": 26,
+          "pr_auc": 0.3526496159223854,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.47114512697010924,
+          "motivo": null,
+          "n": 84,
+          "o_e": 0.9784894778088019,
+          "positivos": 15,
+          "pr_auc": 0.24575063934776867,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.42734123339257535,
+          "motivo": null,
+          "n": 68,
+          "o_e": 0.8719505287847026,
+          "positivos": 12,
+          "pr_auc": 0.2045746705603488,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.5847294336775569,
+          "motivo": null,
+          "n": 291,
+          "o_e": 1.7670546874832223,
+          "positivos": 75,
+          "pr_auc": 0.2737309499686156,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 16,
+          "o_e": null,
+          "positivos": 3,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 1,
+          "o_e": null,
+          "positivos": 0,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 15,
+          "o_e": null,
+          "positivos": 5,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.5740323945939495,
+          "motivo": null,
+          "n": 739,
+          "o_e": 1.5403504566390096,
+          "positivos": 168,
+          "pr_auc": 0.24958878338138268,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 31,
+          "o_e": null,
+          "positivos": 5,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.6021385477938508,
+          "motivo": null,
+          "n": 115,
+          "o_e": 1.8576814365824663,
+          "positivos": 25,
+          "pr_auc": 0.21560555868512504,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.5632370653773884,
+          "motivo": null,
+          "n": 268,
+          "o_e": 0.9242269226569731,
+          "positivos": 66,
+          "pr_auc": 0.1992223199185912,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": 0.5189701602700679,
+          "motivo": null,
+          "n": 99,
+          "o_e": 1.3908574571608072,
+          "positivos": 20,
+          "pr_auc": 0.4674687253417545,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.6702108607473186,
+          "motivo": null,
+          "n": 174,
+          "o_e": 2.3581218975576608,
+          "positivos": 43,
+          "pr_auc": 0.3406111808978172,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.45279859252392696,
+          "motivo": null,
+          "n": 146,
+          "o_e": 1.2538770350841129,
+          "positivos": 27,
+          "pr_auc": 0.2581699492117153,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.680128541400672,
+          "motivo": null,
+          "n": 148,
+          "o_e": 1.5951583912021976,
+          "positivos": 40,
+          "pr_auc": 0.30943422489750894,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.6332231600856182,
+          "motivo": null,
+          "n": 245,
+          "o_e": 1.6852016443434306,
+          "positivos": 51,
+          "pr_auc": 0.2170068985635928,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.5647895956675091,
+          "motivo": null,
+          "n": 241,
+          "o_e": 1.6161910183242298,
+          "positivos": 57,
+          "pr_auc": 0.27280713250374056,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.5501818184832106,
+          "motivo": null,
+          "n": 126,
+          "o_e": 1.3679393958662895,
+          "positivos": 29,
+          "pr_auc": 0.29266415705450477,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 42,
+          "o_e": null,
+          "positivos": 4,
+          "pr_auc": null,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.6542753433433183,
+          "motivo": null,
+          "n": 413,
+          "o_e": 1.5629611057851582,
+          "positivos": 100,
+          "pr_auc": 0.23711177424564395,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.525367607357242,
+          "motivo": null,
+          "n": 389,
+          "o_e": 1.4638208546935048,
+          "positivos": 81,
+          "pr_auc": 0.26720332734702645,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": 0.9486483056424074,
+          "motivo": null,
+          "n": 78,
+          "o_e": 1.9927544965790638,
+          "positivos": 15,
+          "pr_auc": 0.310563402678536,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.6204876955661149,
+          "motivo": null,
+          "n": 293,
+          "o_e": 1.6687887118441553,
+          "positivos": 74,
+          "pr_auc": 0.30098530584706706,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.3994348816563833,
+          "motivo": null,
+          "n": 223,
+          "o_e": 0.9057681058551623,
+          "positivos": 35,
+          "pr_auc": 0.12090693050904612,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 57,
+          "o_e": null,
+          "positivos": 9,
+          "pr_auc": null,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.7746995837213361,
+          "motivo": null,
+          "n": 151,
+          "o_e": 1.8283082234238506,
+          "positivos": 48,
+          "pr_auc": 0.3325833869510333,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.6201740989011768,
+          "motivo": null,
+          "n": 536,
+          "o_e": 1.6194113933160712,
+          "positivos": 123,
+          "pr_auc": 0.2458746224389805,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.49575401089860477,
+          "motivo": null,
+          "n": 266,
+          "o_e": 1.2545482006349626,
+          "positivos": 58,
+          "pr_auc": 0.27209285972346836,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ],
+      "preferencia_todas": [
+        {
+          "log_loss": 0.5887830467675194,
+          "motivo": null,
+          "n": 2290,
+          "o_e": 1.2543992606442167,
+          "positivos": 662,
+          "pr_auc": 0.3726427213319389,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.6089783569123243,
+          "motivo": null,
+          "n": 2176,
+          "o_e": 1.0533651459921567,
+          "positivos": 656,
+          "pr_auc": 0.33041560623892574,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": 0.5651559223655488,
+          "motivo": null,
+          "n": 2001,
+          "o_e": 1.0467887779687346,
+          "positivos": 573,
+          "pr_auc": 0.3256736406858324,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.5951370308197207,
+          "motivo": null,
+          "n": 2203,
+          "o_e": 1.1528550618344544,
+          "positivos": 638,
+          "pr_auc": 0.32943054240914604,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.5333510297631012,
+          "motivo": null,
+          "n": 1276,
+          "o_e": 0.9442211431137411,
+          "positivos": 329,
+          "pr_auc": 0.26352155095611796,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.5693752834099098,
+          "motivo": null,
+          "n": 828,
+          "o_e": 1.0329287112505712,
+          "positivos": 211,
+          "pr_auc": 0.2902810659485575,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.5939830497062691,
+          "motivo": null,
+          "n": 5338,
+          "o_e": 1.4469448781457135,
+          "positivos": 1526,
+          "pr_auc": 0.3341141982251914,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": 0.5650124895929199,
+          "motivo": null,
+          "n": 7145,
+          "o_e": 1.1057542325967997,
+          "positivos": 1984,
+          "pr_auc": 0.3171367290438422,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": 0.5282049478120799,
+          "motivo": null,
+          "n": 56,
+          "o_e": 1.2145690189247669,
+          "positivos": 17,
+          "pr_auc": 0.5099821139624009,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": 0.6086004174943048,
+          "motivo": null,
+          "n": 680,
+          "o_e": 0.9456674874777834,
+          "positivos": 243,
+          "pr_auc": 0.3668915225485333,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.5980007816177878,
+          "motivo": null,
+          "n": 5900,
+          "o_e": 1.2861435746760221,
+          "positivos": 1648,
+          "pr_auc": 0.3245217551312332,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": 0.6089670426384403,
+          "motivo": null,
+          "n": 2331,
+          "o_e": 1.231867077554262,
+          "positivos": 703,
+          "pr_auc": 0.3106189551435331,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.6291733655932148,
+          "motivo": null,
+          "n": 2449,
+          "o_e": 1.5025103445918966,
+          "positivos": 695,
+          "pr_auc": 0.2960873130146647,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.6397765155393048,
+          "motivo": null,
+          "n": 4587,
+          "o_e": 1.1067005471593871,
+          "positivos": 1510,
+          "pr_auc": 0.3755301457394632,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": 0.645470603291126,
+          "motivo": null,
+          "n": 1949,
+          "o_e": 1.257098138133958,
+          "positivos": 584,
+          "pr_auc": 0.3491235221839119,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.603197581925511,
+          "motivo": null,
+          "n": 3993,
+          "o_e": 1.2134141273517358,
+          "positivos": 1242,
+          "pr_auc": 0.2980288515150251,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.4585099482574658,
+          "motivo": null,
+          "n": 3134,
+          "o_e": 1.0298087763464157,
+          "positivos": 564,
+          "pr_auc": 0.1846491664308459,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.6208004358176035,
+          "motivo": null,
+          "n": 3397,
+          "o_e": 1.1710105115298284,
+          "positivos": 1080,
+          "pr_auc": 0.32569513450092663,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.5521507137536975,
+          "motivo": null,
+          "n": 4204,
+          "o_e": 1.2074139147107636,
+          "positivos": 1098,
+          "pr_auc": 0.30901503579759915,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.5861249233696921,
+          "motivo": null,
+          "n": 4226,
+          "o_e": 1.2533953797221542,
+          "positivos": 1182,
+          "pr_auc": 0.31483622172615777,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.5707717338559785,
+          "motivo": null,
+          "n": 2755,
+          "o_e": 1.0966541020860623,
+          "positivos": 749,
+          "pr_auc": 0.3095421141945206,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": 0.6265454193883316,
+          "motivo": null,
+          "n": 1530,
+          "o_e": 1.1281998440166634,
+          "positivos": 486,
+          "pr_auc": 0.35704687253860323,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.597121165184948,
+          "motivo": null,
+          "n": 7945,
+          "o_e": 1.177652542775495,
+          "positivos": 2302,
+          "pr_auc": 0.3326342602626884,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.575267560968844,
+          "motivo": null,
+          "n": 8167,
+          "o_e": 1.1857714194198323,
+          "positivos": 2293,
+          "pr_auc": 0.3061233725094288,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": 0.6607751083962355,
+          "motivo": null,
+          "n": 2064,
+          "o_e": 1.3259004604887061,
+          "positivos": 697,
+          "pr_auc": 0.3525587952060937,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.5796129249182951,
+          "motivo": null,
+          "n": 5570,
+          "o_e": 1.109007626866823,
+          "positivos": 1538,
+          "pr_auc": 0.30755931112858437,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.5516077988195333,
+          "motivo": null,
+          "n": 3542,
+          "o_e": 1.2066744394706785,
+          "positivos": 838,
+          "pr_auc": 0.27493907162430553,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": 0.5320845722013713,
+          "motivo": null,
+          "n": 858,
+          "o_e": 1.249733174079595,
+          "positivos": 195,
+          "pr_auc": 0.23947582671530077,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.6123556737232012,
+          "motivo": null,
+          "n": 4078,
+          "o_e": 1.1894732527709877,
+          "positivos": 1327,
+          "pr_auc": 0.36507944133639536,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.5924855782906371,
+          "motivo": null,
+          "n": 11375,
+          "o_e": 1.157756597625259,
+          "positivos": 3309,
+          "pr_auc": 0.3212536791724416,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.5666402370538092,
+          "motivo": null,
+          "n": 4737,
+          "o_e": 1.2564754471800128,
+          "positivos": 1286,
+          "pr_auc": 0.31366355394874196,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ],
+      "score": [
+        {
+          "log_loss": 0.0011168971070808352,
+          "motivo": null,
+          "n": 131790,
+          "o_e": 1.157087720571852,
+          "positivos": 11,
+          "pr_auc": 0.0005016639608503572,
+          "segmento": "dia_semana",
+          "valor": 1
+        },
+        {
+          "log_loss": 0.001996216472040426,
+          "motivo": null,
+          "n": 146680,
+          "o_e": 1.7702030264238726,
+          "positivos": 18,
+          "pr_auc": 0.0013819050086661608,
+          "segmento": "dia_semana",
+          "valor": 2
+        },
+        {
+          "log_loss": 0.0016489513092085484,
+          "motivo": null,
+          "n": 142810,
+          "o_e": 1.5110773861727904,
+          "positivos": 24,
+          "pr_auc": 0.007837115865696792,
+          "segmento": "dia_semana",
+          "valor": 3
+        },
+        {
+          "log_loss": 0.002588925731863206,
+          "motivo": null,
+          "n": 147990,
+          "o_e": 3.2720655418539577,
+          "positivos": 26,
+          "pr_auc": 0.0023619243674369533,
+          "segmento": "dia_semana",
+          "valor": 4
+        },
+        {
+          "log_loss": 0.0019937222226157824,
+          "motivo": null,
+          "n": 76440,
+          "o_e": 1.1483922886732196,
+          "positivos": 15,
+          "pr_auc": 0.0025685282110227293,
+          "segmento": "dia_semana",
+          "valor": 5
+        },
+        {
+          "log_loss": 0.002706840578933365,
+          "motivo": null,
+          "n": 38620,
+          "o_e": 0.6875593355897137,
+          "positivos": 12,
+          "pr_auc": 0.00209409202201678,
+          "segmento": "dia_semana",
+          "valor": 6
+        },
+        {
+          "log_loss": 0.0032654173679123513,
+          "motivo": null,
+          "n": 165850,
+          "o_e": 1.9632508736202519,
+          "positivos": 74,
+          "pr_auc": 0.003037256751784194,
+          "segmento": "dia_semana",
+          "valor": 7
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 170036,
+          "o_e": null,
+          "positivos": 3,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "almoco"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 170036,
+          "o_e": null,
+          "positivos": 0,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "madrugada"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 170036,
+          "o_e": null,
+          "positivos": 5,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "manha"
+        },
+        {
+          "log_loss": 0.009643976949918706,
+          "motivo": null,
+          "n": 170036,
+          "o_e": 1.8070416014301243,
+          "positivos": 167,
+          "pr_auc": 0.002018530612815492,
+          "segmento": "faixa_horario",
+          "valor": "noite"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 170036,
+          "o_e": null,
+          "positivos": 5,
+          "pr_auc": null,
+          "segmento": "faixa_horario",
+          "valor": "tarde"
+        },
+        {
+          "log_loss": 0.002553579018746155,
+          "motivo": null,
+          "n": 103800,
+          "o_e": 1.3612967819387243,
+          "positivos": 25,
+          "pr_auc": 0.002368759238157133,
+          "segmento": "regiao",
+          "valor": "centro_oeste"
+        },
+        {
+          "log_loss": 0.0017930179700337413,
+          "motivo": null,
+          "n": 296900,
+          "o_e": 1.6593865050747265,
+          "positivos": 66,
+          "pr_auc": 0.0026630615660103276,
+          "segmento": "regiao",
+          "valor": "nordeste"
+        },
+        {
+          "log_loss": 0.0017627205646747212,
+          "motivo": null,
+          "n": 128070,
+          "o_e": 1.6722823931551296,
+          "positivos": 20,
+          "pr_auc": 0.0015193416626073394,
+          "segmento": "regiao",
+          "valor": "norte"
+        },
+        {
+          "log_loss": 0.0024068230499203497,
+          "motivo": null,
+          "n": 210880,
+          "o_e": 1.958385705787443,
+          "positivos": 42,
+          "pr_auc": 0.001736880146310275,
+          "segmento": "regiao",
+          "valor": "sudeste"
+        },
+        {
+          "log_loss": 0.002362134460851013,
+          "motivo": null,
+          "n": 110530,
+          "o_e": 1.202506566473087,
+          "positivos": 27,
+          "pr_auc": 0.0032527499087708625,
+          "segmento": "regiao",
+          "valor": "sul"
+        },
+        {
+          "log_loss": 0.00308045346309721,
+          "motivo": null,
+          "n": 124790,
+          "o_e": 1.7321029556497018,
+          "positivos": 40,
+          "pr_auc": 0.002177812927886827,
+          "segmento": "faixa_etaria",
+          "valor": "10-17"
+        },
+        {
+          "log_loss": 0.0035578397871080273,
+          "motivo": null,
+          "n": 163600,
+          "o_e": 2.0781941898804357,
+          "positivos": 51,
+          "pr_auc": 0.002860070160399812,
+          "segmento": "faixa_etaria",
+          "valor": "18-29"
+        },
+        {
+          "log_loss": 0.0025280481841189204,
+          "motivo": null,
+          "n": 217020,
+          "o_e": 1.9669836841810766,
+          "positivos": 57,
+          "pr_auc": 0.0024904967059576223,
+          "segmento": "faixa_etaria",
+          "valor": "30-44"
+        },
+        {
+          "log_loss": 0.0014529390641997658,
+          "motivo": null,
+          "n": 188870,
+          "o_e": 1.31832702509992,
+          "positivos": 28,
+          "pr_auc": 0.0018112465201217632,
+          "segmento": "faixa_etaria",
+          "valor": "45-59"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 155900,
+          "o_e": null,
+          "positivos": 4,
+          "pr_auc": null,
+          "segmento": "faixa_etaria",
+          "valor": "60+"
+        },
+        {
+          "log_loss": 0.002131668881988543,
+          "motivo": null,
+          "n": 455890,
+          "o_e": 1.5724096120335207,
+          "positivos": 100,
+          "pr_auc": 0.0022678752456043645,
+          "segmento": "sexo",
+          "valor": "feminino"
+        },
+        {
+          "log_loss": 0.0022561983318450675,
+          "motivo": null,
+          "n": 394290,
+          "o_e": 1.732932972907178,
+          "positivos": 80,
+          "pr_auc": 0.0016047704737521323,
+          "segmento": "sexo",
+          "valor": "masculino"
+        },
+        {
+          "log_loss": 0.0014131737506343535,
+          "motivo": null,
+          "n": 171380,
+          "o_e": 2.12629427272111,
+          "positivos": 15,
+          "pr_auc": 0.00309930749441547,
+          "segmento": "faixa_renda",
+          "valor": "ate_meio_sm"
+        },
+        {
+          "log_loss": 0.0030152836514747553,
+          "motivo": null,
+          "n": 259980,
+          "o_e": 2.227287723387393,
+          "positivos": 74,
+          "pr_auc": 0.002337945195222756,
+          "segmento": "faixa_renda",
+          "valor": "de_1_a_2_sm"
+        },
+        {
+          "log_loss": 0.0017140811669836202,
+          "motivo": null,
+          "n": 146180,
+          "o_e": 0.9321955916380295,
+          "positivos": 35,
+          "pr_auc": 0.0031247771460321577,
+          "segmento": "faixa_renda",
+          "valor": "de_2_a_5_sm"
+        },
+        {
+          "log_loss": null,
+          "motivo": "positivos insuficientes",
+          "n": 39170,
+          "o_e": null,
+          "positivos": 8,
+          "pr_auc": null,
+          "segmento": "faixa_renda",
+          "valor": "mais_de_5_sm"
+        },
+        {
+          "log_loss": 0.002254737755184546,
+          "motivo": null,
+          "n": 233470,
+          "o_e": 2.11948700073381,
+          "positivos": 48,
+          "pr_auc": 0.0019885491440163774,
+          "segmento": "faixa_renda",
+          "valor": "meio_a_1_sm"
+        },
+        {
+          "log_loss": 0.00319254414423274,
+          "motivo": null,
+          "n": 425090,
+          "o_e": 1.9478454179540696,
+          "positivos": 122,
+          "pr_auc": 0.0024283461738186843,
+          "segmento": "local",
+          "valor": "em_casa"
+        },
+        {
+          "log_loss": 0.0011894668267617354,
+          "motivo": null,
+          "n": 425090,
+          "o_e": 1.1064762064706672,
+          "positivos": 58,
+          "pr_auc": 0.0009987707911052347,
+          "segmento": "local",
+          "valor": "fora_de_casa"
+        }
+      ]
+    }
+  },
+  "natureza": "confirmatório",
+  "nome": "teste_final",
+  "semente": 20261112,
+  "tag_receita": {
+    "commit": "fa700be0b9c9f1a7c215de2a22803315865b3df9",
+    "nome": "receita-congelada",
+    "objeto": "cd0fea57ce13916f562f1c51ec8a916273dd484f"
+  },
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  }
+}
