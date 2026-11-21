@@ -797,6 +797,12 @@ def etapa_produto(b: int = B_PADRAO) -> None:
         _conferir_dobras_de_h5(dobras)
         hash_dobras = r.dados["dobras"]["hash"]
         celulas, ocasioes = _celulas(), _ocasioes()
+        for p in PARTES:
+            if cal["metricas"][p]["vencedor"] != _vencedor(p, dobras):
+                raise ValueError(
+                    f"calibracao.json e escada_{p}.json discordam do vencedor: "
+                    "rode `make calibracao` de novo"
+                )
         calibrar = {p: bool(cal["metricas"][p]["calibrar"]) for p in PARTES}
         r.configuracao["calibrar_partes"] = calibrar
         oc, pref = (
@@ -1008,6 +1014,10 @@ def etapa_receita() -> None:
         usar_peso = {p: bool(rel["h5_peso"]["metricas"][p]["usar_peso"]) for p in PARTES}
         calibrar = {p: bool(rel["calibracao"]["metricas"][p]["calibrar"]) for p in PARTES}
         score = cast(Literal["produto", "direto"], rel["h6_h7_produto"]["metricas"]["score"])
+        if rel["cortes"]["metricas"].get("score") != score:
+            raise ValueError(
+                "cortes.json é de outro score que h6_h7_produto.json: rode `make cortes` de novo"
+            )
         calibrar_score = bool(rel["h6_h7_produto"]["metricas"]["H7"]["calibrar_score"])
         partes: list[ParteModelo] = ["ocasiao", "preferencia"]
         if score == "direto":

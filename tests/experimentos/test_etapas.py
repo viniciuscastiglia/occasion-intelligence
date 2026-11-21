@@ -311,7 +311,7 @@ def _parcela_que_muda(
     return float(np.sum(w[muda]) / np.sum(w))
 
 
-def _conferir_cadeia(pastas: Path, esperado_score: str) -> None:
+def _conferir_cadeia(pastas: Path, esperado_score: str, forcado: bool = False) -> None:
     rel = pastas / "reports" / "experimentos"
     hash_dobras = _json(pastas / "reports" / "dobras.json")["dados"]["hash_dobras"]
     h5 = _json(rel / "h5_peso.json")["metricas"]
@@ -333,7 +333,10 @@ def _conferir_cadeia(pastas: Path, esperado_score: str) -> None:
         assert len(m["sigmoide_por_dobra"]) == 5
 
     h6, h7 = prod["metricas"]["H6"], prod["metricas"]["H7"]
-    assert h6["veredito"] == padrao(_ic(h6["ganho_do_direto"])) or esperado_score == "direto"
+    if forcado:  # `padrao` foi trocado por um que sempre refuta: o veredito não vem do IC
+        assert h6["veredito"] == "padrão refutado"
+    else:
+        assert h6["veredito"] == padrao(_ic(h6["ganho_do_direto"]))
     assert prod["metricas"]["score"] == esperado_score
     assert h6["pr_auc"]["produto"] is not None and h6["pr_auc"]["direto"] is not None
     degrau_direto = h6["degrau"]
@@ -412,7 +415,7 @@ def test_calibracao_produto_cortes_e_receita(pastas: Path, monkeypatch: pytest.M
     etapas.etapa_produto(b=20)
     etapas.etapa_cortes()
     etapas.etapa_receita()
-    _conferir_cadeia(pastas, "direto")
+    _conferir_cadeia(pastas, "direto", forcado=True)
     # com o score direto, a sensibilidade continua sobre as partes, e o JSON avisa
     cortes = _json(pastas / "reports" / "experimentos" / "cortes.json")
     assert "partes do produto" in cortes["metricas"]["aviso_direto"]
@@ -428,3 +431,37 @@ def test_produto_recusa_calibracao_que_falhou(pastas: Path) -> None:
     with pytest.raises(ValueError, match="calibracao.json"):
         etapas.etapa_produto(b=5)
     assert _json(rel / "h6_h7_produto.json")["metricas"]["status"] == "falhou"
+
+
+def test_produto_recusa_calibracao_de_outro_vencedor(pastas: Path) -> None:
+    etapas.etapa_dobras()
+    etapas.etapa_peso()
+    etapas.etapa_escada("preferencia")
+    etapas.etapa_escada("ocasiao")
+    etapas.etapa_calibracao()
+    rel = pastas / "reports" / "experimentos"
+    caminho = rel / "calibracao.json"
+    cal = _json(caminho)
+    cal["metricas"]["ocasiao"]["vencedor"] = "outro_degrau"
+    caminho.write_text(json.dumps(cal), encoding="utf-8")
+    with pytest.raises(ValueError, match="discordam do vencedor"):
+        etapas.etapa_produto(b=5)
+    assert _json(rel / "h6_h7_produto.json")["metricas"]["status"] == "falhou"
+
+
+def test_receita_recusa_cortes_de_outro_score(pastas: Path) -> None:
+    etapas.etapa_dobras()
+    etapas.etapa_peso()
+    etapas.etapa_escada("preferencia")
+    etapas.etapa_escada("ocasiao")
+    etapas.etapa_calibracao()
+    etapas.etapa_produto(b=20)
+    etapas.etapa_cortes()
+    caminho = pastas / "reports" / "experimentos" / "cortes.json"
+    cortes = _json(caminho)
+    cortes["metricas"]["score"] = (
+        "direto" if cortes["metricas"]["score"] == "produto" else "produto"
+    )
+    caminho.write_text(json.dumps(cortes), encoding="utf-8")
+    with pytest.raises(ValueError, match="cortes.json é de outro score"):
+        etapas.etapa_receita()
