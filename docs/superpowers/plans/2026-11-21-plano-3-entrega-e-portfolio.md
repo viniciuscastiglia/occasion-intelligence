@@ -233,7 +233,7 @@ Esta tarefa não bloqueia a 6 nem a 7: elas são testadas sem chave.
   - `test_tabela_marca_so_o_contexto_atual`;
   - `test_score_da_tabela_igual_ao_de_prever`.
 - [ ] **Passo 3: testes da tela**, com `AppTest`, sem `BRIEFING_*` no ambiente e sem `secrets.toml`:
-  - `test_tela_mostra_mapa_de_calor_depois_de_calcular`: há um `vega_lite_chart` a mais;
+  - `test_tela_mostra_mapa_de_calor_depois_de_calcular`: o número de gráficos Altair passa de 1 para 2 (conferir no `context7` o nome do elemento no `AppTest` da versão instalada);
   - `test_briefing_sem_chave_mostra_reserva_com_motivo`: clicar em "Gerar briefing" mostra texto e a legenda com "sem chave configurada", sem exceção;
   - `test_mapa_e_briefing_usam_o_contexto_calculado`: mudar o dia no formulário sem recalcular não muda a célula destacada.
 - [ ] **Passo 4:** rodar e ver falhar; implementar; rodar e ver passar; `make teste`; `make qualidade`.
@@ -411,9 +411,8 @@ Calendário-alvo: 22/11, tarefas 1 a 10; 23/11, tarefas 11 a 13; 24/11, tarefa 1
 
 ## Ordem de corte
 
-1. Rota `/docs` e testes extras da API (a API mínima fica).
-2. Bloco `segmentos_teste`.
-3. Comparação de provedores: usar o Groq com um modelo da documentação.
-4. Briefing pelo LLM na demo pública: publicar só com o texto reserva.
+1. Bloco `segmentos_teste`.
+2. Comparação de provedores: usar o Groq com um modelo indicado na documentação dele.
+3. Briefing pelo LLM na demo pública: publicar só com o texto reserva (o código e os testes do briefing ficam).
 
 Os entregáveis obrigatórios e a publicação não entram na lista de corte.
