@@ -1,0 +1,816 @@
+{
+  "commit": "receita-congelada-3-g57f303ae9099",
+  "configuracao": {
+    "assinatura_receita": "3da52ca3afe619559ada4286d674b206abdf70aa9a41aab87cea666a817872b8",
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "nivel": 0.95,
+      "semente": 20261112,
+      "unidade": "cod_upa de 2017-2018"
+    },
+    "bracos": {
+      "inteira": "as mesmas mais toda a 2008-2009, sempre no treino",
+      "recente": "só as dobras de treino de 2017-2018"
+    },
+    "calibracao": {
+      "ocasiao": false,
+      "preferencia": false,
+      "regra": "sigmoide ajustada nas previsões fora da dobra interna só das linhas de 2017-2018, com peso_final",
+      "score": "calibrar_score da receita não entra: H9 compara as partes"
+    },
+    "dobras": "setores de 2017-2018, critério de 10% a 30% dos positivos dos quatro alvos; a chave (edicao, cod_upa) deixa 2008-2009 sempre no treino",
+    "hipotese": "H9 e diagnóstico 6.8",
+    "linguagem": "a diferença entre o braço recente (validação cruzada dentro de 2017-2018) e o teste final é o efeito conjunto de dez anos e da mudança do método de coleta (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018); o projeto não separa os dois",
+    "nos_das_curvas": "sem peso (o sample_weight não chega ao SplineTransformer)",
+    "peso": "o peso de treino é peso_final normalizado para média 1 dentro de cada conjunto de treino; os pesos de 2008-2009 e de 2017-2018 são de populações diferentes (cada edição soma a sua) e, na base inteira, entram como estão",
+    "receita": "congelada: parâmetros de reports/receita.json, sem nova busca",
+    "score": "produto",
+    "semente_dobras_internas": "SEMENTE + k para a dobra externa k (dobras_internas)",
+    "tentativas_de_dobras": 2
+  },
+  "dados": {
+    "celulas_2017": 850180,
+    "hash_dobras": "9fc0481f107ead3b7389ecaa4249bc666e10ba6d63fd2bb1efd6ae156462cc4c",
+    "ocasioes_2008": 19182,
+    "ocasioes_2017": 16112,
+    "treino_2008": 669030
+  },
+  "data_hora": "2026-11-21T12:37:45-03:00",
+  "metricas": {
+    "H9": {
+      "comparacoes": {
+        "ocasiao": {
+          "ganho": {
+            "b": 1000,
+            "estimativa": 2.3120695712018982e-05,
+            "ic_inf": -5.177912425344623e-05,
+            "ic_sup": 9.610761273262368e-05,
+            "nivel": 0.95
+          },
+          "log_loss_inteira": 0.007145835632337275,
+          "log_loss_recente": 0.007122714936625256,
+          "n": 850180,
+          "positivos": 800,
+          "veredito": "sem evidência contra o padrão"
+        },
+        "preferencia": {
+          "ganho": {
+            "b": 1000,
+            "estimativa": -0.00027411151999079397,
+            "ic_inf": -0.004464856828624113,
+            "ic_sup": 0.003926182945814238,
+            "nivel": 0.95
+          },
+          "log_loss_inteira": 0.5765944947364353,
+          "log_loss_recente": 0.5768686062564261,
+          "n": 16112,
+          "positivos": 4595,
+          "veredito": "sem evidência contra o padrão"
+        },
+        "preferencia_com_pizza": {
+          "ganho": {
+            "b": 1000,
+            "estimativa": 0.010368364761070947,
+            "ic_inf": -0.020556753346809373,
+            "ic_sup": 0.045047707558787335,
+            "nivel": 0.95
+          },
+          "log_loss_inteira": 0.5585052911733314,
+          "log_loss_recente": 0.5481369264122604,
+          "n": 802,
+          "positivos": 181,
+          "veredito": "sem evidência contra o padrão"
+        }
+      },
+      "enunciado": "treinar com 2008-2009 somado não piora a previsão de 2017-2018 em relação a treinar só com 2017-2018",
+      "metrica": "ganho do braço recente sobre a base inteira no log loss ponderado (positivo favorece o braço recente)",
+      "natureza": "confirmatório",
+      "padrao": "base inteira",
+      "regra": "se qualquer comparação recusar o padrão, treino_servido = 2017-2018 nas duas partes; senão, base_inteira",
+      "treino_servido": "base_inteira",
+      "validacao": "H9 é validação cruzada por setores dentro de 2017-2018 (não é validação temporal); a avaliação temporal da receita (treino em 2008-2009, teste em 2017-2018) é H8, em reports/teste_final.json"
+    },
+    "diagnostico_6_8": {
+      "declaracao": "a diferença entre o braço recente (validação cruzada dentro de 2017-2018) e o teste final é o efeito conjunto de dez anos e da mudança do método de coleta (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018); o projeto não separa os dois",
+      "natureza": "exploratório",
+      "partes": {
+        "ocasiao": {
+          "base_inteira": {
+            "brier": 0.0011595829451141056,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 110421,
+                  "p_media": 1.0198707612906395e-05,
+                  "positivos": 5,
+                  "taxa_observada": 4.035083681958788e-05
+                },
+                {
+                  "n": 98502,
+                  "p_media": 2.5083253878614366e-05,
+                  "positivos": 2,
+                  "taxa_observada": 1.3928024585533443e-05
+                },
+                {
+                  "n": 90463,
+                  "p_media": 4.276142916724964e-05,
+                  "positivos": 4,
+                  "taxa_observada": 8.516354070736435e-05
+                },
+                {
+                  "n": 85418,
+                  "p_media": 6.58692854683012e-05,
+                  "positivos": 6,
+                  "taxa_observada": 6.56827305552259e-05
+                },
+                {
+                  "n": 80834,
+                  "p_media": 9.847064503246492e-05,
+                  "positivos": 7,
+                  "taxa_observada": 6.235971195281652e-05
+                },
+                {
+                  "n": 77106,
+                  "p_media": 0.0001496317464887636,
+                  "positivos": 11,
+                  "taxa_observada": 0.00021685041938473079
+                },
+                {
+                  "n": 73814,
+                  "p_media": 0.00024408901876796574,
+                  "positivos": 12,
+                  "taxa_observada": 0.00010591623901813801
+                },
+                {
+                  "n": 76098,
+                  "p_media": 0.0004919176232994625,
+                  "positivos": 18,
+                  "taxa_observada": 0.00024356549986620925
+                },
+                {
+                  "n": 85838,
+                  "p_media": 0.0016242268646526723,
+                  "positivos": 133,
+                  "taxa_observada": 0.0012149430608864253
+                },
+                {
+                  "n": 71686,
+                  "p_media": 0.00882844591098639,
+                  "positivos": 602,
+                  "taxa_observada": 0.009645595215812645
+                }
+              ],
+              "inclinacao": 0.9975168455507724,
+              "intercepto_cil": 0.0038760990590350785,
+              "o_e": 1.0098153151749423
+            },
+            "concentracao_topo": 0.8248096854894901,
+            "log_loss": 0.007145835632337275,
+            "n": 850180,
+            "positivos": 800,
+            "pr_auc": 0.014691537554114722,
+            "prevalencia": 0.00116944066631996,
+            "roc_auc": 0.9229338978292434
+          },
+          "diferenca": {
+            "brier": -4.037932418319559e-06,
+            "log_loss": -0.00020265461699883747,
+            "pr_auc": 0.0020007597782964112,
+            "roc_auc": 0.00807880528941407
+          },
+          "recente": {
+            "brier": 0.0011581767994926823,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 121809,
+                  "p_media": 1.2737260780781264e-05,
+                  "positivos": 3,
+                  "taxa_observada": 2.642290033767606e-05
+                },
+                {
+                  "n": 98833,
+                  "p_media": 2.898055455680288e-05,
+                  "positivos": 6,
+                  "taxa_observada": 3.7890317832588276e-05
+                },
+                {
+                  "n": 89677,
+                  "p_media": 4.643807722556266e-05,
+                  "positivos": 3,
+                  "taxa_observada": 2.9125394845309243e-05
+                },
+                {
+                  "n": 82759,
+                  "p_media": 6.771222182067361e-05,
+                  "positivos": 7,
+                  "taxa_observada": 0.00015681305465361096
+                },
+                {
+                  "n": 77638,
+                  "p_media": 9.590712875352041e-05,
+                  "positivos": 7,
+                  "taxa_observada": 0.00011067375758172027
+                },
+                {
+                  "n": 75000,
+                  "p_media": 0.00013745728841755469,
+                  "positivos": 12,
+                  "taxa_observada": 0.0001266505109793708
+                },
+                {
+                  "n": 72208,
+                  "p_media": 0.00020815078351926885,
+                  "positivos": 7,
+                  "taxa_observada": 0.0001183886801520015
+                },
+                {
+                  "n": 71837,
+                  "p_media": 0.00038191927400106905,
+                  "positivos": 20,
+                  "taxa_observada": 0.0002022516047022358
+                },
+                {
+                  "n": 88642,
+                  "p_media": 0.0016841562097064172,
+                  "positivos": 153,
+                  "taxa_observada": 0.0014271244763566237
+                },
+                {
+                  "n": 71777,
+                  "p_media": 0.009024273747695793,
+                  "positivos": 582,
+                  "taxa_observada": 0.009459137253721411
+                }
+              ],
+              "inclinacao": 1.0,
+              "intercepto_cil": 0.0,
+              "o_e": 1.000576323510968
+            },
+            "concentracao_topo": 0.8088507957534802,
+            "log_loss": 0.007122714936625256,
+            "n": 850180,
+            "positivos": 800,
+            "pr_auc": 0.015040916172008492,
+            "prevalencia": 0.00116944066631996,
+            "roc_auc": 0.9216707927060561
+          },
+          "teste_final": {
+            "brier": 0.0011622147319110018,
+            "log_loss": 0.007325369553624094,
+            "pr_auc": 0.013040156393712081,
+            "roc_auc": 0.913591987416642
+          },
+          "validacao_2008": {
+            "brier": 0.0012850668163041003,
+            "concentracao_topo": 0.7839012657538289,
+            "log_loss": 0.0077704631658596654,
+            "pr_auc": 0.02376695832773057,
+            "prevalencia": 0.0013027905562964716,
+            "roc_auc": 0.9176697440585142
+          }
+        },
+        "preferencia_com_pizza": {
+          "base_inteira": {
+            "brier": 0.18364248768794209,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 59,
+                  "p_media": 0.10654019059696845,
+                  "positivos": 14,
+                  "taxa_observada": 0.17928079236327574
+                },
+                {
+                  "n": 65,
+                  "p_media": 0.12747581125173493,
+                  "positivos": 10,
+                  "taxa_observada": 0.1377057958963957
+                },
+                {
+                  "n": 54,
+                  "p_media": 0.14426250704284924,
+                  "positivos": 10,
+                  "taxa_observada": 0.332541953343395
+                },
+                {
+                  "n": 65,
+                  "p_media": 0.15507033407134474,
+                  "positivos": 19,
+                  "taxa_observada": 0.30798211648901325
+                },
+                {
+                  "n": 73,
+                  "p_media": 0.16970207035990614,
+                  "positivos": 18,
+                  "taxa_observada": 0.2578459496540466
+                },
+                {
+                  "n": 73,
+                  "p_media": 0.18434417793981658,
+                  "positivos": 13,
+                  "taxa_observada": 0.13957985055253577
+                },
+                {
+                  "n": 80,
+                  "p_media": 0.20075995634292004,
+                  "positivos": 12,
+                  "taxa_observada": 0.1545909594479863
+                },
+                {
+                  "n": 96,
+                  "p_media": 0.2183538657843409,
+                  "positivos": 32,
+                  "taxa_observada": 0.3200415292946633
+                },
+                {
+                  "n": 117,
+                  "p_media": 0.2476507618324437,
+                  "positivos": 30,
+                  "taxa_observada": 0.29496854512311227
+                },
+                {
+                  "n": 120,
+                  "p_media": 0.3303179541541182,
+                  "positivos": 23,
+                  "taxa_observada": 0.19418995306672657
+                }
+              ],
+              "inclinacao": 0.12120523848676014,
+              "intercepto_cil": 0.2693904191409683,
+              "o_e": 1.229652099712281
+            },
+            "concentracao_topo": 0.08415398651434047,
+            "log_loss": 0.5585052911733314,
+            "n": 802,
+            "positivos": 181,
+            "pr_auc": 0.23689232384514775,
+            "prevalencia": 0.23171616648656476,
+            "roc_auc": 0.5188882043956677
+          },
+          "diferenca": {
+            "brier": -0.009005697435848392,
+            "log_loss": -0.03630621431640846,
+            "pr_auc": 0.012927201168587116,
+            "roc_auc": -0.01733765869250181
+          },
+          "recente": {
+            "brier": 0.18047490560625112,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 55,
+                  "p_media": 0.136303944909418,
+                  "positivos": 10,
+                  "taxa_observada": 0.1407500753810246
+                },
+                {
+                  "n": 84,
+                  "p_media": 0.1657123175132847,
+                  "positivos": 12,
+                  "taxa_observada": 0.23312162362369301
+                },
+                {
+                  "n": 73,
+                  "p_media": 0.18837328090681638,
+                  "positivos": 17,
+                  "taxa_observada": 0.2501555241998043
+                },
+                {
+                  "n": 82,
+                  "p_media": 0.2055856944483392,
+                  "positivos": 20,
+                  "taxa_observada": 0.28441348830667484
+                },
+                {
+                  "n": 86,
+                  "p_media": 0.22045500871694987,
+                  "positivos": 17,
+                  "taxa_observada": 0.2923087186201055
+                },
+                {
+                  "n": 90,
+                  "p_media": 0.2376004552392117,
+                  "positivos": 24,
+                  "taxa_observada": 0.23907164524896135
+                },
+                {
+                  "n": 77,
+                  "p_media": 0.2570547721463421,
+                  "positivos": 14,
+                  "taxa_observada": 0.1279963917385096
+                },
+                {
+                  "n": 88,
+                  "p_media": 0.2799520312912879,
+                  "positivos": 19,
+                  "taxa_observada": 0.20457968922118008
+                },
+                {
+                  "n": 92,
+                  "p_media": 0.3059290744499951,
+                  "positivos": 27,
+                  "taxa_observada": 0.2426887970235141
+                },
+                {
+                  "n": 75,
+                  "p_media": 0.35796389196265904,
+                  "positivos": 21,
+                  "taxa_observada": 0.2973639925703251
+                }
+              ],
+              "inclinacao": 0.208953503032177,
+              "intercepto_cil": -0.022686873998661525,
+              "o_e": 0.9831237917216653
+            },
+            "concentracao_topo": 0.1288585318495539,
+            "log_loss": 0.5481369264122604,
+            "n": 802,
+            "positivos": 181,
+            "pr_auc": 0.2527208569543484,
+            "prevalencia": 0.23171616648656476,
+            "roc_auc": 0.5159338127982809
+          },
+          "teste_final": {
+            "brier": 0.18948060304209952,
+            "log_loss": 0.5844431407286689,
+            "pr_auc": 0.2397936557857613,
+            "roc_auc": 0.5332714714907827
+          },
+          "validacao_2008": {
+            "brier": 0.12263502090002376,
+            "concentracao_topo": 0.13482766011866293,
+            "log_loss": 0.4134108721628509,
+            "pr_auc": 0.16439197086515678,
+            "prevalencia": 0.1392217631746601,
+            "roc_auc": 0.5268515115683682
+          }
+        },
+        "preferencia_todas": {
+          "base_inteira": {
+            "brier": 0.19424828800616767,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 1399,
+                  "p_media": 0.12008552829484519,
+                  "positivos": 215,
+                  "taxa_observada": 0.14641403335556413
+                },
+                {
+                  "n": 1344,
+                  "p_media": 0.1626296715891869,
+                  "positivos": 295,
+                  "taxa_observada": 0.21483054951469396
+                },
+                {
+                  "n": 1460,
+                  "p_media": 0.19344992237151887,
+                  "positivos": 364,
+                  "taxa_observada": 0.2602667941019225
+                },
+                {
+                  "n": 1364,
+                  "p_media": 0.21590538636411977,
+                  "positivos": 324,
+                  "taxa_observada": 0.2215499571568523
+                },
+                {
+                  "n": 1487,
+                  "p_media": 0.2353841920703329,
+                  "positivos": 400,
+                  "taxa_observada": 0.2605712396167464
+                },
+                {
+                  "n": 1579,
+                  "p_media": 0.25394171395354104,
+                  "positivos": 461,
+                  "taxa_observada": 0.31861091904253735
+                },
+                {
+                  "n": 1589,
+                  "p_media": 0.2730114518264402,
+                  "positivos": 464,
+                  "taxa_observada": 0.2692878811183146
+                },
+                {
+                  "n": 1656,
+                  "p_media": 0.2942446819746876,
+                  "positivos": 541,
+                  "taxa_observada": 0.327096053677327
+                },
+                {
+                  "n": 2050,
+                  "p_media": 0.3240445043046995,
+                  "positivos": 706,
+                  "taxa_observada": 0.3093946735885541
+                },
+                {
+                  "n": 2184,
+                  "p_media": 0.3954129701519241,
+                  "positivos": 825,
+                  "taxa_observada": 0.35377202713397915
+                }
+              ],
+              "inclinacao": 0.664394893035661,
+              "intercepto_cil": 0.11567108652492057,
+              "o_e": 1.0865618854258765
+            },
+            "concentracao_topo": 0.13191732283423543,
+            "log_loss": 0.5765944947364353,
+            "n": 16112,
+            "positivos": 4595,
+            "pr_auc": 0.32491097880952835,
+            "prevalencia": 0.26818348232593475,
+            "roc_auc": 0.5777986928099968
+          },
+          "diferenca": {
+            "brier": -0.002217663350786464,
+            "log_loss": -0.008427004232644197,
+            "pr_auc": -0.0021207682815158058,
+            "roc_auc": 0.0009944525712367591
+          },
+          "recente": {
+            "brier": 0.19455827615845264,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 1300,
+                  "p_media": 0.13894197593546864,
+                  "positivos": 242,
+                  "taxa_observada": 0.18008280316751576
+                },
+                {
+                  "n": 1383,
+                  "p_media": 0.17930240347360638,
+                  "positivos": 269,
+                  "taxa_observada": 0.19095082882112194
+                },
+                {
+                  "n": 1293,
+                  "p_media": 0.21113899214597334,
+                  "positivos": 287,
+                  "taxa_observada": 0.24782170279006735
+                },
+                {
+                  "n": 1305,
+                  "p_media": 0.23731619007205426,
+                  "positivos": 318,
+                  "taxa_observada": 0.24907915492392765
+                },
+                {
+                  "n": 1343,
+                  "p_media": 0.25803664355575934,
+                  "positivos": 347,
+                  "taxa_observada": 0.2601534270112805
+                },
+                {
+                  "n": 1514,
+                  "p_media": 0.2767842234387501,
+                  "positivos": 406,
+                  "taxa_observada": 0.2833205338192245
+                },
+                {
+                  "n": 1760,
+                  "p_media": 0.29715158986651546,
+                  "positivos": 606,
+                  "taxa_observada": 0.3116939377804605
+                },
+                {
+                  "n": 1958,
+                  "p_media": 0.321669544467221,
+                  "positivos": 654,
+                  "taxa_observada": 0.3183751963272877
+                },
+                {
+                  "n": 2065,
+                  "p_media": 0.35174120051500507,
+                  "positivos": 690,
+                  "taxa_observada": 0.30480351711928555
+                },
+                {
+                  "n": 2191,
+                  "p_media": 0.4053329378854802,
+                  "positivos": 776,
+                  "taxa_observada": 0.33555206271689997
+                }
+              ],
+              "inclinacao": 0.636790453559565,
+              "intercepto_cil": 0.0023134665610603606,
+              "o_e": 1.001642748037972
+            },
+            "concentracao_topo": 0.1251313104341139,
+            "log_loss": 0.5768686062564261,
+            "n": 16112,
+            "positivos": 4595,
+            "pr_auc": 0.3166261912148688,
+            "prevalencia": 0.26818348232593475,
+            "roc_auc": 0.5721387556266163
+          },
+          "teste_final": {
+            "brier": 0.1967759395092391,
+            "log_loss": 0.5852956104890703,
+            "pr_auc": 0.3187469594963846,
+            "roc_auc": 0.5711443030553796
+          },
+          "validacao_2008": {
+            "brier": 0.17461924408106008,
+            "concentracao_topo": 0.166951590715247,
+            "log_loss": 0.5310315835082502,
+            "pr_auc": 0.31885409980355905,
+            "prevalencia": 0.23451548420203022,
+            "roc_auc": 0.6084211607547787
+          }
+        },
+        "score": {
+          "base_inteira": {
+            "brier": 0.0002689223580843289,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 103411,
+                  "p_media": 2.7682292081733975e-06,
+                  "positivos": 1,
+                  "taxa_observada": 6.964012347435378e-06
+                },
+                {
+                  "n": 94224,
+                  "p_media": 6.31699110238782e-06,
+                  "positivos": 0,
+                  "taxa_observada": 0.0
+                },
+                {
+                  "n": 88309,
+                  "p_media": 1.0350065628023025e-05,
+                  "positivos": 0,
+                  "taxa_observada": 0.0
+                },
+                {
+                  "n": 83899,
+                  "p_media": 1.5292305227171983e-05,
+                  "positivos": 1,
+                  "taxa_observada": 4.014927161358624e-06
+                },
+                {
+                  "n": 81434,
+                  "p_media": 2.175072516809999e-05,
+                  "positivos": 2,
+                  "taxa_observada": 0.00011708651853828735
+                },
+                {
+                  "n": 79035,
+                  "p_media": 3.128099998419371e-05,
+                  "positivos": 1,
+                  "taxa_observada": 3.79618922818938e-06
+                },
+                {
+                  "n": 76818,
+                  "p_media": 4.809974426021121e-05,
+                  "positivos": 5,
+                  "taxa_observada": 3.969742368301663e-05
+                },
+                {
+                  "n": 79164,
+                  "p_media": 9.568535886922415e-05,
+                  "positivos": 4,
+                  "taxa_observada": 6.840476610966943e-05
+                },
+                {
+                  "n": 87782,
+                  "p_media": 0.00033619281919932065,
+                  "positivos": 30,
+                  "taxa_observada": 0.00033322924516792745
+                },
+                {
+                  "n": 76104,
+                  "p_media": 0.0015582007718465852,
+                  "positivos": 136,
+                  "taxa_observada": 0.0021198578837587643
+                }
+              ],
+              "inclinacao": 0.965075293017646,
+              "intercepto_cil": 0.2570914622854641,
+              "o_e": 1.2667584111052896
+            },
+            "concentracao_topo": 0.7871590209568151,
+            "log_loss": 0.0021102872760135794,
+            "n": 850180,
+            "positivos": 180,
+            "pr_auc": 0.002433369441650299,
+            "prevalencia": 0.00026930567342217925,
+            "roc_auc": 0.9070287155034458
+          },
+          "diferenca": {
+            "brier": -2.4918507582778185e-07,
+            "log_loss": -0.00011624310349117074,
+            "pr_auc": 0.0011647478748972907,
+            "roc_auc": 0.010908501646037738
+          },
+          "recente": {
+            "brier": 0.00026880849013594235,
+            "calibracao": {
+              "curva": [
+                {
+                  "n": 118334,
+                  "p_media": 3.4879274984107975e-06,
+                  "positivos": 0,
+                  "taxa_observada": 0.0
+                },
+                {
+                  "n": 96987,
+                  "p_media": 7.4002928470305035e-06,
+                  "positivos": 1,
+                  "taxa_observada": 6.964155012247493e-06
+                },
+                {
+                  "n": 88909,
+                  "p_media": 1.1369231745549428e-05,
+                  "positivos": 1,
+                  "taxa_observada": 9.426168780380753e-05
+                },
+                {
+                  "n": 83063,
+                  "p_media": 1.61208298694439e-05,
+                  "positivos": 0,
+                  "taxa_observada": 0.0
+                },
+                {
+                  "n": 78967,
+                  "p_media": 2.234181068402725e-05,
+                  "positivos": 2,
+                  "taxa_observada": 2.6837695842567148e-05
+                },
+                {
+                  "n": 76210,
+                  "p_media": 3.1409120612195474e-05,
+                  "positivos": 2,
+                  "taxa_observada": 8.360706897754699e-06
+                },
+                {
+                  "n": 72374,
+                  "p_media": 4.6745601270954996e-05,
+                  "positivos": 4,
+                  "taxa_observada": 3.4164610659428054e-05
+                },
+                {
+                  "n": 72148,
+                  "p_media": 8.517351097041616e-05,
+                  "positivos": 3,
+                  "taxa_observada": 6.175729809936878e-05
+                },
+                {
+                  "n": 89402,
+                  "p_media": 0.00040768473648474267,
+                  "positivos": 34,
+                  "taxa_observada": 0.0003719119882558197
+                },
+                {
+                  "n": 73786,
+                  "p_media": 0.002145511586826372,
+                  "positivos": 133,
+                  "taxa_observada": 0.002088788523777637
+                }
+              ],
+              "inclinacao": 1.0013492266147501,
+              "intercepto_cil": 0.0,
+              "o_e": 0.9696832079803955
+            },
+            "concentracao_topo": 0.7756242972476655,
+            "log_loss": 0.0020747623820060665,
+            "n": 850180,
+            "positivos": 180,
+            "pr_auc": 0.003042097290395274,
+            "prevalencia": 0.00026930567342217925,
+            "roc_auc": 0.9064070864333509
+          },
+          "teste_final": {
+            "brier": 0.00026905767521177013,
+            "log_loss": 0.0021910054854972372,
+            "pr_auc": 0.0018773494154979832,
+            "roc_auc": 0.8954985847873131
+          },
+          "validacao_2008": {
+            "brier": 0.0001812594406387761,
+            "concentracao_topo": 0.7818361854962781,
+            "log_loss": 0.0014623509434004468,
+            "pr_auc": 0.0026265402791704404,
+            "prevalencia": 0.00018148744336278735,
+            "roc_auc": 0.9144609649249164
+          }
+        }
+      }
+    },
+    "segundos": 95.5,
+    "status": "ok"
+  },
+  "natureza": "confirmatório",
+  "nome": "pos_teste",
+  "semente": 20261212,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}
