@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Callable
 from typing import cast
 
-from occasion.experimentos import etapas, pos_teste, teste_final
+from occasion.experimentos import curva_aprendizado, etapas, pos_teste, teste_final
 
 
 def _escada(parte: str) -> Callable[[], None]:
@@ -26,6 +26,7 @@ def main() -> None:
         choices=[
             "dobras", "peso", "escada", "h4", "embaralhado",
             "calibracao", "produto", "cortes", "receita", "avaliacao-2008", "teste-final", "pos-teste",
+            "curva-aprendizado",
         ],
     )  # fmt: skip
     parser.add_argument(
@@ -50,6 +51,8 @@ def main() -> None:
         "teste-final": lambda: print(f"gravado: {teste_final.rodar_teste_final()}"),
         # H9 e diagnóstico 6.8: só com o teste final commitado
         "pos-teste": lambda: print(f"gravado: {pos_teste.rodar_pos_teste()}"),
+        # exploratório (tarefa 17a): não troca o modelo servido
+        "curva-aprendizado": curva_aprendizado.etapa_curva_aprendizado,
     }
     acoes[args.etapa]()
 
