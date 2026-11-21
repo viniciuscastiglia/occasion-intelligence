@@ -4,8 +4,7 @@ from typing import Any, cast
 
 import pandas as pd
 
-from occasion.config import FAIXAS_HORARIO, LOCAIS, SALARIO_MINIMO
-from occasion.inference.contract import CODIGO_UF
+from occasion.config import CODIGO_UF, FAIXAS_HORARIO, LOCAIS, SALARIO_MINIMO
 
 COLUNAS_CONTEXTO: list[str] = [
     "dia_semana",

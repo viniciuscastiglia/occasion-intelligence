@@ -2,41 +2,59 @@
 
 `treinar_baseline` ajusta o degrau A só em 2008-2009. `prever` é a função que a tela e o
 processamento em lote chamam: ambos passam por `pontuar`, então dão o mesmo score.
+
+`ArtefatoModelo`, `pontuar` e o que monta o artefato avaliado moram em
+`occasion.inference.artefato`, que é assinado com a receita; este módulo (a resposta da tela e do
+contrato) fica fora da assinatura e os reexporta, então `from occasion.inference.predict import
+ArtefatoModelo, pontuar` continua valendo, inclusive para artefatos gravados antes da mudança.
 """
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
 import joblib
-import numpy as np
 import pandas as pd
 
 from occasion.config import EDICAO_TREINO, MODELOS
 from occasion.decision.engine import decidir, justificar
 from occasion.features.variaveis import COLUNAS_CONTEXTO, regiao_da_uf
+from occasion.inference.artefato import (
+    N_UFS_MIDIA_REGIONAL,
+    NOME_ARQUIVO,
+    ArtefatoModelo,
+    _exigir_so_treino,
+    _ufs_de_midia_regional,
+    pontuar,
+)
 from occasion.inference.contract import (
     CODIGO_UF,
     PONTO_MEDIO_RENDA,
     UF,
+    VERSAO_CONTRATO,
     Contexto,
     Fator,
     MetadadosModelo,
     Resultado,
 )
 from occasion.models.taxas import DIMENSOES_PARTE_1, DIMENSOES_PARTE_2, TabelaDeTaxas
-from occasion.score.score import (
-    ReferenciaScore,
-    classificar,
-    construir_referencia,
-    probabilidades,
-)
+from occasion.score.score import classificar, construir_referencia
 
-N_UFS_MIDIA_REGIONAL = 7
 MAXIMO_TOP_FATORES = 5
-VERSAO_CONTRATO = "1.0"
-NOME_ARQUIVO = "artefato.joblib"
-_TOLERANCIA_EMPATE = 1e-12
+
+__all__ = [
+    "MAXIMO_TOP_FATORES",
+    "NOME_ARQUIVO",
+    "N_UFS_MIDIA_REGIONAL",
+    "VERSAO_CONTRATO",
+    "ArtefatoAusente",
+    "ArtefatoModelo",
+    "carregar_artefato",
+    "contexto_para_linha",
+    "pontuar",
+    "prever",
+    "salvar_artefato",
+    "treinar_baseline",
+]
 
 _DIAS: dict[int, str] = {
     1: "segunda",
@@ -48,53 +66,10 @@ _DIAS: dict[int, str] = {
     7: "domingo",
 }
 _NUMERO_DO_DIA: dict[str, int] = {nome: numero for numero, nome in _DIAS.items()}
-_SIGLA_DA_UF: dict[int, str] = {codigo: sigla for sigla, codigo in CODIGO_UF.items()}
 
 
 class ArtefatoAusente(FileNotFoundError):
     """Nenhum artefato de modelo foi encontrado."""
-
-
-@dataclass
-class ArtefatoModelo:
-    """Tudo o que a inferência precisa: as duas partes, a referência do score e os metadados."""
-
-    modelo_p1: Any
-    modelo_p2: Any
-    referencia: ReferenciaScore
-    ufs_midia_regional: frozenset[str]
-    metadados: MetadadosModelo
-    # campos do Plano 2; o padrão é atributo de classe, então artefatos antigos continuam valendo
-    calibracao_score: tuple[float, float] | None = None
-    modelo_direto: Any = None
-    assinatura_receita: str | None = None
-
-
-def _exigir_so_treino(base: pd.DataFrame, nome: str) -> None:
-    edicoes = set(cast(pd.Series, base["edicao"]).unique())
-    if edicoes != {EDICAO_TREINO}:
-        raise ValueError(
-            f"{nome} deve conter só a edição {EDICAO_TREINO}; veio {sorted(map(str, edicoes))}"
-        )
-
-
-def _ufs_de_midia_regional(celulas: pd.DataFrame, modelo_p1: Any, modelo_p2: Any) -> frozenset[str]:
-    """As UFs de maior preferência média ponderada, com as empatadas com a última incluídas."""
-    p = probabilidades(celulas, modelo_p1, modelo_p2)
-    pesos = celulas["peso_final"].to_numpy(dtype=float)
-    pref = p["p_preferencia"].to_numpy(dtype=float)
-    codigos = celulas["uf"].to_numpy()
-    medias: dict[str, float] = {}
-    for codigo in np.unique(codigos):
-        da_uf = codigos == codigo
-        medias[_SIGLA_DA_UF[int(codigo)]] = float(
-            (pesos[da_uf] * pref[da_uf]).sum() / pesos[da_uf].sum()
-        )
-    ordenadas = sorted(medias.items(), key=lambda item: (-item[1], item[0]))
-    corte = ordenadas[min(N_UFS_MIDIA_REGIONAL, len(ordenadas)) - 1][1]
-    return frozenset(
-        sigla for sigla, media in ordenadas if media >= corte * (1 - _TOLERANCIA_EMPATE)
-    )
 
 
 def treinar_baseline(
@@ -174,24 +149,6 @@ def contexto_para_linha(contexto: Contexto) -> pd.DataFrame:
             f"sobram {sorted(set(linha) - set(COLUNAS_CONTEXTO))}"
         )
     return pd.DataFrame([linha], columns=COLUNAS_CONTEXTO)
-
-
-def pontuar(X: pd.DataFrame, artefato: ArtefatoModelo) -> pd.DataFrame:
-    """Probabilidades, posições e score (posição do produto) de cada linha de contexto."""
-    p = probabilidades(
-        X, artefato.modelo_p1, artefato.modelo_p2, artefato.calibracao_score, artefato.modelo_direto
-    )
-    if p.isna().any().any():
-        raise ValueError("probabilidade NaN: o contexto não pôde ser pontuado")
-    ref = artefato.referencia
-    for qual, coluna in (
-        ("ocasiao", "p_ocasiao"),
-        ("preferencia", "p_preferencia"),
-        ("produto", "p_produto"),
-    ):
-        p[f"posicao_{qual}"] = [ref.posicao(float(v), qual) for v in p[coluna]]  # type: ignore[arg-type]
-    p["score"] = p["posicao_produto"]
-    return p
 
 
 def _texto_do_valor(variavel: str, valor: Any) -> str:

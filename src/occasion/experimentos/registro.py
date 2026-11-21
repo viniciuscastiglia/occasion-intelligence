@@ -27,7 +27,10 @@ def _para_json(objeto: Any) -> Any:
         return _para_json(asdict(objeto))
     if isinstance(objeto, dict):
         return {str(k): _para_json(v) for k, v in objeto.items()}
-    if isinstance(objeto, list | tuple | set):
+    if isinstance(objeto, set | frozenset):
+        # ordem estável: a ordem de iteração de um conjunto de strings muda com o PYTHONHASHSEED
+        return [_para_json(v) for v in sorted(objeto, key=str)]
+    if isinstance(objeto, list | tuple):
         return [_para_json(v) for v in objeto]
     if isinstance(objeto, np.ndarray):
         return _para_json(objeto.tolist())

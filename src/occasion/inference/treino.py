@@ -14,13 +14,8 @@ import pandas as pd
 
 from occasion.config import EDICAO_TREINO
 from occasion.experimentos.especificacao import ParteModelo, variaveis_da_parte
-from occasion.inference.contract import MetadadosModelo
-from occasion.inference.predict import (
-    VERSAO_CONTRATO,
-    ArtefatoModelo,
-    _exigir_so_treino,
-    _ufs_de_midia_regional,
-)
+from occasion.inference.artefato import ArtefatoModelo, _exigir_so_treino, _ufs_de_midia_regional
+from occasion.inference.contract import VERSAO_CONTRATO, MetadadosModelo
 from occasion.models.base import ModeloParte, logit, sigmoide
 from occasion.models.calibracao import ModeloCalibrado
 from occasion.models.escada import construir

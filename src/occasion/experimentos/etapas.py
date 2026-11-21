@@ -1114,7 +1114,9 @@ _DECLARACAO_REGIAO_FORA = (
     "calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, "
     "e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da "
     "mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o "
-    "modelo direto, conforme a receita."
+    "modelo direto, conforme a receita. Os parâmetros da receita foram escolhidos com a região "
+    "deixada de fora incluída na seleção, o que deixa o lado 'treinada_nas_outras_quatro' um "
+    "pouco otimista."
 )
 
 

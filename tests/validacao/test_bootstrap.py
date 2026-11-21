@@ -137,3 +137,19 @@ def test_intervalo_por_unidades_cobre_a_media():
     ic = intervalo_por_unidades(lambda idx: float(valores[idx].mean()), 27, b=500)
     assert ic.estimativa == pytest.approx(13.0)
     assert ic.ic_inf < 13.0 < ic.ic_sup and ic.b == 500
+
+
+@pytest.mark.parametrize(
+    ("upa", "uf", "o_que"),
+    [
+        (np.array(["a", None, "b"], dtype=object), np.array([1, 1, 2]), "setor"),
+        (np.array([1.0, np.nan, 2.0]), np.array([1, 1, 2]), "setor"),
+        (np.array(["a", "b", "c"]), np.array([1.0, np.nan, 2.0]), "grupo"),
+        (np.array(["a", "b", "c"]), np.array([11, None, 35], dtype=object), "grupo"),
+    ],
+)
+def test_ausente_no_setor_ou_no_grupo_e_recusado(upa, uf, o_que):
+    with pytest.raises(ValueError, match=o_que):
+        next(multiplicadores(upa, uf, 1, SEMENTE))
+    with pytest.raises(ValueError, match=o_que):
+        intervalo_estatistica(lambda m: float(m.sum()), upa, uf, b=2)

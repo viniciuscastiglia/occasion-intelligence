@@ -1,5 +1,6 @@
 """Testes da porta única de leitura das bases e da trava do alvo de 2017-2018."""
 
+import ast
 import subprocess
 from pathlib import Path
 
@@ -102,12 +103,13 @@ _DA_RECEITA = {
     "src/occasion/models/taxas.py": "class Tabela: ...\n",
     "src/occasion/validacao/metricas.py": "def resumo(): ...\n",
     "reports/receita.json": '{"degrau": "B"}\n',
-    "pyproject.toml": "[project]\n",
-    "uv.lock": "versao = 1\n",
+    "src/occasion/versoes_da_receita.py": 'VERSOES_DA_RECEITA = {"numpy": "1"}\n',
 }
 _FORA_DA_RECEITA = {
     "src/occasion/trends/coleta.py": "def coletar(): ...\n",
     "src/occasion/pipeline.py": "def main(): ...\n",
+    "pyproject.toml": "[project]\n",
+    "uv.lock": "versao = 1\n",
 }
 
 
@@ -131,12 +133,18 @@ def _repo_da_receita(pasta: Path, arquivos: dict[str, str] | None = None) -> Pat
 
 
 def test_arquivos_da_receita_sao_os_do_brief() -> None:
-    # o brief, mais as Rulings R-p (regras, receita, avaliação, registro) e R-q (assinatura.py)
+    # o brief, mais as Rulings R-p (regras, receita, avaliação, registro), R-q (assinatura.py),
+    # R-s (definição do alvo e faixas dos segmentos) e R-t (versões fixadas e `artefato.py` no
+    # lugar de `pyproject.toml`, `uv.lock` e `predict.py`)
     assert acesso.ARQUIVOS_DA_RECEITA == (
         "src/occasion/config.py",
+        "src/occasion/versoes_da_receita.py",
+        "src/occasion/ingest/",
+        "src/occasion/bases/ocasioes.py",
         "src/occasion/features/",
         "src/occasion/bases/modelagem.py",
         "src/occasion/bases/assinatura.py",
+        "src/occasion/eda/descritivas.py",
         "src/occasion/models/",
         "src/occasion/score/",
         "src/occasion/validacao/",
@@ -147,10 +155,8 @@ def test_arquivos_da_receita_sao_os_do_brief() -> None:
         "src/occasion/experimentos/registro.py",
         "src/occasion/experimentos/teste_final.py",
         "src/occasion/inference/treino.py",
-        "src/occasion/inference/predict.py",
+        "src/occasion/inference/artefato.py",
         "reports/receita.json",
-        "pyproject.toml",
-        "uv.lock",
     )
     assert acesso.ARQUIVOS_DA_RECEITA is assinatura.ARQUIVOS_DA_RECEITA
 
@@ -178,7 +184,7 @@ def test_assinatura_nao_depende_da_ordem_de_criacao(tmp_path: Path) -> None:
 
 def test_assinatura_muda_com_conteudo_e_com_nome_de_arquivo(tmp_path: Path) -> None:
     base = acesso.assinatura_da_receita(_repo_da_receita(tmp_path / "base"))
-    outro_conteudo = {**_DA_RECEITA, "uv.lock": "versao = 2\n"}
+    outro_conteudo = {**_DA_RECEITA, "reports/receita.json": '{"degrau": "C"}\n'}
     renomeado = {k.replace("taxas", "tabela"): v for k, v in _DA_RECEITA.items()}
     for nome, arquivos in (("conteudo", outro_conteudo), ("nome", renomeado)):
         assert acesso.assinatura_da_receita(_repo_da_receita(tmp_path / nome, arquivos)) != base
@@ -230,12 +236,12 @@ def test_assinatura_sem_ref_recusa_alteracao_so_no_indice_e_arquivo_apagado(
     tmp_path: Path,
 ) -> None:
     repo = _repo_da_receita(tmp_path / "repo")
-    _escrever(repo, {"pyproject.toml": "[project]\nname = 'x'\n"})
-    subprocess.run(["git", "add", "pyproject.toml"], cwd=repo, check=True)
+    _escrever(repo, {"src/occasion/config.py": "SEMENTE = 2\n"})
+    subprocess.run(["git", "add", "src/occasion/config.py"], cwd=repo, check=True)
     with pytest.raises(acesso.TesteBloqueado):
         acesso.assinatura_da_receita(repo)
     subprocess.run(["git", "reset", "-q", "--hard"], cwd=repo, check=True)
-    (repo / "uv.lock").unlink()
+    (repo / "src/occasion/versoes_da_receita.py").unlink()
     with pytest.raises(acesso.TesteBloqueado):
         acesso.assinatura_da_receita(repo)
 
@@ -271,7 +277,20 @@ def test_exigir_receita_intacta(tmp_path: Path) -> None:
         ("src/occasion/receita.py", True),
         ("src/occasion/avaliacao/segmentos.py", True),
         ("src/occasion/experimentos/registro.py", True),
+        # R-s: a definição do alvo e as faixas dos segmentos
+        ("src/occasion/bases/ocasioes.py", True),
+        ("src/occasion/ingest/layouts.py", True),
+        ("src/occasion/ingest/parse.py", True),
+        ("src/occasion/ingest/schema.py", True),
+        ("src/occasion/eda/descritivas.py", True),
+        # R-t: as versões fixadas e o artefato, no lugar das dependências e da resposta da tela
+        ("src/occasion/versoes_da_receita.py", True),
+        ("src/occasion/inference/artefato.py", True),
         ("src/occasion/bases/acesso.py", False),
+        ("src/occasion/inference/predict.py", False),
+        ("src/occasion/inference/contract.py", False),
+        ("pyproject.toml", False),
+        ("uv.lock", False),
     ],
 )
 def test_guarda_e_codigo_que_mede_depois_da_tag(
@@ -288,3 +307,77 @@ def test_guarda_e_codigo_que_mede_depois_da_tag(
             acesso.exigir_receita_intacta(repo)
     else:
         assert acesso.exigir_receita_intacta(repo) == assinatura_da_tag
+
+
+# ------------------------------------------------------------------ fechamento da assinatura
+
+_RAIZ_REAL = Path(__file__).resolve().parents[2]
+# Módulos fora da assinatura que os arquivos assinados podem importar, e por quê.
+_IMPORTACOES_FORA_PERMITIDAS: dict[str, str] = {
+    "src/occasion/bases/acesso.py": "a porta de leitura das bases; a tarefa 17 a modifica, e as "
+    "contagens de referência do teste final pegam uma leitura de outro arquivo",
+    "src/occasion/inference/contract.py": "só tipos do contrato, `MetadadosModelo` e a versão do "
+    "contrato; nenhum número sai dele",
+    "src/occasion/pipeline.py": "só `commit_da_receita`, para registro",
+}
+
+
+def _assinado(relativo: str) -> bool:
+    return any(
+        relativo == a or (a.endswith("/") and relativo.startswith(a))
+        for a in acesso.ARQUIVOS_DA_RECEITA
+    )
+
+
+def _arquivo_do_modulo(modulo: str) -> str | None:
+    base = Path("src", *modulo.split("."))
+    for candidato in (base.with_suffix(".py"), base / "__init__.py"):
+        if (_RAIZ_REAL / candidato).exists():
+            return candidato.as_posix()
+    return None
+
+
+def _importados(relativo: str) -> set[str]:
+    arvore = ast.parse((_RAIZ_REAL / relativo).read_text(encoding="utf-8"))
+    modulos: set[str] = set()
+    for no in ast.walk(arvore):
+        if isinstance(no, ast.ImportFrom) and no.module and no.module.startswith("occasion"):
+            modulos.add(no.module)
+            # `from occasion.pacote import modulo` também importa o submódulo
+            modulos |= {f"{no.module}.{a.name}" for a in no.names}
+        elif isinstance(no, ast.Import):
+            modulos |= {a.name for a in no.names if a.name.startswith("occasion")}
+    return modulos
+
+
+def _so_docstring(relativo: str) -> bool:
+    corpo = ast.parse((_RAIZ_REAL / relativo).read_text(encoding="utf-8")).body
+    return all(isinstance(no, ast.Expr) and isinstance(no.value, ast.Constant) for no in corpo)
+
+
+def test_assinatura_fecha_as_importacoes_da_receita() -> None:
+    """Todo módulo `occasion.*` importado por um arquivo assinado também é assinado.
+
+    As exceções ficam em `_IMPORTACOES_FORA_PERMITIDAS`; os `__init__.py` dos pacotes de arquivos
+    assinados, que rodam na importação, precisam ser assinados ou ter só a docstring.
+    """
+    assinados = sorted(
+        p.relative_to(_RAIZ_REAL).as_posix()
+        for p in (_RAIZ_REAL / "src").rglob("*.py")
+        if _assinado(p.relative_to(_RAIZ_REAL).as_posix())
+    )
+    assert assinados
+    fora: dict[str, list[str]] = {}
+    for relativo in assinados:
+        for modulo in _importados(relativo):
+            alvo = _arquivo_do_modulo(modulo)
+            if alvo is None or _assinado(alvo) or alvo in _IMPORTACOES_FORA_PERMITIDAS:
+                continue
+            if alvo.endswith("__init__.py") and _so_docstring(alvo):
+                continue
+            fora.setdefault(alvo, []).append(relativo)
+        for pacote in Path(relativo).parents:
+            init = (pacote / "__init__.py").as_posix()
+            if (_RAIZ_REAL / init).exists() and not _assinado(init) and not _so_docstring(init):
+                fora.setdefault(init, []).append(relativo)
+    assert fora == {}

@@ -27,14 +27,23 @@ class TesteBloqueado(RuntimeError):
     """Leitura do alvo da edição de teste antes de a receita estar congelada."""
 
 
-# O que define a receita, o modelo avaliado e o código que mede o teste final, relativo à raiz
-# do repositório (pasta com `/` no fim). O resto de `src/` (linha de comando, pós-teste, servido,
-# Trends, hipóteses, `bases/acesso.py`) pode mudar depois da tag sem mudar a assinatura.
+# O que define a receita, o alvo, o modelo avaliado e o código que mede o teste final, relativo à
+# raiz do repositório (pasta com `/` no fim). Entram também a definição do alvo (`ingest/` e
+# `bases/ocasioes.py`, de onde saem as ocasiões e as marcas de pizza, refrigerante e guaraná), as
+# faixas dos segmentos (`eda/descritivas.py`) e as versões das bibliotecas que mudam número
+# (`versoes_da_receita.py`, no lugar de `pyproject.toml` e `uv.lock`). O resto de `src/` (linha de
+# comando, pós-teste, servido, Trends, hipóteses, `bases/acesso.py`, a resposta da tela em
+# `inference/predict.py` e o contrato em `inference/contract.py`) pode mudar depois da tag sem
+# mudar a assinatura.
 ARQUIVOS_DA_RECEITA: tuple[str, ...] = (
     "src/occasion/config.py",
+    "src/occasion/versoes_da_receita.py",
+    "src/occasion/ingest/",
+    "src/occasion/bases/ocasioes.py",
     "src/occasion/features/",
     "src/occasion/bases/modelagem.py",
     "src/occasion/bases/assinatura.py",
+    "src/occasion/eda/descritivas.py",
     "src/occasion/models/",
     "src/occasion/score/",
     "src/occasion/validacao/",
@@ -45,10 +54,8 @@ ARQUIVOS_DA_RECEITA: tuple[str, ...] = (
     "src/occasion/experimentos/registro.py",
     "src/occasion/experimentos/teste_final.py",
     "src/occasion/inference/treino.py",
-    "src/occasion/inference/predict.py",
+    "src/occasion/inference/artefato.py",
     "reports/receita.json",
-    "pyproject.toml",
-    "uv.lock",
 )
 
 _COMO_LIMPAR = (

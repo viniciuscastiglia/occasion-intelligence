@@ -10,6 +10,7 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 
 import numpy as np
+import pandas as pd
 
 from occasion.config import SEMENTE
 
@@ -47,10 +48,15 @@ def multiplicadores(
     """Gera `b` vetores de inteiros, um valor por linha: quantas vezes o setor da linha saiu.
 
     Em cada réplica, cada grupo sorteia com reposição tantos setores quantos ele tem. Um setor
-    que aparece em dois grupos levanta `ValueError`.
+    que aparece em dois grupos, ou um valor ausente (`NaN` ou `None`) no setor ou no grupo,
+    levanta `ValueError`: sem a guarda, os ausentes seriam agrupados em silêncio.
     """
     cod_upa = np.asarray(cod_upa)
     grupo = np.asarray(grupo)
+    for nome, valores in (("setor (cod_upa)", cod_upa), ("grupo (UF)", grupo)):
+        ausentes = int(pd.isna(valores).sum())
+        if ausentes:
+            raise ValueError(f"{ausentes} linha(s) com {nome} ausente (NaN ou None)")
     setores, setor_da_linha = np.unique(cod_upa, return_inverse=True)
     n_setores = len(setores)
     grupo_do_setor = np.empty(n_setores, dtype=grupo.dtype)

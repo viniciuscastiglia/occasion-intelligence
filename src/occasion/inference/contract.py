@@ -8,10 +8,10 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-UF = Literal[
-    "RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA",
-    "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF",
-]  # fmt: skip
+# `UF` e `CODIGO_UF` moram em `occasion.config` (assinado, porque definem o domínio da `uf`)
+# e continuam expostos aqui para quem já os importa do contrato.
+from occasion.config import CODIGO_UF, UF  # noqa: F401  (CODIGO_UF é reexportado)
+
 DiaSemana = Literal["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 FaixaHorario = Literal["madrugada", "manha", "almoco", "tarde", "noite"]
 Local = Literal["em_casa", "fora_de_casa"]
@@ -20,14 +20,8 @@ Sexo = Literal["masculino", "feminino"]
 FaixaRenda = Literal["ate_meio_sm", "meio_a_1_sm", "de_1_a_2_sm", "de_2_a_5_sm", "mais_de_5_sm"]
 Classificacao = Literal["alta", "média", "baixa"]
 
-# Códigos IBGE das unidades da federação.
-CODIGO_UF: dict[UF, int] = {
-    "RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
-    "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25, "PE": 26, "AL": 27, "SE": 28, "BA": 29,
-    "MG": 31, "ES": 32, "RJ": 33, "SP": 35,
-    "PR": 41, "SC": 42, "RS": 43,
-    "MS": 50, "MT": 51, "GO": 52, "DF": 53,
-}  # fmt: skip
+# Versão do contrato de saída gravada nos metadados de cada artefato.
+VERSAO_CONTRATO = "1.0"
 
 # Ponto médio de cada faixa de renda, em salários mínimos por pessoa.
 PONTO_MEDIO_RENDA: dict[FaixaRenda, float] = {

@@ -1,6 +1,7 @@
 """Constantes do projeto: caminhos, edições da POF, faixas de horário e semente."""
 
 from pathlib import Path
+from typing import Literal
 
 RAIZ: Path = Path(__file__).resolve().parents[2]
 DADOS_BRUTOS: Path = RAIZ / "data" / "raw"
@@ -29,6 +30,21 @@ FAIXAS_HORARIO: dict[str, range] = {
 }
 
 LOCAIS: tuple[str, str] = ("em_casa", "fora_de_casa")
+
+# Siglas das unidades da federação e seus códigos IBGE. Moram aqui (e não no contrato da
+# aplicação) porque definem o domínio fechado da variável `uf` dos modelos (`DOMINIOS`), que faz
+# parte da receita congelada; `occasion.inference.contract` os reexporta.
+UF = Literal[
+    "RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA",
+    "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF",
+]  # fmt: skip
+CODIGO_UF: dict[UF, int] = {
+    "RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
+    "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25, "PE": 26, "AL": 27, "SE": 28, "BA": 29,
+    "MG": 31, "ES": 32, "RJ": 33, "SP": 35,
+    "PR": 41, "SC": 42, "RS": 43,
+    "MS": 50, "MT": 51, "GO": 52, "DF": 53,
+}  # fmt: skip
 
 # Salário mínimo nominal (R$) vigente na data de referência de cada edição da POF
 # (15/01/2009 e 15/01/2018). Conferido nas publicações do IBGE, que citam os valores:

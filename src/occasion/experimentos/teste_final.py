@@ -6,7 +6,13 @@
    (`exigir_receita_intacta`);
 2. o artefato é `models/avaliado/artefato.joblib` (não o servido nem o baseline), montado com
    essa assinatura e com os degraus de `reports/receita.json`;
-3. os relatórios de validação de 2008-2009 existem, terminaram bem e são os da receita.
+3. as versões instaladas das bibliotecas que mudam número são as de
+   `occasion.versoes_da_receita` (assinado);
+4. os relatórios de validação de 2008-2009 existem, terminaram bem e são os da receita.
+
+Depois de ler as bases de 2017-2018, e antes de calcular H8, confere nelas as contagens da tabela
+"Números de referência" do `CLAUDE.md` (`REFERENCIA_TESTE`): uma divergência indica deriva no
+código que monta as bases ou nos arquivos de `data/processed`, e bloqueia o teste.
 
 Nada aqui muda a receita nem o artefato: o degrau A de H8 é ajustado de novo em 2008-2009, em
 memória, com a configuração de `receita.referencia_a` e o uso de peso decidido em H5.
@@ -22,10 +28,12 @@ com `identico_ao_original` (tudo menos `data_hora` e `commit`), sem tocar o orig
 do design: rodar de novo é permitido e deve reproduzir).
 """
 
+import hashlib
 import json
 import sys
+from collections.abc import Callable, Mapping
 from datetime import datetime
-from importlib.metadata import version
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, cast
 
@@ -36,12 +44,12 @@ import pandas as pd
 from occasion.avaliacao.erros import contextos_com_mais_erro
 from occasion.avaliacao.segmentos import colunas_de_segmento, metricas_por_segmento
 from occasion.bases.acesso import carregar_base
-from occasion.bases.assinatura import TesteBloqueado, exigir_receita_intacta
-from occasion.config import EDICAO_TESTE, EDICAO_TREINO, RAIZ, SEMENTE
+from occasion.bases.assinatura import TesteBloqueado, _git, exigir_receita_intacta
+from occasion.config import EDICAO_TESTE, EDICAO_TREINO, RAIZ, SEMENTE, TAG_RECEITA
 from occasion.experimentos.especificacao import ParteModelo
 from occasion.experimentos.registro import Natureza, _para_json
 from occasion.experimentos.regras import superioridade
-from occasion.inference.predict import NOME_ARQUIVO, ArtefatoModelo
+from occasion.inference.artefato import NOME_ARQUIVO, ArtefatoModelo
 from occasion.inference.treino import ajustar_parte, descricao_do_degrau
 from occasion.models.base import ModeloParte
 from occasion.pipeline import commit_da_receita
@@ -49,8 +57,9 @@ from occasion.receita import Receita, ReceitaParte, carregar_receita
 from occasion.score.score import Parte, ReferenciaScore, construir_referencia, probabilidades
 from occasion.validacao.bootstrap import B_PADRAO, Intervalo, intervalo_ganho
 from occasion.validacao.metricas import concentracao_topo, pr_auc_ponderada, resumo
+from occasion.versoes_da_receita import VERSOES_DA_RECEITA
 
-__all__ = ["NOME", "posicoes_na_referencia", "rodar_teste_final"]
+__all__ = ["NOME", "REFERENCIA_TESTE", "posicoes_na_referencia", "rodar_teste_final"]
 
 NOME = "teste_final"
 NATUREZA: Natureza = "confirmatório"
@@ -65,6 +74,37 @@ _DECLARACAO_QUEDA = (
     "coleta (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018); o projeto "
     "não separa os dois"
 )
+_RELATORIOS_DE_VALIDACAO: dict[str, str] = {
+    "escada_ocasiao": "reports/experimentos/escada_ocasiao.json",
+    "escada_preferencia": "reports/experimentos/escada_preferencia.json",
+    "h6_h7_produto": "reports/experimentos/h6_h7_produto.json",
+    "cortes": "reports/experimentos/cortes.json",
+    "avaliacao_2008": "reports/avaliacao_2008.json",
+}
+
+# Contagens de referência de 2017-2018 nas bases que o teste final lê, tiradas da tabela "Números
+# de referência" do `CLAUDE.md` (conferidas nos microdados e já testadas no parser do Plano 1):
+#   - dias_pessoa: 85.018 dias-pessoa (`id_dia` distintos nas células; cada dia tem 10 células);
+#   - linhas_ocasioes_refri: as 16.122 ocasiões com refrigerante, menos as 10 de local
+#     indeterminado, que ficam fora da base da parte 2 (16.112 linhas).
+REFERENCIA_TESTE: dict[str, int] = {"dias_pessoa": 85_018, "linhas_ocasioes_refri": 16_112}
+
+
+def _dias(celulas: pd.DataFrame, alvo: str | None = None) -> int:
+    """`id_dia` distintos nas células; com `alvo`, só os dias com alguma célula positiva."""
+    dias = cast(pd.Series, celulas["id_dia"])
+    if alvo is not None:
+        dias = cast(pd.Series, dias[(celulas[alvo] == 1).to_numpy()])
+    return int(dias.nunique())
+
+
+# Como cada contagem sai das bases (células, ocasiões com refrigerante) de 2017-2018.
+_CONTAGENS: dict[str, Callable[[pd.DataFrame, pd.DataFrame], int]] = {
+    "dias_pessoa": lambda cel, oc: _dias(cel),
+    "dias_pizza_refri": lambda cel, oc: _dias(cel, ALVO_OCASIAO),
+    "dias_pizza_guarana": lambda cel, oc: _dias(cel, ALVO_SCORE),
+    "linhas_ocasioes_refri": lambda cel, oc: len(oc),
+}
 
 
 # ---------------------------------------------------------------------------------- utilitários
@@ -99,14 +139,16 @@ def _dados(base: pd.DataFrame, alvo: str, edicao: str) -> dict[str, Any]:
     }
 
 
-def _ler_metricas(caminho: Path, raiz: Path) -> dict[str, Any]:
-    relativo = caminho.relative_to(raiz)
+def _ler_metricas(raiz: Path, relativo: str) -> tuple[dict[str, Any], str]:
+    """As métricas do relatório e o SHA-256 do conteúdo lido."""
+    caminho = raiz / relativo
     if not caminho.exists():
         raise ValueError(f"falta {relativo}: a validação de 2008-2009 precisa estar completa")
-    metricas = json.loads(caminho.read_text(encoding="utf-8"))["metricas"]
+    conteudo = caminho.read_bytes()
+    metricas = json.loads(conteudo.decode("utf-8"))["metricas"]
     if metricas.get("status") != "ok":
         raise ValueError(f"{relativo} é de uma execução que falhou")
-    return metricas
+    return metricas, hashlib.sha256(conteudo).hexdigest()
 
 
 # ---------------------------------------------------------------------------------- conferências
@@ -143,14 +185,17 @@ def _carregar_avaliado(raiz: Path, receita: Receita, assinatura: str) -> Artefat
     return artefato
 
 
-def _relatorios_de_validacao(raiz: Path, receita: Receita) -> dict[str, dict[str, Any]]:
-    """As métricas de 2008-2009 lado a lado com o teste; recusa relatórios de outra receita."""
-    pasta = raiz / "reports" / "experimentos"
-    rel = {
-        nome: _ler_metricas(pasta / f"{nome}.json", raiz)
-        for nome in ("escada_ocasiao", "escada_preferencia", "h6_h7_produto", "cortes")
-    }
-    rel["avaliacao_2008"] = _ler_metricas(raiz / "reports" / "avaliacao_2008.json", raiz)
+def _relatorios_de_validacao(
+    raiz: Path, receita: Receita
+) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
+    """As métricas de 2008-2009 lado a lado com o teste e o SHA-256 de cada relatório lido.
+
+    Recusa relatórios de outra receita.
+    """
+    rel: dict[str, dict[str, Any]] = {}
+    hashes: dict[str, str] = {}
+    for nome, relativo in _RELATORIOS_DE_VALIDACAO.items():
+        rel[nome], hashes[relativo] = _ler_metricas(raiz, relativo)
     for parte, rp in (("ocasiao", receita.ocasiao), ("preferencia", receita.preferencia)):
         if rel[f"escada_{parte}"]["vencedor"] != rp.degrau:
             raise ValueError(f"escada_{parte}.json não é da receita (vencedor diferente)")
@@ -159,7 +204,53 @@ def _relatorios_de_validacao(raiz: Path, receita: Receita) -> dict[str, dict[str
         raise ValueError("h6_h7_produto.json ou cortes.json não são do score da receita")
     if bool(prod["H7"]["calibrar_score"]) != receita.calibrar_score:
         raise ValueError("h6_h7_produto.json discorda da receita na calibração do score")
-    return rel
+    return rel, hashes
+
+
+def _conferir_versoes(esperadas: Mapping[str, str] = VERSOES_DA_RECEITA) -> None:
+    """Recusa rodar se a versão instalada de alguma biblioteca da receita não é a fixada."""
+    divergentes: dict[str, tuple[str, str]] = {}
+    for pacote, fixada in esperadas.items():
+        try:
+            instalada = version(pacote)
+        except PackageNotFoundError:
+            instalada = "ausente"
+        if instalada != fixada:
+            divergentes[pacote] = (fixada, instalada)
+    if divergentes:
+        detalhe = "; ".join(f"{p}: fixada {f}, instalada {i}" for p, (f, i) in divergentes.items())
+        raise TesteBloqueado(
+            f"versões das bibliotecas diferentes das da receita congelada ({detalhe}): "
+            "instale as versões de `occasion.versoes_da_receita` (`uv sync` no commit da tag)"
+        )
+
+
+def _conferir_contagens(
+    celulas: pd.DataFrame, ocasioes_refri: pd.DataFrame, esperado: Mapping[str, int]
+) -> dict[str, int]:
+    """Confere as contagens de referência nas bases de 2017-2018; devolve as encontradas."""
+    if not esperado:
+        raise ValueError("nenhuma contagem de referência para conferir")
+    desconhecidas = sorted(set(esperado) - set(_CONTAGENS))
+    if desconhecidas:
+        raise ValueError(f"contagens de referência desconhecidas: {desconhecidas}")
+    encontrado = {nome: _CONTAGENS[nome](celulas, ocasioes_refri) for nome in esperado}
+    if encontrado != dict(esperado):
+        raise TesteBloqueado(
+            f"as bases de {EDICAO_TESTE} não batem com as contagens de referência: esperado "
+            f"{dict(esperado)}, encontrado {encontrado}. Confira o código das bases e refaça "
+            "`make bases` antes do teste final"
+        )
+    return encontrado
+
+
+def _tag_da_receita(raiz: Path) -> dict[str, str]:
+    """O objeto da tag (o da tag anotada, ou o commit numa tag leve) e o commit apontado."""
+    return {
+        "nome": TAG_RECEITA,
+        "objeto": _git(raiz, "rev-parse", TAG_RECEITA).decode("utf-8").strip(),
+        "commit": _git(raiz, "rev-parse", f"{TAG_RECEITA}^{{commit}}").decode("utf-8").strip(),
+    }
 
 
 # ---------------------------------------------------------------------------------- comparações
@@ -248,12 +339,7 @@ def _queda_por_segmento(
 
 
 def _versoes() -> dict[str, str]:
-    return {
-        "python": sys.version.split()[0],
-        "pandas": version("pandas"),
-        "scikit-learn": version("scikit-learn"),
-        "lightgbm": version("lightgbm"),
-    }
+    return {"python": sys.version.split()[0], **{p: version(p) for p in VERSOES_DA_RECEITA}}
 
 
 def _gravar(raiz: Path, registro: dict[str, Any]) -> Path:
@@ -278,16 +364,25 @@ def _gravar(raiz: Path, registro: dict[str, Any]) -> Path:
 # ---------------------------------------------------------------------------------- teste final
 
 
-def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
+def rodar_teste_final(
+    raiz: Path = RAIZ,
+    *,
+    b: int = B_PADRAO,
+    referencia: Mapping[str, int] = REFERENCIA_TESTE,
+) -> Path:
     """Roda o teste final (H8 e o relatado à parte) e devolve o caminho do relatório gravado.
 
     Todos os caminhos saem de `raiz`. `b` é o número de réplicas do bootstrap (1000 no teste
-    real; menor só nos testes do código).
+    real; menor só nos testes do código). `referencia` são as contagens conferidas nas bases de
+    2017-2018 antes de H8 (`REFERENCIA_TESTE` no teste real; outras só nas bases sintéticas dos
+    testes do código).
     """
     assinatura = exigir_receita_intacta(raiz)
+    _conferir_versoes()
+    tag = _tag_da_receita(raiz)
     receita = carregar_receita(raiz / "reports" / "receita.json")
     artefato = _carregar_avaliado(raiz, receita, assinatura)
-    validacao = _relatorios_de_validacao(raiz, receita)
+    validacao, hashes_da_validacao = _relatorios_de_validacao(raiz, receita)
     print("teste final: receita, artefato e validação conferidos", flush=True)
 
     pasta = raiz / "data" / "processed"
@@ -295,6 +390,8 @@ def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
     oc08 = carregar_base("ocasioes_refri", EDICAO_TREINO, pasta=pasta, raiz=raiz)
     cel17 = carregar_base("celulas", EDICAO_TESTE, pasta=pasta, raiz=raiz)
     oc17 = carregar_base("ocasioes_refri", EDICAO_TESTE, pasta=pasta, raiz=raiz)
+    contagens = _conferir_contagens(cel17, oc17, referencia)
+    print(f"teste final: contagens de referência conferidas ({contagens})", flush=True)
     com_pizza = (oc17["tem_pizza"] == 1).to_numpy()
     oc17_pizza = cast(pd.DataFrame, oc17[com_pizza])
 
@@ -512,13 +609,8 @@ def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
         "ocasioes_refri_treino": _dados(oc08, ALVO_PREFERENCIA, EDICAO_TREINO),
         "receita": "reports/receita.json",
         "artefato": f"models/avaliado/{NOME_ARQUIVO}",
-        "validacao": [
-            "reports/experimentos/escada_ocasiao.json",
-            "reports/experimentos/escada_preferencia.json",
-            "reports/experimentos/h6_h7_produto.json",
-            "reports/experimentos/cortes.json",
-            "reports/avaliacao_2008.json",
-        ],
+        "validacao": hashes_da_validacao,
+        "contagens_de_referencia": contagens,
     }
     registro: dict[str, Any] = {
         "nome": NOME,
@@ -536,6 +628,7 @@ def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
         },
         "dados": dados,
         "assinatura_receita": assinatura,
+        "tag_receita": tag,
         "commit": commit_da_receita(raiz),
         "semente": SEMENTE,
         "data_hora": datetime.now().astimezone().isoformat(timespec="seconds"),

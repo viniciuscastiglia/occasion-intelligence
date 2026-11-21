@@ -69,3 +69,9 @@ def test_registro_grava_a_semente_usada(tmp_path: Path) -> None:
     )
     assert json.loads(padrao.read_text(encoding="utf-8"))["semente"] == SEMENTE
     assert json.loads(outra.read_text(encoding="utf-8"))["semente"] == SEMENTE + 300
+
+
+def test_conjuntos_viram_listas_ordenadas() -> None:
+    assert registro._para_json({"b", "a", "c"}) == ["a", "b", "c"]
+    assert registro._para_json(frozenset({"SP", "AC", "RJ"})) == ["AC", "RJ", "SP"]
+    assert registro._para_json({"x": frozenset({2, 10, 1})}) == {"x": [1, 10, 2]}  # por str
