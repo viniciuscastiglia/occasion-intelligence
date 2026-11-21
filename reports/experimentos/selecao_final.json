@@ -1,5 +1,5 @@
 {
-  "commit": "621b38422283-dirty",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "metrica": "log loss ponderado fora da dobra nas 5 dobras externas",
     "o_que": "selecao_final do degrau vencedor de cada parte (e do direto, se H6 o promover) e do degrau A, a referência de H8",
@@ -24,7 +24,7 @@
       "setores": 3374
     }
   },
-  "data_hora": "2026-11-20T23:49:47-03:00",
+  "data_hora": "2026-11-21T11:04:39-03:00",
   "metricas": {
     "ocasiao": {
       "degrau": "C",

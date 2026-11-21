@@ -1,5 +1,5 @@
 {
-  "commit": "0d8bd879556f",
+  "commit": "be6d03344b89-dirty",
   "configuracao": {
     "alvo": "y_guarana",
     "b_de_h5": "reaproveitado de aninhada_<parte>_B",
@@ -25,7 +25,7 @@
     "positivos": 4684,
     "setores": 3374
   },
-  "data_hora": "2026-11-20T19:33:22-03:00",
+  "data_hora": "2026-11-21T00:04:04-03:00",
   "metricas": {
     "comparacoes": {
       "H1": {
@@ -294,7 +294,7 @@
           "prevalencia": 0.1392217631746601,
           "roc_auc": 0.5438064071533526
         },
-        "tempo_s": 1.4941295000026003
+        "tempo_s": 1.4339124580146745
       },
       "B": {
         "parametros_por_dobra": [
@@ -468,7 +468,7 @@
           "prevalencia": 0.1392217631746601,
           "roc_auc": 0.476460742381289
         },
-        "tempo_s": 6.101251207990572
+        "tempo_s": 6.1585323750041425
       },
       "C": {
         "parametros_por_dobra": [
@@ -647,7 +647,7 @@
           "prevalencia": 0.1392217631746601,
           "roc_auc": 0.5268515115683682
         },
-        "tempo_s": 17.22308362502372
+        "tempo_s": 15.84397554100724
       },
       "D": {
         "parametros_por_dobra": [
@@ -891,7 +891,7 @@
           "prevalencia": 0.1392217631746601,
           "roc_auc": 0.5486451292379201
         },
-        "tempo_s": 291.18013237498235
+        "tempo_s": 142.01079304196173
       }
     },
     "status": "ok",

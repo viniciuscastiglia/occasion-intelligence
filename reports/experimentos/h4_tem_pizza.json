@@ -1,5 +1,5 @@
 {
-  "commit": "0d8bd879556f",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "C": 0.02682695795279726,
     "aviso": "o coeficiente de tem_pizza fica encolhido pela regularização L2 (C fixo, o escolhido na seleção final): lê-se o sinal e a ordem de grandeza, não o tamanho exato do efeito",
@@ -23,7 +23,7 @@
     "positivos": 4684,
     "setores": 3374
   },
-  "data_hora": "2026-11-20T18:17:54-03:00",
+  "data_hora": "2026-11-21T10:42:17-03:00",
   "metricas": {
     "coeficiente_tem_pizza": -0.3440549521686045,
     "intervalo": {

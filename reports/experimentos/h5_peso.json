@@ -1,5 +1,5 @@
 {
-  "commit": "0d8bd879556f",
+  "commit": "be6d03344b89-dirty",
   "configuracao": {
     "alternativa": "treino sem peso",
     "bootstrap": {
@@ -29,7 +29,7 @@
       "setores": 3374
     }
   },
-  "data_hora": "2026-11-20T18:16:45-03:00",
+  "data_hora": "2026-11-21T00:01:22-03:00",
   "metricas": {
     "ocasiao": {
       "ganho_sem_peso": {
@@ -78,8 +78,8 @@
         ]
       },
       "tempo_s": {
-        "com_peso": 120.81193204200827,
-        "sem_peso": 122.91702208301285
+        "com_peso": 122.44603095803177,
+        "sem_peso": 123.5960141250398
       },
       "usar_peso": true,
       "veredito": "sem evidência contra o padrão"
@@ -131,8 +131,8 @@
         ]
       },
       "tempo_s": {
-        "com_peso": 6.101251207990572,
-        "sem_peso": 6.133958708960563
+        "com_peso": 6.1585323750041425,
+        "sem_peso": 6.14389562496217
       },
       "usar_peso": true,
       "veredito": "sem evidência contra o padrão"

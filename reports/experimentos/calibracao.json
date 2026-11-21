@@ -1,5 +1,5 @@
 {
-  "commit": "2f8cebd54e95-dirty",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "ajuste": "em cada dobra externa k, ajustar_sigmoide (com peso_final) nas previsões internas de k, aplicada às previsões fora da dobra k; a dobra k nunca entra no ajuste da própria sigmoide",
     "bootstrap": {
@@ -30,7 +30,7 @@
       "setores": 3374
     }
   },
-  "data_hora": "2026-11-20T23:27:31-03:00",
+  "data_hora": "2026-11-21T10:44:43-03:00",
   "metricas": {
     "ocasiao": {
       "antes": {

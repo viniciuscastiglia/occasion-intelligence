@@ -1,5 +1,5 @@
 {
-  "commit": "0d8bd879556f",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "alvo": "permutado entre as linhas, com np.random.default_rng(SEMENTE)",
     "controle": "vazamento (não é uma hipótese)",
@@ -29,7 +29,7 @@
       "setores": 3374
     }
   },
-  "data_hora": "2026-11-20T19:56:01-03:00",
+  "data_hora": "2026-11-21T10:44:31-03:00",
   "metricas": {
     "ocasiao": {
       "ganho_do_modelo_sobre_a_constante": {

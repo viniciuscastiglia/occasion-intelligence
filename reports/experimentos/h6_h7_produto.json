@@ -1,5 +1,5 @@
 {
-  "commit": "621b38422283",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "H6": {
       "direto": "validação aninhada do degrau vencedor da ocasião, parte 'direto', com o peso de H5 e a calibração decididos para a ocasião",
@@ -33,7 +33,7 @@
     "positivos": 101,
     "setores": 4328
   },
-  "data_hora": "2026-11-20T23:43:51-03:00",
+  "data_hora": "2026-11-21T10:58:43-03:00",
   "metricas": {
     "H6": {
       "calibrar": false,
@@ -84,7 +84,7 @@
         "direto": 0.8897528487548665,
         "produto": 0.9144609649249164
       },
-      "tempo_direto_s": 743.3761269170209,
+      "tempo_direto_s": 736.3302216249867,
       "usar_peso": true,
       "veredito": "sem evidência contra o padrão"
     },

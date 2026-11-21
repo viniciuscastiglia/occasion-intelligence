@@ -1,5 +1,5 @@
 {
-  "commit": "00278ea883b4-dirty",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "erros": "contextos por regiao, dia_semana, faixa_horario e local, z = (O - E) / sqrt(soma de w² p (1 - p)), w com média 1; só contextos com 500 linhas ou mais",
     "estabilidade": "contribuição média por nível nos modelos das dobras externas do vencedor (sem a sigmoide, que só reescala); instável se os sinais divergem e o maior valor absoluto passa de 0,05 log-chances",
@@ -17,7 +17,7 @@
       "preferencia": "C",
       "score": "produto"
     },
-    "regiao_fora": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita.",
+    "regiao_fora": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita. Os parâmetros da receita foram escolhidos com a região deixada de fora incluída na seleção, o que deixa o lado 'treinada_nas_outras_quatro' um pouco otimista.",
     "segmentos": "dia_semana, faixa_horario, regiao, faixa_etaria, sexo, faixa_renda, local"
   },
   "dados": {
@@ -39,7 +39,7 @@
     },
     "receita": "reports/receita.json"
   },
-  "data_hora": "2026-11-20T23:50:46-03:00",
+  "data_hora": "2026-11-21T11:05:18-03:00",
   "metricas": {
     "ocasiao": {
       "calibrado": false,
@@ -3523,7 +3523,7 @@
       }
     },
     "regiao_fora": {
-      "declaracao": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita.",
+      "declaracao": "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o modelo direto, conforme a receita. Os parâmetros da receita foram escolhidos com a região deixada de fora incluída na seleção, o que deixa o lado 'treinada_nas_outras_quatro' um pouco otimista.",
       "ocasiao": {
         "fora_da_dobra": [
           {

@@ -1,5 +1,5 @@
 {
-  "commit": "2f8cebd54e95",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "alvo": "y_pizza_refri",
     "b_de_h5": "reaproveitado de aninhada_<parte>_B",
@@ -25,7 +25,7 @@
     "positivos": 654,
     "setores": 4328
   },
-  "data_hora": "2026-11-20T23:27:03-03:00",
+  "data_hora": "2026-11-21T10:41:34-03:00",
   "metricas": {
     "comparacoes": {
       "H1": {
@@ -223,7 +223,7 @@
           "prevalencia": 0.0013027905562964716,
           "roc_auc": 0.8823748180552536
         },
-        "tempo_s": 27.534661124984268
+        "tempo_s": 11.150574667030014
       },
       "B": {
         "parametros_por_dobra": [
@@ -320,7 +320,7 @@
           "prevalencia": 0.0013027905562964716,
           "roc_auc": 0.9145348741640216
         },
-        "tempo_s": 120.81193204200827
+        "tempo_s": 122.44603095803177
       },
       "C": {
         "parametros_por_dobra": [
@@ -422,7 +422,7 @@
           "prevalencia": 0.0013027905562964716,
           "roc_auc": 0.9176697440585142
         },
-        "tempo_s": 819.0060279159807
+        "tempo_s": 874.0864850840298
       },
       "D": {
         "parametros_por_dobra": [
@@ -589,7 +589,7 @@
           "prevalencia": 0.0013027905562964716,
           "roc_auc": 0.9190402406520252
         },
-        "tempo_s": 5257.39348941599
+        "tempo_s": 5777.516515000025
       }
     },
     "status": "ok",

@@ -1,5 +1,5 @@
 {
-  "commit": "621b38422283",
+  "commit": "2c763df2afe1-dirty",
   "configuracao": {
     "cortes": {
       "alta": 80.0,
@@ -21,7 +21,7 @@
     "positivos": 101,
     "setores": 4328
   },
-  "data_hora": "2026-11-20T23:43:53-03:00",
+  "data_hora": "2026-11-21T10:58:45-03:00",
   "metricas": {
     "classificacao": {
       "alta": 0.2000062156527863,
