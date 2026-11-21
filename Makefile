@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final
 
 ambiente:
 	uv sync
@@ -27,8 +27,13 @@ auditoria:
 baseline:
 	uv run python -m occasion.pipeline baseline
 
+# exige a árvore limpa nos arquivos da receita (ARQUIVOS_DA_RECEITA): o artefato guarda a assinatura
 avaliado:
 	uv run python -m occasion.pipeline avaliado
+
+# H8 em 2017-2018: só depois da tag receita-congelada e de `make avaliado` (seção 7 do pré-registro)
+teste-final:
+	uv run python -m occasion.experimentos teste-final
 
 tudo: dados-brutos bases auditoria baseline
 

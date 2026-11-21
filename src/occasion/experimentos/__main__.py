@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Callable
 from typing import cast
 
-from occasion.experimentos import etapas
+from occasion.experimentos import etapas, teste_final
 
 
 def _escada(parte: str) -> Callable[[], None]:
@@ -25,7 +25,7 @@ def main() -> None:
         "etapa",
         choices=[
             "dobras", "peso", "escada", "h4", "embaralhado",
-            "calibracao", "produto", "cortes", "receita", "avaliacao-2008",
+            "calibracao", "produto", "cortes", "receita", "avaliacao-2008", "teste-final",
         ],
     )  # fmt: skip
     parser.add_argument(
@@ -46,6 +46,8 @@ def main() -> None:
         "cortes": etapas.etapa_cortes,
         "receita": etapas.etapa_receita,
         "avaliacao-2008": etapas.etapa_avaliacao_2008,
+        # o teste final (H8) só roda depois da tag `receita-congelada` e de `make avaliado`
+        "teste-final": lambda: print(f"gravado: {teste_final.rodar_teste_final()}"),
     }
     acoes[args.etapa]()
 

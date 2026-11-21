@@ -10,7 +10,7 @@ from pathlib import Path
 import pandas as pd
 
 from occasion.audit.auditoria import rodar_auditoria
-from occasion.bases.acesso import carregar_base
+from occasion.bases.acesso import TesteBloqueado, assinatura_da_receita, carregar_base
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
 from occasion.config import (
@@ -125,23 +125,30 @@ def _baseline(pasta_dados: Path = DADOS_PROCESSADOS, pasta_modelos: Path = MODEL
 def _avaliado(pasta_modelos: Path = MODELOS) -> None:
     """Monta o artefato avaliado a partir de `reports/receita.json` e grava em `<modelos>/avaliado`.
 
-    A assinatura da receita (tarefa 14) ainda não é ligada: grava `None`.
+    O artefato guarda a assinatura da receita da árvore de trabalho, que o teste final exige ser
+    a da tag `receita-congelada`. Por isso a árvore precisa estar limpa nos arquivos da receita
+    (`ARQUIVOS_DA_RECEITA`, inclusive `reports/receita.json` commitado); senão, nada é gravado.
     """
     # importação local: `experimentos.registro` importa `commit_da_receita` deste módulo
     from occasion.experimentos.registro import carregar_resultado
 
+    try:
+        assinatura = assinatura_da_receita(RAIZ)
+    except TesteBloqueado as erro:
+        sys.exit(f"make avaliado recusado: {erro}")
     receita = carregar_receita(RELATORIOS / "receita.json")
     celulas = carregar_base("celulas", EDICAO_TREINO)
     ocasioes_refri = carregar_base("ocasioes_refri", EDICAO_TREINO)
     partes = ["ocasiao", "preferencia", *(["direto"] if receita.direto is not None else [])]
     selecoes = {parte: carregar_resultado(f"selecao_{parte}") for parte in partes}
     commit = commit_da_receita(RAIZ)
-    artefato = treinar_avaliado(receita, celulas, ocasioes_refri, selecoes, commit, None)
+    artefato = treinar_avaliado(receita, celulas, ocasioes_refri, selecoes, commit, assinatura)
     destino = salvar_artefato(artefato, pasta_modelos / "avaliado")
     print(f"gravado: {destino}")
     print(f"degrau: {artefato.metadados.degrau}")
     print(f"calibração do score: {artefato.calibracao_score}")
     print(f"UFs de mídia regional: {sorted(artefato.ufs_midia_regional)}")
+    print(f"assinatura da receita: {assinatura}")
 
 
 def main(argv: Sequence[str] | None = None) -> None:

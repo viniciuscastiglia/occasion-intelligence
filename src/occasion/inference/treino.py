@@ -111,7 +111,8 @@ def _conferir_dobras(selecoes: dict[str, Any]) -> None:
         raise ValueError(f"seleções de dobras diferentes: {hashes}")
 
 
-def _descricao_do_degrau(receita: Receita) -> str:
+def descricao_do_degrau(receita: Receita) -> str:
+    """O `metadados.degrau` do artefato avaliado: o degrau de cada parte e a calibração do score."""
     partes: list[tuple[ParteModelo, ReceitaParte]] = [
         ("ocasiao", receita.ocasiao),
         ("preferencia", receita.preferencia),
@@ -137,6 +138,10 @@ def treinar_avaliado(
     `selecoes` é o dicionário `{parte: conteúdo de selecao_<parte>.joblib}`, com as chaves
     `degrau`, `parametros`, `oof` e `oof_extras` (na preferência, `oof_extras["celulas"]` é a
     previsão fora da dobra nas células). Só 2008-2009.
+
+    `assinatura` é a `assinatura_da_receita()` da árvore em que o artefato foi montado (o
+    `make avaliado` a passa); o teste final exige que ela seja a da tag `receita-congelada`.
+    `None` só em testes e artefatos anteriores à tarefa 14, e o teste final os recusa.
     """
     _exigir_so_treino(celulas, "celulas")
     _exigir_so_treino(ocasioes_refri, "ocasioes_refri")
@@ -193,7 +198,7 @@ def treinar_avaliado(
     )
     metadados = MetadadosModelo(
         modelo="avaliado",
-        degrau=_descricao_do_degrau(receita),
+        degrau=descricao_do_degrau(receita),
         treinado_em=[EDICAO_TREINO],
         receita_commit=commit,
         metricas_da_receita=None,
@@ -216,4 +221,4 @@ def treinar_avaliado(
     )
 
 
-__all__ = ["ALVO_DA_PARTE", "ajustar_parte", "treinar_avaliado"]
+__all__ = ["ALVO_DA_PARTE", "ajustar_parte", "descricao_do_degrau", "treinar_avaliado"]
