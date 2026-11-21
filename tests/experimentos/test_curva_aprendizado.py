@@ -71,9 +71,9 @@ def test_curva_em_base_sintetica(pastas: Path, monkeypatch: pytest.MonkeyPatch) 
         eventos = [f["eventos_de_treino"] for f in p["fracoes"]]
         assert eventos == sorted(eventos) and eventos[0] > 0
         for f in p["fracoes"]:
-            for chave in ("log_loss_C", "log_loss_D", "pr_auc_C", "pr_auc_D", "ganho_D_menos_C"):
+            for chave in ("log_loss_C", "log_loss_D", "pr_auc_C", "pr_auc_D", "ganho_de_D_sobre_C"):
                 assert chave in f
-            assert {"estimativa", "ic_inf", "ic_sup"} <= set(f["ganho_D_menos_C"])
+            assert {"estimativa", "ic_inf", "ic_sup"} <= set(f["ganho_de_D_sobre_C"])
         proj = p["projecao"]
         assert proj["eventos_projetados"] == pytest.approx(2 * eventos[-1])
         assert proj["replicas_que_falharam"] >= 0

@@ -43,6 +43,7 @@ _BASE_DA_PARTE: dict[ParteModelo, str] = {
     "direto": "celulas",
     "preferencia": "ocasioes_refri",
 }
+ARQUIVO_DO_POS_TESTE = "reports/pos_teste.json"
 _SEM_CALIBRAR = np.zeros(0)  # só passa por `ajustar_parte` com `calibrar=False`
 
 
@@ -113,10 +114,30 @@ def _metricas_da_receita(teste_final: dict[str, Any]) -> dict[str, float]:
     }
 
 
-def _descricao(treino: str) -> str:
+def _frase_do_veredito(veredito: str) -> str:
+    return {"confirmada": "superou", "refutada": "não superou"}.get(
+        veredito, f"teve o veredito {veredito!r} contra"
+    )
+
+
+def _veredito_de_h8(teste_final: dict[str, Any]) -> str:
+    """O que o teste temporal disse de H8 e de cada parte, com os vereditos lidos do JSON."""
+    m = teste_final["metricas"]
+    h8 = m["H8"]["veredito"]
+    ocasiao = _frase_do_veredito(m["partes"]["ocasiao"]["veredito"])
+    preferencia = _frase_do_veredito(m["partes"]["preferencia_todas"]["veredito"])
+    return (
+        f"No teste temporal, a receita {_frase_do_veredito(h8)} o produto das tabelas de taxas "
+        f"(degrau A) na PR-AUC (H8 {h8}); a parte de ocasião {ocasiao} a tabela, a de "
+        f"preferência {preferencia} a tabela. "
+    )
+
+
+def _descricao(treino: str, teste_final: dict[str, Any]) -> str:
     dados = "2008-2009 e 2017-2018" if treino == "base_inteira" else "2017-2018"
     return (
-        "Métricas do score da receita treinada em 2008-2009 e testada uma vez em 2017-2018 "
+        _veredito_de_h8(teste_final)
+        + "Métricas do score da receita treinada em 2008-2009 e testada uma vez em 2017-2018 "
         "(reports/teste_final.json), com a PR-AUC do degrau A (tabela de taxas) ao lado. O "
         "modelo servido não tem teste temporal próprio: foi reajustado com a mesma receita em "
         f"{dados}, escolha de H9 (validação por setores dentro de 2017-2018, em "
@@ -138,6 +159,7 @@ def treinar_servido(
     `teste_final` são os JSONs de `reports/` já lidos.
     """
     exigir_teste_commitado(raiz)
+    exigir_teste_commitado(raiz, ARQUIVO_DO_POS_TESTE)
     treino = _treino_servido(pos_teste)
     usar_2008 = treino == "base_inteira"
     bases08 = {n: bases[f"{n}_{EDICAO_TREINO}"] for n in ("celulas", "ocasioes_refri")}
@@ -201,7 +223,7 @@ def treinar_servido(
         treinado_em=[EDICAO_TREINO, EDICAO_TESTE] if usar_2008 else [EDICAO_TESTE],
         receita_commit=commit,
         metricas_da_receita=_metricas_da_receita(teste_final),
-        descricao_metricas=_descricao(treino),
+        descricao_metricas=_descricao(treino, teste_final),
         instante_de_previsao="planejamento, antes da ocasião",
         aviso="Guaraná é o sabor registrado na POF, não uma marca.",
         versao_contrato=VERSAO_CONTRATO,

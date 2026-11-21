@@ -15,6 +15,7 @@ from occasion.bases.acesso import (
     assinatura_da_receita,
     carregar_base,
     exigir_receita_intacta,
+    exigir_teste_commitado,
 )
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
@@ -163,10 +164,13 @@ def _servido(pasta_modelos: Path = MODELOS) -> None:
     Só com `reports/teste_final.json` commitado; os dados de treino vêm de H9 (`pos_teste.json`).
     """
     # importação local: `experimentos` importa `commit_da_receita` deste módulo
-    from occasion.inference.servido import treinar_servido
+    from occasion.inference.servido import ARQUIVO_DO_POS_TESTE, treinar_servido
 
     try:
         exigir_receita_intacta(RAIZ)
+        # as travas vêm antes de qualquer leitura do alvo de 2017-2018 e de `pos_teste.json`
+        exigir_teste_commitado(RAIZ)
+        exigir_teste_commitado(RAIZ, ARQUIVO_DO_POS_TESTE)
         receita = carregar_receita(RELATORIOS / "receita.json")
         pos_teste = json.loads((RELATORIOS / "pos_teste.json").read_text(encoding="utf-8"))
         teste_final = json.loads((RELATORIOS / "teste_final.json").read_text(encoding="utf-8"))

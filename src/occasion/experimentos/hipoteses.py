@@ -278,7 +278,8 @@ def _h6_h7(pasta: Path) -> list[dict[str, Any]]:
     conseq7 = (
         "a sigmoide de calibração do produto entra na receita."
         if h7.get("calibrar_score")
-        else "nenhuma: o produto fica sem a sigmoide de correção."
+        else "nenhuma: a sigmoide de correção não entra na receita e o produto fica como está; "
+        "isso não é um achado de descalibração."
     )
     return [
         _entrada(
@@ -299,8 +300,28 @@ def _h6_h7(pasta: Path) -> list[dict[str, Any]]:
             h7["veredito"],
             conseq7,
             inclinacao=h7.get("inclinacao"),
+            leitura=_leitura_h7(h7),
         ),
     ]
+
+
+def _numero(x: float) -> str:
+    return f"{x:.3f}".replace(".", ",")
+
+
+def _leitura_h7(h7: dict[str, Any]) -> str:
+    """Como ler o veredito de H7: a regra testa a correção, não a calibração do produto."""
+    base = (
+        "a regra testa se a correção sigmoide melhora o log loss do produto; 'refutada' quer "
+        "dizer que a correção não entrou, e não que o produto esteja descalibrado"
+    )
+    inc = h7.get("inclinacao")
+    if not inc or inc.get("ic_inf") is None or inc.get("ic_sup") is None:
+        return f"{base}."
+    return (
+        f"{base}. A inclinação da calibração, {_numero(inc['estimativa'])} "
+        f"[{_numero(inc['ic_inf'])}; {_numero(inc['ic_sup'])}], não mostra descalibração."
+    )
 
 
 def _consequencia_h8(veredito: str) -> str:

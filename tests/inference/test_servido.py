@@ -21,6 +21,11 @@ _GIT = [
 _B = {"degrau": "B", "parametros": {"C": 1.0}, "usar_peso": True}
 TESTE_FINAL: dict[str, Any] = {
     "metricas": {
+        "H8": {"veredito": "refutada"},
+        "partes": {
+            "ocasiao": {"veredito": "confirmada"},
+            "preferencia_todas": {"veredito": "refutada"},
+        },
         "resumos": {
             "score": {
                 "receita": {
@@ -31,16 +36,18 @@ TESTE_FINAL: dict[str, Any] = {
                 },
                 "degrau_a": {"pr_auc": 0.0021},
             }
-        }
+        },
     }
 }
 
 
-def _repo(pasta: Path, com_teste: bool) -> Path:
+def _repo(pasta: Path, com_teste: bool, com_pos_teste: bool = True) -> Path:
     pasta.mkdir()
     subprocess.run(["git", "init", "-q"], cwd=pasta, check=True)
     (pasta / "reports").mkdir()
     (pasta / "reports" / "teste_final.json").write_text("{}", encoding="utf-8")
+    if com_pos_teste:
+        (pasta / "reports" / "pos_teste.json").write_text("{}", encoding="utf-8")
     if com_teste:
         subprocess.run(["git", "add", "-A"], cwd=pasta, check=True)
     subprocess.run([*_GIT, "commit", "-q", "--allow-empty", "-m", "x"], cwd=pasta, check=True)
@@ -86,6 +93,51 @@ def test_sem_teste_final_commitado_levanta_teste_bloqueado(tmp_path: Path) -> No
         treinar_servido(
             _receita_simples(), _bases(), _pos_teste("2017-2018"), TESTE_FINAL, "abc", repo
         )
+
+
+def test_sem_pos_teste_commitado_levanta_teste_bloqueado(tmp_path: Path) -> None:
+    repo = _repo(tmp_path / "r", com_teste=True, com_pos_teste=False)
+    with pytest.raises(acesso.TesteBloqueado, match="pos_teste.json"):
+        treinar_servido(
+            _receita_simples(), _bases(), _pos_teste("2017-2018"), TESTE_FINAL, "abc", repo
+        )
+
+
+def test_pos_teste_alterado_depois_do_commit_levanta_teste_bloqueado(tmp_path: Path) -> None:
+    repo = _repo(tmp_path / "r", com_teste=True)
+    (repo / "reports" / "pos_teste.json").write_text('{"x": 1}', encoding="utf-8")
+    with pytest.raises(acesso.TesteBloqueado, match="pos_teste.json"):
+        treinar_servido(
+            _receita_simples(), _bases(), _pos_teste("2017-2018"), TESTE_FINAL, "abc", repo
+        )
+
+
+def test_descricao_diz_o_veredito_de_h8_lido_do_json(tmp_path: Path) -> None:
+    repo = _repo(tmp_path / "r", com_teste=True)
+    artefato = treinar_servido(
+        _receita_simples(), _bases(), _pos_teste("base_inteira"), TESTE_FINAL, "abc", repo
+    )
+    texto = artefato.metadados.descricao_metricas
+    assert "a receita não superou o produto das tabelas de taxas" in texto
+    assert "H8 refutada" in texto
+    assert "a parte de ocasião superou a tabela" in texto
+    assert "preferência não superou a tabela" in texto
+
+
+def test_descricao_segue_o_veredito_confirmado(tmp_path: Path) -> None:
+    repo = _repo(tmp_path / "r", com_teste=True)
+    metricas = {**TESTE_FINAL["metricas"], "H8": {"veredito": "confirmada"}}
+    artefato = treinar_servido(
+        _receita_simples(),
+        _bases(),
+        _pos_teste("base_inteira"),
+        {"metricas": metricas},
+        "abc",
+        repo,
+    )
+    texto = artefato.metadados.descricao_metricas
+    assert "a receita superou o produto das tabelas de taxas" in texto
+    assert "H8 confirmada" in texto
 
 
 def test_h9_2017_nenhuma_linha_de_2008_entra_no_treino(

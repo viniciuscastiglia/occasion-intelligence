@@ -13,7 +13,7 @@ Desenho, por parte (ocasião e preferência):
   menores: nada é reescolhido por fração;
 - o treino usa `peso_final` conforme H5 (`usar_peso`); a métrica é sempre ponderada.
 
-O ganho D - C (log loss, menor é melhor) tem intervalo por bootstrap de setores dentro da UF. A
+O ganho do D sobre o C (log loss de C menos log loss de D; positivo favorece o D) tem intervalo por bootstrap de setores dentro da UF. A
 projeção para o dobro dos eventos de treino é extrapolação, não medida: ajusta-se uma reta em
 `log(n)` ao ganho de cada réplica do bootstrap, com o mesmo multiplicador em todas as frações.
 """
@@ -121,7 +121,7 @@ def _projecao(
     eventos: np.ndarray,
     b: int,
 ) -> dict[str, Any]:
-    """Projeção do ganho D - C para o dobro dos eventos de 100%, com intervalo do bootstrap."""
+    """Projeção do ganho do D sobre o C para o dobro dos eventos de 100%, com intervalo do bootstrap."""
     alvo = FATOR_DA_PROJECAO * float(eventos[-1])
 
     def ganhos(peso: np.ndarray) -> np.ndarray:
@@ -166,7 +166,7 @@ def etapa_curva_aprendizado(b: int = B_PADRAO) -> None:
         "parametros": "os escolhidos pela validação aninhada em cada dobra externa com 100% dos "
         "setores (escada_<parte>.json), reusados nas frações menores; nada é reescolhido",
         "metrica": "log loss e PR-AUC ponderados fora da dobra, nas 5 dobras concatenadas",
-        "ganho": "D - C no log loss ponderado (positivo favorece o D), bootstrap de setores por UF",
+        "ganho": "ganho do D sobre o C = log loss ponderado de C menos o de D (positivo favorece o D), bootstrap de setores por UF",
         "bootstrap": {"b": b, "estrato": "uf", "unidade": "cod_upa"},
         "projecao": {
             "forma": _FORMA,
@@ -266,7 +266,7 @@ def _curva_da_parte(
                 "log_loss_D": log_loss_ponderado(y, p["D"][f], w),
                 "pr_auc_C": pr_auc_ponderada(y, p["C"][f], w),
                 "pr_auc_D": pr_auc_ponderada(y, p["D"][f], w),
-                "ganho_D_menos_C": _intervalo_em_json(ic),
+                "ganho_de_D_sobre_C": _intervalo_em_json(ic),
             }
         )
     print(f"curva {parte}: projeção", flush=True)

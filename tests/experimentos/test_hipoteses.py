@@ -203,6 +203,15 @@ def test_consequencia_segue_o_json(tmp_path: Path) -> None:
     assert "com peso" in _por_id(res, "H5")[0]["consequencia"]
 
 
+def test_h7_refutada_traz_leitura_que_nao_e_descalibracao(tmp_path: Path) -> None:
+    _tudo(tmp_path)
+    h = _por_id(consolidar(tmp_path), "H7")[0]
+    assert h["veredito"] == "refutada"
+    assert "não que o produto esteja descalibrado" in h["leitura"]
+    assert "1,000 [0,900; 1,100]" in h["leitura"]
+    assert "descalibração" in h["consequencia"]
+
+
 def test_rodar_hipoteses_grava_json(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _tudo(tmp_path)
     monkeypatch.setattr(hipoteses, "RELATORIOS", tmp_path)
