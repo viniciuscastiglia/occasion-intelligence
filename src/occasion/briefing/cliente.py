@@ -71,7 +71,8 @@ class ClienteHTTP:
                 resposta = http.post(url, json=corpo, headers=cabecalhos)
         except httpx.TimeoutException as erro:
             raise FalhaDoLLM("tempo_esgotado") from erro
-        except httpx.HTTPError as erro:
+        except (httpx.HTTPError, httpx.InvalidURL, ValueError) as erro:
+            # URL malformada (sem esquema, porta inválida) não deriva de HTTPError
             raise FalhaDoLLM("erro_do_provedor") from erro
         if resposta.status_code == 429:
             raise FalhaDoLLM("cota_esgotada")
@@ -85,6 +86,13 @@ def _conteudo(resposta: httpx.Response) -> str:
         conteudo = resposta.json()["choices"][0]["message"]["content"]
     except (ValueError, KeyError, IndexError, TypeError) as erro:
         raise FalhaDoLLM("resposta_invalida") from erro
+    if _truncada(resposta):
+        raise FalhaDoLLM("resposta_invalida")
     if not isinstance(conteudo, str) or not conteudo.strip():
         raise FalhaDoLLM("resposta_invalida")
     return conteudo.strip()
+
+
+def _truncada(resposta: httpx.Response) -> bool:
+    """Resposta cortada pelo limite de tokens (`finish_reason == "length"`)."""
+    return resposta.json()["choices"][0].get("finish_reason") == "length"

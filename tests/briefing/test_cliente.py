@@ -124,3 +124,24 @@ def test_configuracao_de_exige_os_tres_campos() -> None:
         assert configuracao_de(parcial) is None
         assert configuracao_de({**completa, faltante: ""}) is None
         assert configuracao_de({**completa, faltante: "  "}) is None
+
+
+def test_resposta_truncada_vira_resposta_invalida() -> None:
+    corpo = {"choices": [{"message": {"content": "Texto cortado"}, "finish_reason": "length"}]}
+    with pytest.raises(FalhaDoLLM) as erro:
+        _cliente(lambda r: httpx.Response(200, json=corpo)).completar(MENSAGENS)
+    assert erro.value.motivo == "resposta_invalida"
+
+
+def test_finish_reason_stop_e_aceito() -> None:
+    corpo = {"choices": [{"message": {"content": "Ok."}, "finish_reason": "stop"}]}
+    assert _cliente(lambda r: httpx.Response(200, json=corpo)).completar(MENSAGENS) == "Ok."
+
+
+@pytest.mark.parametrize("base_url", ["sem-esquema/v1", "", "http://host:porta/v1"])
+def test_base_url_malformada_vira_erro_do_provedor(base_url: str) -> None:
+    config = ConfiguracaoLLM(base_url=base_url, modelo="m", chave="c")
+    cliente = ClienteHTTP(config, transporte=httpx.MockTransport(lambda r: httpx.Response(200)))
+    with pytest.raises(FalhaDoLLM) as erro:
+        cliente.completar(MENSAGENS)
+    assert erro.value.motivo == "erro_do_provedor"
