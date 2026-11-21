@@ -1,0 +1,607 @@
+{
+  "commit": "2f8cebd54e95",
+  "configuracao": {
+    "alvo": "y_pizza_refri",
+    "b_de_h5": "reaproveitado de aninhada_<parte>_B",
+    "base": "celulas",
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "unidade": "cod_upa"
+    },
+    "metrica_da_comparacao": "log loss ponderado fora da dobra (ganho positivo favorece o candidato)",
+    "parte": "ocasiao",
+    "resultados_salvos": "aninhada_ocasiao_<degrau>",
+    "tempo_b_s": "tempo do B medido em H5",
+    "usar_peso": true
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "edicao": "2008-2009",
+    "n": 669030,
+    "positivos": 654,
+    "setores": 4328
+  },
+  "data_hora": "2026-11-20T23:27:03-03:00",
+  "metricas": {
+    "comparacoes": {
+      "H1": {
+        "candidato": "B",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.0005430622733803361,
+          "ic_inf": 0.00034209205938456145,
+          "ic_sup": 0.0007538261797839141,
+          "nivel": 0.95
+        },
+        "referencia": "A",
+        "veredito": "confirmada"
+      },
+      "H2": {
+        "candidato": "C",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 5.5152863461531594e-05,
+          "ic_inf": 8.557638653583805e-06,
+          "ic_sup": 0.00010176467367364777,
+          "nivel": 0.95
+        },
+        "referencia": "B",
+        "veredito": "confirmada"
+      },
+      "H3": {
+        "candidato": "D",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 2.3912282118759842e-05,
+          "ic_inf": -6.402007909595693e-05,
+          "ic_sup": 0.00011384641431119453,
+          "nivel": 0.95
+        },
+        "referencia": "C",
+        "veredito": "refutada"
+      }
+    },
+    "comparacoes_sequenciais": [
+      {
+        "candidato": "B",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.0005430622733803361,
+          "ic_inf": 0.00034209205938456145,
+          "ic_sup": 0.0007538261797839141,
+          "nivel": 0.95
+        },
+        "referencia": "A",
+        "veredito": "confirmada"
+      },
+      {
+        "candidato": "C",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 5.5152863461531594e-05,
+          "ic_inf": 8.557638653583805e-06,
+          "ic_sup": 0.00010176467367364777,
+          "nivel": 0.95
+        },
+        "referencia": "B",
+        "veredito": "confirmada"
+      },
+      {
+        "candidato": "D",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 2.3912282118759842e-05,
+          "ic_inf": -6.402007909595693e-05,
+          "ic_sup": 0.00011384641431119453,
+          "nivel": 0.95
+        },
+        "referencia": "C",
+        "veredito": "refutada"
+      }
+    ],
+    "degraus": {
+      "A": {
+        "parametros_por_dobra": [
+          {
+            "dimensoes": [
+              "fim_de_semana",
+              "faixa_horario",
+              "local"
+            ],
+            "suavizacao": 1000
+          },
+          {
+            "dimensoes": [
+              "fim_de_semana",
+              "faixa_horario",
+              "local"
+            ],
+            "suavizacao": 1000
+          },
+          {
+            "dimensoes": [
+              "fim_de_semana",
+              "faixa_horario",
+              "local"
+            ],
+            "suavizacao": 1000
+          },
+          {
+            "dimensoes": [
+              "fim_de_semana",
+              "faixa_horario",
+              "local"
+            ],
+            "suavizacao": 1000
+          },
+          {
+            "dimensoes": [
+              "dia_semana",
+              "faixa_horario"
+            ],
+            "suavizacao": 100
+          }
+        ],
+        "resumo": {
+          "brier": 0.001293977458157169,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 70436,
+                "p_media": 2.1834801889212073e-05,
+                "positivos": 3,
+                "taxa_observada": 8.613248223356301e-05
+              },
+              {
+                "n": 64598,
+                "p_media": 3.7484099855981715e-05,
+                "positivos": 1,
+                "taxa_observada": 3.4493190261534616e-06
+              },
+              {
+                "n": 65094,
+                "p_media": 8.161111822822245e-05,
+                "positivos": 5,
+                "taxa_observada": 5.5199842826945874e-05
+              },
+              {
+                "n": 70086,
+                "p_media": 0.00014586597692620366,
+                "positivos": 18,
+                "taxa_observada": 0.00035000254300028935
+              },
+              {
+                "n": 63842,
+                "p_media": 0.00021358281696043854,
+                "positivos": 22,
+                "taxa_observada": 0.00023509662055364253
+              },
+              {
+                "n": 72897,
+                "p_media": 0.0002525743585871873,
+                "positivos": 12,
+                "taxa_observada": 0.00015529467412348018
+              },
+              {
+                "n": 63944,
+                "p_media": 0.00034204287662066373,
+                "positivos": 9,
+                "taxa_observada": 6.281091491488837e-05
+              },
+              {
+                "n": 62765,
+                "p_media": 0.0007519507923872832,
+                "positivos": 28,
+                "taxa_observada": 0.00070504668332549
+              },
+              {
+                "n": 71186,
+                "p_media": 0.002871007662238716,
+                "positivos": 181,
+                "taxa_observada": 0.0032129344179708257
+              },
+              {
+                "n": 64182,
+                "p_media": 0.008231670382974557,
+                "positivos": 375,
+                "taxa_observada": 0.008127669470886341
+              }
+            ],
+            "inclinacao": 0.9984441921493581,
+            "intercepto_cil": 0.0,
+            "o_e": 1.0043561211371643
+          },
+          "concentracao_topo": 0.6219225569780505,
+          "log_loss": 0.008368678302701533,
+          "n": 669030,
+          "positivos": 654,
+          "pr_auc": 0.009081961010280507,
+          "prevalencia": 0.0013027905562964716,
+          "roc_auc": 0.8823748180552536
+        },
+        "tempo_s": 27.534661124984268
+      },
+      "B": {
+        "parametros_por_dobra": [
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.7196856730011522
+          }
+        ],
+        "resumo": {
+          "brier": 0.0012867588265361093,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 84504,
+                "p_media": 1.1866932939546219e-05,
+                "positivos": 4,
+                "taxa_observada": 3.160282746550605e-05
+              },
+              {
+                "n": 79184,
+                "p_media": 3.091315837329114e-05,
+                "positivos": 3,
+                "taxa_observada": 1.9872274971700027e-05
+              },
+              {
+                "n": 73890,
+                "p_media": 5.3604638962328235e-05,
+                "positivos": 8,
+                "taxa_observada": 0.00014462759513792845
+              },
+              {
+                "n": 69166,
+                "p_media": 8.364309686655202e-05,
+                "positivos": 7,
+                "taxa_observada": 6.156311874050025e-05
+              },
+              {
+                "n": 64723,
+                "p_media": 0.0001267750936518585,
+                "positivos": 13,
+                "taxa_observada": 0.00016934175402413484
+              },
+              {
+                "n": 61814,
+                "p_media": 0.00019546557595398467,
+                "positivos": 14,
+                "taxa_observada": 0.0003051447704601432
+              },
+              {
+                "n": 58260,
+                "p_media": 0.00032347644520260824,
+                "positivos": 20,
+                "taxa_observada": 0.00026907157356601674
+              },
+              {
+                "n": 59032,
+                "p_media": 0.0006423559844357057,
+                "positivos": 22,
+                "taxa_observada": 0.000402221858912079
+              },
+              {
+                "n": 63944,
+                "p_media": 0.0017685782267206865,
+                "positivos": 115,
+                "taxa_observada": 0.0014912601235588237
+              },
+              {
+                "n": 54513,
+                "p_media": 0.009796986783795345,
+                "positivos": 448,
+                "taxa_observada": 0.010133146533114765
+              }
+            ],
+            "inclinacao": 0.9822589070946185,
+            "intercepto_cil": 0.0,
+            "o_e": 0.9995538322074028
+          },
+          "concentracao_topo": 0.7778079212940658,
+          "log_loss": 0.007825616029321197,
+          "n": 669030,
+          "positivos": 654,
+          "pr_auc": 0.023101557217385087,
+          "prevalencia": 0.0013027905562964716,
+          "roc_auc": 0.9145348741640216
+        },
+        "tempo_s": 120.81193204200827
+      },
+      "C": {
+        "parametros_por_dobra": [
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.7196856730011522,
+            "interacoes": "pre_declarado"
+          }
+        ],
+        "resumo": {
+          "brier": 0.0012850668163041003,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 83301,
+                "p_media": 1.0396353761259556e-05,
+                "positivos": 3,
+                "taxa_observada": 2.4316980914475807e-05
+              },
+              {
+                "n": 79199,
+                "p_media": 2.8736717101090294e-05,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 73857,
+                "p_media": 5.0499094902732746e-05,
+                "positivos": 6,
+                "taxa_observada": 6.068310922846214e-05
+              },
+              {
+                "n": 69004,
+                "p_media": 7.859437474556553e-05,
+                "positivos": 7,
+                "taxa_observada": 0.00014389022387483827
+              },
+              {
+                "n": 64030,
+                "p_media": 0.00011867043478654047,
+                "positivos": 14,
+                "taxa_observada": 0.00022450919927705123
+              },
+              {
+                "n": 61495,
+                "p_media": 0.00018148109683094432,
+                "positivos": 16,
+                "taxa_observada": 0.00022470630666083938
+              },
+              {
+                "n": 58689,
+                "p_media": 0.00029822649354993433,
+                "positivos": 17,
+                "taxa_observada": 0.00020548212753561322
+              },
+              {
+                "n": 60264,
+                "p_media": 0.0005866477755901309,
+                "positivos": 28,
+                "taxa_observada": 0.0003567542715844491
+              },
+              {
+                "n": 64611,
+                "p_media": 0.0016690263756172835,
+                "positivos": 104,
+                "taxa_observada": 0.0015749750382514265
+              },
+              {
+                "n": 54580,
+                "p_media": 0.009957360142977009,
+                "positivos": 459,
+                "taxa_observada": 0.010212584137236816
+              }
+            ],
+            "inclinacao": 0.9976862961992525,
+            "intercepto_cil": 0.0,
+            "o_e": 1.0037185473434656
+          },
+          "concentracao_topo": 0.7839012657538289,
+          "log_loss": 0.0077704631658596654,
+          "n": 669030,
+          "positivos": 654,
+          "pr_auc": 0.02376695832773057,
+          "prevalencia": 0.0013027905562964716,
+          "roc_auc": 0.9176697440585142
+        },
+        "tempo_s": 819.0060279159807
+      },
+      "D": {
+        "parametros_por_dobra": [
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.02959119857788202,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 353,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.018513324527887294,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.02959119857788202,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 353,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.018513324527887294,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          }
+        ],
+        "resumo": {
+          "brier": 0.0012816493688160907,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 69868,
+                "p_media": 3.082235950284978e-05,
+                "positivos": 5,
+                "taxa_observada": 4.0131677415625336e-05
+              },
+              {
+                "n": 68662,
+                "p_media": 5.940945856130984e-05,
+                "positivos": 2,
+                "taxa_observada": 7.5524044925470356e-06
+              },
+              {
+                "n": 68414,
+                "p_media": 8.83739022382304e-05,
+                "positivos": 2,
+                "taxa_observada": 3.629377230306613e-05
+              },
+              {
+                "n": 69404,
+                "p_media": 0.00012566516303490397,
+                "positivos": 9,
+                "taxa_observada": 9.828487530704116e-05
+              },
+              {
+                "n": 67217,
+                "p_media": 0.00017564583017885973,
+                "positivos": 8,
+                "taxa_observada": 0.00016624522978100738
+              },
+              {
+                "n": 66949,
+                "p_media": 0.0002485288456679895,
+                "positivos": 10,
+                "taxa_observada": 0.0002566879493918547
+              },
+              {
+                "n": 67528,
+                "p_media": 0.0003724336855544222,
+                "positivos": 16,
+                "taxa_observada": 0.00019243764916064253
+              },
+              {
+                "n": 66671,
+                "p_media": 0.0006380819884379581,
+                "positivos": 39,
+                "taxa_observada": 0.0004788251282068269
+              },
+              {
+                "n": 67548,
+                "p_media": 0.0015921248888629716,
+                "positivos": 101,
+                "taxa_observada": 0.0018582464899034891
+              },
+              {
+                "n": 56769,
+                "p_media": 0.009554862230907303,
+                "positivos": 462,
+                "taxa_observada": 0.009892879240978666
+              }
+            ],
+            "inclinacao": 1.0474926767766175,
+            "intercepto_cil": 0.003784061554332134,
+            "o_e": 1.010994359843793
+          },
+          "concentracao_topo": 0.7593771490746049,
+          "log_loss": 0.007746550883740906,
+          "n": 669030,
+          "positivos": 654,
+          "pr_auc": 0.028499296868169214,
+          "prevalencia": 0.0013027905562964716,
+          "roc_auc": 0.9190402406520252
+        },
+        "tempo_s": 5257.39348941599
+      }
+    },
+    "status": "ok",
+    "vencedor": "C"
+  },
+  "natureza": "confirmatório",
+  "nome": "escada_ocasiao",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}

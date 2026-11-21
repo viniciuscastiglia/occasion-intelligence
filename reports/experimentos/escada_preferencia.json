@@ -1,0 +1,909 @@
+{
+  "commit": "0d8bd879556f",
+  "configuracao": {
+    "alvo": "y_guarana",
+    "b_de_h5": "reaproveitado de aninhada_<parte>_B",
+    "base": "ocasioes_refri",
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "unidade": "cod_upa"
+    },
+    "metrica_da_comparacao": "log loss ponderado fora da dobra (ganho positivo favorece o candidato)",
+    "parte": "preferencia",
+    "resultados_salvos": "aninhada_preferencia_<degrau>",
+    "tempo_b_s": "tempo do B medido em H5",
+    "usar_peso": true
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "edicao": "2008-2009",
+    "n": 19182,
+    "positivos": 4684,
+    "setores": 3374
+  },
+  "data_hora": "2026-11-20T19:33:22-03:00",
+  "metricas": {
+    "comparacoes": {
+      "H1": {
+        "candidato": "B",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.00492389633509871,
+          "ic_inf": 0.0004795061787794587,
+          "ic_sup": 0.00941326162770731,
+          "nivel": 0.95
+        },
+        "referencia": "A",
+        "veredito": "confirmada"
+      },
+      "H2": {
+        "candidato": "C",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.002859317688673868,
+          "ic_inf": 0.0004034811075438852,
+          "ic_sup": 0.005265021635534721,
+          "nivel": 0.95
+        },
+        "referencia": "B",
+        "veredito": "confirmada"
+      },
+      "H3": {
+        "candidato": "D",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": -0.0030151240151486958,
+          "ic_inf": -0.006463645006650031,
+          "ic_sup": 0.000615804785342025,
+          "nivel": 0.95
+        },
+        "referencia": "C",
+        "veredito": "refutada"
+      }
+    },
+    "comparacoes_sequenciais": [
+      {
+        "candidato": "B",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.00492389633509871,
+          "ic_inf": 0.0004795061787794587,
+          "ic_sup": 0.00941326162770731,
+          "nivel": 0.95
+        },
+        "referencia": "A",
+        "veredito": "confirmada"
+      },
+      {
+        "candidato": "C",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.002859317688673868,
+          "ic_inf": 0.0004034811075438852,
+          "ic_sup": 0.005265021635534721,
+          "nivel": 0.95
+        },
+        "referencia": "B",
+        "veredito": "confirmada"
+      },
+      {
+        "candidato": "D",
+        "intervalo": {
+          "b": 1000,
+          "estimativa": -0.0030151240151486958,
+          "ic_inf": -0.006463645006650031,
+          "ic_sup": 0.000615804785342025,
+          "nivel": 0.95
+        },
+        "referencia": "C",
+        "veredito": "refutada"
+      }
+    ],
+    "degraus": {
+      "A": {
+        "parametros_por_dobra": [
+          {
+            "dimensoes": [
+              "uf"
+            ],
+            "suavizacao": 100
+          },
+          {
+            "dimensoes": [
+              "uf",
+              "local"
+            ],
+            "suavizacao": 100
+          },
+          {
+            "dimensoes": [
+              "uf"
+            ],
+            "suavizacao": 100
+          },
+          {
+            "dimensoes": [
+              "regiao",
+              "local"
+            ],
+            "suavizacao": 100
+          },
+          {
+            "dimensoes": [
+              "uf",
+              "local"
+            ],
+            "suavizacao": 100
+          }
+        ],
+        "resumo": {
+          "brier": 0.1773501157248875,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 2446,
+                "p_media": 0.14524101142783702,
+                "positivos": 381,
+                "taxa_observada": 0.14532373883440683
+              },
+              {
+                "n": 1834,
+                "p_media": 0.19109385909596058,
+                "positivos": 364,
+                "taxa_observada": 0.226492284864462
+              },
+              {
+                "n": 1528,
+                "p_media": 0.20686411233967567,
+                "positivos": 327,
+                "taxa_observada": 0.20958366133213627
+              },
+              {
+                "n": 1858,
+                "p_media": 0.21923610664896417,
+                "positivos": 498,
+                "taxa_observada": 0.27425479819506726
+              },
+              {
+                "n": 1546,
+                "p_media": 0.23342019758897628,
+                "positivos": 329,
+                "taxa_observada": 0.23351554061963886
+              },
+              {
+                "n": 2119,
+                "p_media": 0.24332081415461695,
+                "positivos": 489,
+                "taxa_observada": 0.19324890967761493
+              },
+              {
+                "n": 769,
+                "p_media": 0.2464177313177639,
+                "positivos": 195,
+                "taxa_observada": 0.23569612785494984
+              },
+              {
+                "n": 2764,
+                "p_media": 0.25286682439944735,
+                "positivos": 712,
+                "taxa_observada": 0.2375217778441438
+              },
+              {
+                "n": 1568,
+                "p_media": 0.2706564183763973,
+                "positivos": 483,
+                "taxa_observada": 0.23672128822079416
+              },
+              {
+                "n": 2750,
+                "p_media": 0.3428894893512635,
+                "positivos": 906,
+                "taxa_observada": 0.3459797049416085
+              }
+            ],
+            "inclinacao": 0.872109864463052,
+            "intercepto_cil": -0.0021552318581020526,
+            "o_e": 0.998377648596319
+          },
+          "concentracao_topo": 0.14724525791928206,
+          "log_loss": 0.5388147975320228,
+          "n": 19182,
+          "positivos": 4684,
+          "pr_auc": 0.2819277544427563,
+          "prevalencia": 0.23451548420203022,
+          "roc_auc": 0.5550744971667423
+        },
+        "resumo_com_pizza": {
+          "brier": 0.1256818868005756,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 78,
+                "p_media": 0.1313589198853604,
+                "positivos": 8,
+                "taxa_observada": 0.18583995828142355
+              },
+              {
+                "n": 80,
+                "p_media": 0.17039291570566364,
+                "positivos": 12,
+                "taxa_observada": 0.09872259060007185
+              },
+              {
+                "n": 75,
+                "p_media": 0.2014702383389709,
+                "positivos": 9,
+                "taxa_observada": 0.08325146301877465
+              },
+              {
+                "n": 43,
+                "p_media": 0.21224817618949837,
+                "positivos": 7,
+                "taxa_observada": 0.1115265501379289
+              },
+              {
+                "n": 55,
+                "p_media": 0.22122391255706206,
+                "positivos": 11,
+                "taxa_observada": 0.18696843446950487
+              },
+              {
+                "n": 45,
+                "p_media": 0.23046077169856713,
+                "positivos": 2,
+                "taxa_observada": 0.05303080187304352
+              },
+              {
+                "n": 76,
+                "p_media": 0.24204008917760253,
+                "positivos": 20,
+                "taxa_observada": 0.28507597028862564
+              },
+              {
+                "n": 28,
+                "p_media": 0.24897957899490974,
+                "positivos": 1,
+                "taxa_observada": 0.002104980270812341
+              },
+              {
+                "n": 83,
+                "p_media": 0.2622735711358621,
+                "positivos": 12,
+                "taxa_observada": 0.13044057036190917
+              },
+              {
+                "n": 92,
+                "p_media": 0.3169727379591782,
+                "positivos": 19,
+                "taxa_observada": 0.30890428994434477
+              }
+            ],
+            "inclinacao": 0.7819322877512369,
+            "intercepto_cil": -0.5825574893906849,
+            "o_e": 0.623445994064772
+          },
+          "concentracao_topo": 0.21219981803357696,
+          "log_loss": 0.4235960695474311,
+          "n": 655,
+          "positivos": 101,
+          "pr_auc": 0.24745856046098014,
+          "prevalencia": 0.1392217631746601,
+          "roc_auc": 0.5438064071533526
+        },
+        "tempo_s": 1.4941295000026003
+      },
+      "B": {
+        "parametros_por_dobra": [
+          {
+            "C": 0.005179474679231213
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          }
+        ],
+        "resumo": {
+          "brier": 0.17566691674671317,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 1901,
+                "p_media": 0.1166175066467763,
+                "positivos": 263,
+                "taxa_observada": 0.12407773184181979
+              },
+              {
+                "n": 1853,
+                "p_media": 0.1605220411839482,
+                "positivos": 324,
+                "taxa_observada": 0.1703278091717034
+              },
+              {
+                "n": 1690,
+                "p_media": 0.1858839072275663,
+                "positivos": 340,
+                "taxa_observada": 0.2104511402979147
+              },
+              {
+                "n": 1675,
+                "p_media": 0.2052549783340048,
+                "positivos": 334,
+                "taxa_observada": 0.21976124350828655
+              },
+              {
+                "n": 1717,
+                "p_media": 0.22196123211012117,
+                "positivos": 423,
+                "taxa_observada": 0.24802121643775038
+              },
+              {
+                "n": 1756,
+                "p_media": 0.23905680754274386,
+                "positivos": 381,
+                "taxa_observada": 0.21697324930605694
+              },
+              {
+                "n": 1769,
+                "p_media": 0.2563560926705171,
+                "positivos": 467,
+                "taxa_observada": 0.23688692325100127
+              },
+              {
+                "n": 1904,
+                "p_media": 0.2775052490820086,
+                "positivos": 522,
+                "taxa_observada": 0.2699068391123505
+              },
+              {
+                "n": 2194,
+                "p_media": 0.3072649951034969,
+                "positivos": 659,
+                "taxa_observada": 0.2756523394250132
+              },
+              {
+                "n": 2723,
+                "p_media": 0.38688925563864685,
+                "positivos": 971,
+                "taxa_observada": 0.3730821542500043
+              }
+            ],
+            "inclinacao": 0.8328566320277476,
+            "intercepto_cil": -0.0069759131276412485,
+            "o_e": 0.9948442950263817
+          },
+          "concentracao_topo": 0.1590850099156841,
+          "log_loss": 0.5338909011969241,
+          "n": 19182,
+          "positivos": 4684,
+          "pr_auc": 0.30791391265341483,
+          "prevalencia": 0.23451548420203022,
+          "roc_auc": 0.594166126719603
+        },
+        "resumo_com_pizza": {
+          "brier": 0.12429742593238273,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 74,
+                "p_media": 0.07075436448453352,
+                "positivos": 8,
+                "taxa_observada": 0.12010319124425829
+              },
+              {
+                "n": 57,
+                "p_media": 0.10131488869319323,
+                "positivos": 7,
+                "taxa_observada": 0.10311146392112285
+              },
+              {
+                "n": 78,
+                "p_media": 0.12291854044546656,
+                "positivos": 10,
+                "taxa_observada": 0.097661287208745
+              },
+              {
+                "n": 69,
+                "p_media": 0.1426050181909534,
+                "positivos": 14,
+                "taxa_observada": 0.2422864437842845
+              },
+              {
+                "n": 56,
+                "p_media": 0.1540791694241186,
+                "positivos": 14,
+                "taxa_observada": 0.20070728077313155
+              },
+              {
+                "n": 76,
+                "p_media": 0.16901917248896534,
+                "positivos": 14,
+                "taxa_observada": 0.23651298731396472
+              },
+              {
+                "n": 68,
+                "p_media": 0.18713925464571607,
+                "positivos": 9,
+                "taxa_observada": 0.0674082040361029
+              },
+              {
+                "n": 62,
+                "p_media": 0.20660136397780618,
+                "positivos": 12,
+                "taxa_observada": 0.1614463039220615
+              },
+              {
+                "n": 47,
+                "p_media": 0.2242345827252778,
+                "positivos": 0,
+                "taxa_observada": 0.0
+              },
+              {
+                "n": 68,
+                "p_media": 0.26787028170757565,
+                "positivos": 13,
+                "taxa_observada": 0.15023770456512806
+              }
+            ],
+            "inclinacao": 0.003763077777226494,
+            "intercepto_cil": -0.20203066243065212,
+            "o_e": 0.8457548491185879
+          },
+          "concentracao_topo": 0.10934119082138824,
+          "log_loss": 0.4176306013581004,
+          "n": 655,
+          "positivos": 101,
+          "pr_auc": 0.1414780453240696,
+          "prevalencia": 0.1392217631746601,
+          "roc_auc": 0.476460742381289
+        },
+        "tempo_s": 6.101251207990572
+      },
+      "C": {
+        "parametros_por_dobra": [
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          }
+        ],
+        "resumo": {
+          "brier": 0.17461924408106008,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 1919,
+                "p_media": 0.10421374824527932,
+                "positivos": 254,
+                "taxa_observada": 0.13186652352217673
+              },
+              {
+                "n": 1866,
+                "p_media": 0.15070983410921268,
+                "positivos": 302,
+                "taxa_observada": 0.1412122441786303
+              },
+              {
+                "n": 1696,
+                "p_media": 0.17873176554498563,
+                "positivos": 335,
+                "taxa_observada": 0.1912218171619931
+              },
+              {
+                "n": 1730,
+                "p_media": 0.2005085019893149,
+                "positivos": 329,
+                "taxa_observada": 0.2009312004601391
+              },
+              {
+                "n": 1689,
+                "p_media": 0.22065909267318495,
+                "positivos": 425,
+                "taxa_observada": 0.24314963525045527
+              },
+              {
+                "n": 1744,
+                "p_media": 0.2398313022756543,
+                "positivos": 427,
+                "taxa_observada": 0.23327226985368174
+              },
+              {
+                "n": 1855,
+                "p_media": 0.26058886734489295,
+                "positivos": 493,
+                "taxa_observada": 0.28453861934982544
+              },
+              {
+                "n": 1881,
+                "p_media": 0.28428868300774307,
+                "positivos": 497,
+                "taxa_observada": 0.2526817305583348
+              },
+              {
+                "n": 2184,
+                "p_media": 0.3187644028688202,
+                "positivos": 642,
+                "taxa_observada": 0.2749581960781557
+              },
+              {
+                "n": 2618,
+                "p_media": 0.40241249626678954,
+                "positivos": 980,
+                "taxa_observada": 0.39107045532891527
+              }
+            ],
+            "inclinacao": 0.8378445173702335,
+            "intercepto_cil": -0.009054064448949264,
+            "o_e": 0.9933650227586683
+          },
+          "concentracao_topo": 0.166951590715247,
+          "log_loss": 0.5310315835082502,
+          "n": 19182,
+          "positivos": 4684,
+          "pr_auc": 0.31885409980355905,
+          "prevalencia": 0.23451548420203022,
+          "roc_auc": 0.6084211607547787
+        },
+        "resumo_com_pizza": {
+          "brier": 0.12263502090002376,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 60,
+                "p_media": 0.06117522985811246,
+                "positivos": 7,
+                "taxa_observada": 0.1375336145759409
+              },
+              {
+                "n": 40,
+                "p_media": 0.08366130985094397,
+                "positivos": 5,
+                "taxa_observada": 0.16036445203452526
+              },
+              {
+                "n": 54,
+                "p_media": 0.0958828736866281,
+                "positivos": 9,
+                "taxa_observada": 0.11926668830606685
+              },
+              {
+                "n": 52,
+                "p_media": 0.1089521952524374,
+                "positivos": 10,
+                "taxa_observada": 0.18024699647981793
+              },
+              {
+                "n": 75,
+                "p_media": 0.12662515089893608,
+                "positivos": 8,
+                "taxa_observada": 0.07556714330493212
+              },
+              {
+                "n": 87,
+                "p_media": 0.1471038754680321,
+                "positivos": 8,
+                "taxa_observada": 0.07376421442628876
+              },
+              {
+                "n": 59,
+                "p_media": 0.16985553410459683,
+                "positivos": 13,
+                "taxa_observada": 0.14415285161006025
+              },
+              {
+                "n": 63,
+                "p_media": 0.1884710406154989,
+                "positivos": 12,
+                "taxa_observada": 0.1522495701753351
+              },
+              {
+                "n": 74,
+                "p_media": 0.2205237314930364,
+                "positivos": 15,
+                "taxa_observada": 0.15154107318288393
+              },
+              {
+                "n": 91,
+                "p_media": 0.29871775665572087,
+                "positivos": 14,
+                "taxa_observada": 0.19698488373783946
+              }
+            ],
+            "inclinacao": 0.23632033815926853,
+            "intercepto_cil": -0.09264946454323687,
+            "o_e": 0.926570267990968
+          },
+          "concentracao_topo": 0.13482766011866293,
+          "log_loss": 0.4134108721628509,
+          "n": 655,
+          "positivos": 101,
+          "pr_auc": 0.16439197086515678,
+          "prevalencia": 0.1392217631746601,
+          "roc_auc": 0.5268515115683682
+        },
+        "tempo_s": 17.22308362502372
+      },
+      "D": {
+        "parametros_por_dobra": [
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.026008027056445275,
+            "max_depth": 4,
+            "min_child_samples": 2000,
+            "n_estimators": 145,
+            "n_jobs": 4,
+            "num_leaves": 16,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 3.0091007881478395,
+            "subsample": 0.7,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          }
+        ],
+        "resumo": {
+          "brier": 0.1757048553304418,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 2116,
+                "p_media": 0.12424007303568163,
+                "positivos": 292,
+                "taxa_observada": 0.13060181790247136
+              },
+              {
+                "n": 1916,
+                "p_media": 0.16088900184342592,
+                "positivos": 326,
+                "taxa_observada": 0.17217262669574032
+              },
+              {
+                "n": 1805,
+                "p_media": 0.18267634084809783,
+                "positivos": 359,
+                "taxa_observada": 0.19054530064470548
+              },
+              {
+                "n": 1711,
+                "p_media": 0.20109845677901503,
+                "positivos": 399,
+                "taxa_observada": 0.2232872229508872
+              },
+              {
+                "n": 1580,
+                "p_media": 0.21917727528320347,
+                "positivos": 383,
+                "taxa_observada": 0.2132616076785815
+              },
+              {
+                "n": 1833,
+                "p_media": 0.23872942284276094,
+                "positivos": 433,
+                "taxa_observada": 0.2365494355266337
+              },
+              {
+                "n": 1783,
+                "p_media": 0.25965600979808023,
+                "positivos": 459,
+                "taxa_observada": 0.27283484348782816
+              },
+              {
+                "n": 1744,
+                "p_media": 0.28131660745914766,
+                "positivos": 465,
+                "taxa_observada": 0.27270991503750436
+              },
+              {
+                "n": 2233,
+                "p_media": 0.311802446039164,
+                "positivos": 657,
+                "taxa_observada": 0.2728551053761427
+              },
+              {
+                "n": 2461,
+                "p_media": 0.3883429652871446,
+                "positivos": 911,
+                "taxa_observada": 0.36038951886476683
+              }
+            ],
+            "inclinacao": 0.8373141368923421,
+            "intercepto_cil": -0.012983822163933489,
+            "o_e": 0.9904232525484755
+          },
+          "concentracao_topo": 0.15362453330634573,
+          "log_loss": 0.5340467075233989,
+          "n": 19182,
+          "positivos": 4684,
+          "pr_auc": 0.3089545779820819,
+          "prevalencia": 0.23451548420203022,
+          "roc_auc": 0.5942055638309517
+        },
+        "resumo_com_pizza": {
+          "brier": 0.12428971376349877,
+          "calibracao": {
+            "curva": [
+              {
+                "n": 80,
+                "p_media": 0.09718632975250387,
+                "positivos": 8,
+                "taxa_observada": 0.061854253373925784
+              },
+              {
+                "n": 62,
+                "p_media": 0.1292747458806942,
+                "positivos": 10,
+                "taxa_observada": 0.19348985698079624
+              },
+              {
+                "n": 69,
+                "p_media": 0.14983853381155546,
+                "positivos": 7,
+                "taxa_observada": 0.05708664062717495
+              },
+              {
+                "n": 71,
+                "p_media": 0.16919506198900006,
+                "positivos": 11,
+                "taxa_observada": 0.10027466482217481
+              },
+              {
+                "n": 66,
+                "p_media": 0.19120874640220975,
+                "positivos": 13,
+                "taxa_observada": 0.17898052663693156
+              },
+              {
+                "n": 54,
+                "p_media": 0.20723626406585605,
+                "positivos": 13,
+                "taxa_observada": 0.23425302002006224
+              },
+              {
+                "n": 62,
+                "p_media": 0.22327626809122533,
+                "positivos": 10,
+                "taxa_observada": 0.12410238285408413
+              },
+              {
+                "n": 68,
+                "p_media": 0.24455931243586884,
+                "positivos": 8,
+                "taxa_observada": 0.11830865276059291
+              },
+              {
+                "n": 53,
+                "p_media": 0.271076925527783,
+                "positivos": 9,
+                "taxa_observada": 0.16220553728267628
+              },
+              {
+                "n": 70,
+                "p_media": 0.32423824438438226,
+                "positivos": 12,
+                "taxa_observada": 0.16362782926408811
+              }
+            ],
+            "inclinacao": 0.5494781251338268,
+            "intercepto_cil": -0.45045924033717355,
+            "o_e": 0.6938514309661716
+          },
+          "concentracao_topo": 0.11757756482435491,
+          "log_loss": 0.41554513861743636,
+          "n": 655,
+          "positivos": 101,
+          "pr_auc": 0.1852184085026844,
+          "prevalencia": 0.1392217631746601,
+          "roc_auc": 0.5486451292379201
+        },
+        "tempo_s": 291.18013237498235
+      }
+    },
+    "status": "ok",
+    "vencedor": "C"
+  },
+  "natureza": "confirmatório",
+  "nome": "escada_preferencia",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}

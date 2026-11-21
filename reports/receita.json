@@ -1,0 +1,165 @@
+{
+  "faixas_horario": {
+    "madrugada": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "manha": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "almoco": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "tarde": [
+      15,
+      16,
+      17
+    ],
+    "noite": [
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ]
+  },
+  "variaveis": {
+    "ocasiao": [
+      "dia_semana",
+      "faixa_horario",
+      "local",
+      "uf",
+      "regiao",
+      "situacao",
+      "idade",
+      "sexo",
+      "renda_pc_sm",
+      "n_moradores_uc"
+    ],
+    "preferencia": [
+      "dia_semana",
+      "faixa_horario",
+      "local",
+      "uf",
+      "regiao",
+      "situacao",
+      "idade",
+      "sexo",
+      "renda_pc_sm",
+      "n_moradores_uc",
+      "tem_pizza"
+    ],
+    "direto": [
+      "dia_semana",
+      "faixa_horario",
+      "local",
+      "uf",
+      "regiao",
+      "situacao",
+      "idade",
+      "sexo",
+      "renda_pc_sm",
+      "n_moradores_uc"
+    ]
+  },
+  "interacoes": {
+    "ocasiao": [
+      [
+        "dia_semana",
+        "faixa_horario"
+      ],
+      [
+        "faixa_horario",
+        "local"
+      ],
+      [
+        "local",
+        "situacao"
+      ]
+    ],
+    "preferencia": [
+      [
+        "tem_pizza",
+        "local"
+      ],
+      [
+        "tem_pizza",
+        "regiao"
+      ],
+      [
+        "regiao",
+        "local"
+      ],
+      [
+        "faixa_horario",
+        "local"
+      ]
+    ],
+    "direto": []
+  },
+  "ocasiao": {
+    "degrau": "C",
+    "parametros": {
+      "C": 0.13894954943731375,
+      "interacoes": "pre_declarado"
+    },
+    "usar_peso": true,
+    "calibrar": false
+  },
+  "preferencia": {
+    "degrau": "C",
+    "parametros": {
+      "C": 0.02682695795279726,
+      "interacoes": "pre_declarado"
+    },
+    "usar_peso": true,
+    "calibrar": false
+  },
+  "score": "produto",
+  "direto": null,
+  "calibrar_score": false,
+  "referencia_a": {
+    "ocasiao": {
+      "dimensoes": [
+        "fim_de_semana",
+        "faixa_horario",
+        "local"
+      ],
+      "suavizacao": 1000
+    },
+    "preferencia": {
+      "dimensoes": [
+        "uf"
+      ],
+      "suavizacao": 100
+    }
+  },
+  "cortes": {
+    "alta": 80.0,
+    "media": 50.0,
+    "ocasiao": 75.0,
+    "preferencia": 50.0
+  },
+  "experimentos": [
+    "reports/dobras.json",
+    "reports/experimentos/h5_peso.json",
+    "reports/experimentos/escada_ocasiao.json",
+    "reports/experimentos/escada_preferencia.json",
+    "reports/experimentos/calibracao.json",
+    "reports/experimentos/h6_h7_produto.json",
+    "reports/experimentos/cortes.json",
+    "reports/experimentos/selecao_final.json"
+  ]
+}

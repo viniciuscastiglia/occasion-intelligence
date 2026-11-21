@@ -1,0 +1,71 @@
+{
+  "commit": "0d8bd879556f",
+  "configuracao": {
+    "alvo": "permutado entre as linhas, com np.random.default_rng(SEMENTE)",
+    "controle": "vazamento (não é uma hipótese)",
+    "degrau": "B",
+    "esperado": "refutada: o modelo não pode superar a constante",
+    "partes": [
+      "ocasiao",
+      "preferencia"
+    ],
+    "referencia": "constante igual à prevalência ponderada (peso_final) do treino de cada dobra"
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "ocasiao": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 654,
+      "setores": 4328
+    },
+    "preferencia": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    }
+  },
+  "data_hora": "2026-11-20T19:56:01-03:00",
+  "metricas": {
+    "ocasiao": {
+      "ganho_do_modelo_sobre_a_constante": {
+        "b": 1000,
+        "estimativa": -9.88705825191033e-06,
+        "ic_inf": -1.4713941323467751e-05,
+        "ic_sup": -5.807266137104773e-06,
+        "nivel": 0.95
+      },
+      "log_loss_constante": 0.00784035155759651,
+      "log_loss_modelo": 0.00785023861584842,
+      "usar_peso": true,
+      "veredito": "refutada"
+    },
+    "preferencia": {
+      "ganho_do_modelo_sobre_a_constante": {
+        "b": 1000,
+        "estimativa": 0.00021279828077325202,
+        "ic_inf": -0.0008121464499578864,
+        "ic_sup": 0.0014656181359290255,
+        "nivel": 0.95
+      },
+      "log_loss_constante": 0.554123903060998,
+      "log_loss_modelo": 0.5539111047802248,
+      "usar_peso": true,
+      "veredito": "refutada"
+    },
+    "status": "ok"
+  },
+  "natureza": "exploratório",
+  "nome": "rotulos_embaralhados",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}

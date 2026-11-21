@@ -1,0 +1,151 @@
+{
+  "commit": "0d8bd879556f",
+  "configuracao": {
+    "alternativa": "treino sem peso",
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf"
+    },
+    "degrau": "B",
+    "metrica": "log loss ponderado fora da dobra",
+    "referencia": "treino com peso_final (o padrão)",
+    "resultados_salvos": "aninhada_<parte>_B_com_peso, aninhada_<parte>_B_sem_peso, aninhada_<parte>_B (o decidido, com o hash das dobras)"
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "ocasiao": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 654,
+      "setores": 4328
+    },
+    "preferencia": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    }
+  },
+  "data_hora": "2026-11-20T18:16:45-03:00",
+  "metricas": {
+    "ocasiao": {
+      "ganho_sem_peso": {
+        "b": 1000,
+        "estimativa": -2.3901341785996857e-05,
+        "ic_inf": -0.00012906704133914838,
+        "ic_sup": 8.28145964355719e-05,
+        "nivel": 0.95
+      },
+      "log_loss_com_peso": 0.007825616029321197,
+      "log_loss_sem_peso": 0.007849517371107194,
+      "parametros_por_dobra": {
+        "com_peso": [
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 0.7196856730011522
+          }
+        ],
+        "sem_peso": [
+          {
+            "C": 0.7196856730011522
+          },
+          {
+            "C": 0.7196856730011522
+          },
+          {
+            "C": 0.7196856730011522
+          },
+          {
+            "C": 0.13894954943731375
+          },
+          {
+            "C": 3.7275937203149416
+          }
+        ]
+      },
+      "tempo_s": {
+        "com_peso": 120.81193204200827,
+        "sem_peso": 122.91702208301285
+      },
+      "usar_peso": true,
+      "veredito": "sem evidência contra o padrão"
+    },
+    "preferencia": {
+      "ganho_sem_peso": {
+        "b": 1000,
+        "estimativa": 0.0024081654989441814,
+        "ic_inf": -0.0002881892164353415,
+        "ic_sup": 0.005259220891033319,
+        "nivel": 0.95
+      },
+      "log_loss_com_peso": 0.5338909011969241,
+      "log_loss_sem_peso": 0.5314827356979799,
+      "parametros_por_dobra": {
+        "com_peso": [
+          {
+            "C": 0.005179474679231213
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          }
+        ],
+        "sem_peso": [
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          },
+          {
+            "C": 0.02682695795279726
+          }
+        ]
+      },
+      "tempo_s": {
+        "com_peso": 6.101251207990572,
+        "sem_peso": 6.133958708960563
+      },
+      "usar_peso": true,
+      "veredito": "sem evidência contra o padrão"
+    },
+    "status": "ok"
+  },
+  "natureza": "confirmatório",
+  "nome": "h5_peso",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}

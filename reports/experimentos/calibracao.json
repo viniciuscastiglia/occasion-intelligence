@@ -1,0 +1,520 @@
+{
+  "commit": "2f8cebd54e95-dirty",
+  "configuracao": {
+    "ajuste": "em cada dobra externa k, ajustar_sigmoide (com peso_final) nas previsões internas de k, aplicada às previsões fora da dobra k; a dobra k nunca entra no ajuste da própria sigmoide",
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "unidade": "cod_upa"
+    },
+    "metrica_da_comparacao": "ganho da versão calibrada no log loss ponderado fora da dobra",
+    "niveis_de_calibracao": "média (o_e e intercepto_cil), inclinação e curva por faixas",
+    "o_que": "correção sigmoide no vencedor da escada de cada parte (seção 8.2 do design)",
+    "regra": "superioridade"
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "ocasiao": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 654,
+      "setores": 4328
+    },
+    "preferencia": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    }
+  },
+  "data_hora": "2026-11-20T23:27:31-03:00",
+  "metricas": {
+    "ocasiao": {
+      "antes": {
+        "curva": [
+          {
+            "n": 83301,
+            "p_media": 1.0396353761259556e-05,
+            "positivos": 3,
+            "taxa_observada": 2.4316980914475807e-05
+          },
+          {
+            "n": 79199,
+            "p_media": 2.8736717101090294e-05,
+            "positivos": 0,
+            "taxa_observada": 0.0
+          },
+          {
+            "n": 73857,
+            "p_media": 5.0499094902732746e-05,
+            "positivos": 6,
+            "taxa_observada": 6.068310922846214e-05
+          },
+          {
+            "n": 69004,
+            "p_media": 7.859437474556553e-05,
+            "positivos": 7,
+            "taxa_observada": 0.00014389022387483827
+          },
+          {
+            "n": 64030,
+            "p_media": 0.00011867043478654047,
+            "positivos": 14,
+            "taxa_observada": 0.00022450919927705123
+          },
+          {
+            "n": 61495,
+            "p_media": 0.00018148109683094432,
+            "positivos": 16,
+            "taxa_observada": 0.00022470630666083938
+          },
+          {
+            "n": 58689,
+            "p_media": 0.00029822649354993433,
+            "positivos": 17,
+            "taxa_observada": 0.00020548212753561322
+          },
+          {
+            "n": 60264,
+            "p_media": 0.0005866477755901309,
+            "positivos": 28,
+            "taxa_observada": 0.0003567542715844491
+          },
+          {
+            "n": 64611,
+            "p_media": 0.0016690263756172835,
+            "positivos": 104,
+            "taxa_observada": 0.0015749750382514265
+          },
+          {
+            "n": 54580,
+            "p_media": 0.009957360142977009,
+            "positivos": 459,
+            "taxa_observada": 0.010212584137236816
+          }
+        ],
+        "inclinacao": 0.9976862961992525,
+        "intercepto_cil": 0.0,
+        "o_e": 1.0037185473434656
+      },
+      "calibrar": false,
+      "depois": {
+        "curva": [
+          {
+            "n": 83872,
+            "p_media": 1.3320289602707939e-05,
+            "positivos": 3,
+            "taxa_observada": 2.4316933304513265e-05
+          },
+          {
+            "n": 78650,
+            "p_media": 3.3849783285997276e-05,
+            "positivos": 1,
+            "taxa_observada": 3.251634189699104e-06
+          },
+          {
+            "n": 73466,
+            "p_media": 5.770335558890299e-05,
+            "positivos": 3,
+            "taxa_observada": 4.752380618792391e-05
+          },
+          {
+            "n": 69144,
+            "p_media": 8.843778334955348e-05,
+            "positivos": 8,
+            "taxa_observada": 9.700493514247787e-05
+          },
+          {
+            "n": 64106,
+            "p_media": 0.00013200755642497818,
+            "positivos": 15,
+            "taxa_observada": 0.00025617312023489686
+          },
+          {
+            "n": 61396,
+            "p_media": 0.00019982231551603281,
+            "positivos": 14,
+            "taxa_observada": 0.00022324088468555738
+          },
+          {
+            "n": 58492,
+            "p_media": 0.00032497322009798204,
+            "positivos": 20,
+            "taxa_observada": 0.00024803908790129104
+          },
+          {
+            "n": 60531,
+            "p_media": 0.00062797724421441,
+            "positivos": 25,
+            "taxa_observada": 0.0003328082863119535
+          },
+          {
+            "n": 64784,
+            "p_media": 0.0017377935448112346,
+            "positivos": 108,
+            "taxa_observada": 0.0015965461501027591
+          },
+          {
+            "n": 54589,
+            "p_media": 0.009772946382645812,
+            "positivos": 457,
+            "taxa_observada": 0.010198827250428973
+          }
+        ],
+        "inclinacao": 1.0002232259098174,
+        "intercepto_cil": 0.0,
+        "o_e": 1.0029953549360722
+      },
+      "ganho_calibrada": {
+        "b": 1000,
+        "estimativa": 4.329245116948405e-06,
+        "ic_inf": -6.401158580050323e-06,
+        "ic_sup": 1.5050619471781426e-05,
+        "nivel": 0.95
+      },
+      "log_loss_antes": 0.0077704631658596654,
+      "log_loss_depois": 0.007766133920742717,
+      "sigmoide_por_dobra": [
+        {
+          "inclinacao": 1.0012752036642087,
+          "intercepto": -0.00025547662585181984
+        },
+        {
+          "inclinacao": 0.9808884086270716,
+          "intercepto": -0.09762438248029434
+        },
+        {
+          "inclinacao": 0.9644836995994333,
+          "intercepto": -0.17818518917812304
+        },
+        {
+          "inclinacao": 0.9836062463307584,
+          "intercepto": -0.08720954304149273
+        },
+        {
+          "inclinacao": 0.9243633238968878,
+          "intercepto": -0.3474213340778367
+        }
+      ],
+      "vencedor": "C",
+      "veredito": "refutada"
+    },
+    "preferencia": {
+      "antes": {
+        "curva": [
+          {
+            "n": 1919,
+            "p_media": 0.10421374824527932,
+            "positivos": 254,
+            "taxa_observada": 0.13186652352217673
+          },
+          {
+            "n": 1866,
+            "p_media": 0.15070983410921268,
+            "positivos": 302,
+            "taxa_observada": 0.1412122441786303
+          },
+          {
+            "n": 1696,
+            "p_media": 0.17873176554498563,
+            "positivos": 335,
+            "taxa_observada": 0.1912218171619931
+          },
+          {
+            "n": 1730,
+            "p_media": 0.2005085019893149,
+            "positivos": 329,
+            "taxa_observada": 0.2009312004601391
+          },
+          {
+            "n": 1689,
+            "p_media": 0.22065909267318495,
+            "positivos": 425,
+            "taxa_observada": 0.24314963525045527
+          },
+          {
+            "n": 1744,
+            "p_media": 0.2398313022756543,
+            "positivos": 427,
+            "taxa_observada": 0.23327226985368174
+          },
+          {
+            "n": 1855,
+            "p_media": 0.26058886734489295,
+            "positivos": 493,
+            "taxa_observada": 0.28453861934982544
+          },
+          {
+            "n": 1881,
+            "p_media": 0.28428868300774307,
+            "positivos": 497,
+            "taxa_observada": 0.2526817305583348
+          },
+          {
+            "n": 2184,
+            "p_media": 0.3187644028688202,
+            "positivos": 642,
+            "taxa_observada": 0.2749581960781557
+          },
+          {
+            "n": 2618,
+            "p_media": 0.40241249626678954,
+            "positivos": 980,
+            "taxa_observada": 0.39107045532891527
+          }
+        ],
+        "inclinacao": 0.8378445173702335,
+        "intercepto_cil": -0.009054064448949264,
+        "o_e": 0.9933650227586683
+      },
+      "antes_com_pizza": {
+        "curva": [
+          {
+            "n": 60,
+            "p_media": 0.06117522985811246,
+            "positivos": 7,
+            "taxa_observada": 0.1375336145759409
+          },
+          {
+            "n": 40,
+            "p_media": 0.08366130985094397,
+            "positivos": 5,
+            "taxa_observada": 0.16036445203452526
+          },
+          {
+            "n": 54,
+            "p_media": 0.0958828736866281,
+            "positivos": 9,
+            "taxa_observada": 0.11926668830606685
+          },
+          {
+            "n": 52,
+            "p_media": 0.1089521952524374,
+            "positivos": 10,
+            "taxa_observada": 0.18024699647981793
+          },
+          {
+            "n": 75,
+            "p_media": 0.12662515089893608,
+            "positivos": 8,
+            "taxa_observada": 0.07556714330493212
+          },
+          {
+            "n": 87,
+            "p_media": 0.1471038754680321,
+            "positivos": 8,
+            "taxa_observada": 0.07376421442628876
+          },
+          {
+            "n": 59,
+            "p_media": 0.16985553410459683,
+            "positivos": 13,
+            "taxa_observada": 0.14415285161006025
+          },
+          {
+            "n": 63,
+            "p_media": 0.1884710406154989,
+            "positivos": 12,
+            "taxa_observada": 0.1522495701753351
+          },
+          {
+            "n": 74,
+            "p_media": 0.2205237314930364,
+            "positivos": 15,
+            "taxa_observada": 0.15154107318288393
+          },
+          {
+            "n": 91,
+            "p_media": 0.29871775665572087,
+            "positivos": 14,
+            "taxa_observada": 0.19698488373783946
+          }
+        ],
+        "inclinacao": 0.23632033815926853,
+        "intercepto_cil": -0.09264946454323687,
+        "o_e": 0.926570267990968
+      },
+      "calibrar": false,
+      "depois": {
+        "curva": [
+          {
+            "n": 1926,
+            "p_media": 0.11976151363430751,
+            "positivos": 259,
+            "taxa_observada": 0.13435533074429956
+          },
+          {
+            "n": 1821,
+            "p_media": 0.1631557344802979,
+            "positivos": 287,
+            "taxa_observada": 0.13248891468733812
+          },
+          {
+            "n": 1742,
+            "p_media": 0.1877532498171464,
+            "positivos": 338,
+            "taxa_observada": 0.19172250209688144
+          },
+          {
+            "n": 1738,
+            "p_media": 0.20659421126356395,
+            "positivos": 347,
+            "taxa_observada": 0.21167257649106802
+          },
+          {
+            "n": 1679,
+            "p_media": 0.22386686149223053,
+            "positivos": 413,
+            "taxa_observada": 0.2341704283470111
+          },
+          {
+            "n": 1734,
+            "p_media": 0.23972940546418758,
+            "positivos": 430,
+            "taxa_observada": 0.24368717214351493
+          },
+          {
+            "n": 1829,
+            "p_media": 0.25702635688939296,
+            "positivos": 485,
+            "taxa_observada": 0.273245771306961
+          },
+          {
+            "n": 1907,
+            "p_media": 0.27643594269506755,
+            "positivos": 503,
+            "taxa_observada": 0.2534094844307547
+          },
+          {
+            "n": 2174,
+            "p_media": 0.3045499518199341,
+            "positivos": 650,
+            "taxa_observada": 0.2801331314154055
+          },
+          {
+            "n": 2632,
+            "p_media": 0.3733770807248516,
+            "positivos": 972,
+            "taxa_observada": 0.39043140542209487
+          }
+        ],
+        "inclinacao": 0.9863642635650781,
+        "intercepto_cil": -0.004029035973887011,
+        "o_e": 0.9970075628277547
+      },
+      "depois_com_pizza": {
+        "curva": [
+          {
+            "n": 57,
+            "p_media": 0.07420433086875883,
+            "positivos": 7,
+            "taxa_observada": 0.11957486213289534
+          },
+          {
+            "n": 43,
+            "p_media": 0.09879217802081541,
+            "positivos": 6,
+            "taxa_observada": 0.18052950044321445
+          },
+          {
+            "n": 58,
+            "p_media": 0.11238777540409714,
+            "positivos": 10,
+            "taxa_observada": 0.21621228259094977
+          },
+          {
+            "n": 55,
+            "p_media": 0.12552170051661507,
+            "positivos": 9,
+            "taxa_observada": 0.07897014639510083
+          },
+          {
+            "n": 64,
+            "p_media": 0.14203917319331963,
+            "positivos": 7,
+            "taxa_observada": 0.07372344840298153
+          },
+          {
+            "n": 83,
+            "p_media": 0.16110672233334106,
+            "positivos": 7,
+            "taxa_observada": 0.061049417332432646
+          },
+          {
+            "n": 61,
+            "p_media": 0.1798642371994286,
+            "positivos": 11,
+            "taxa_observada": 0.12398587932195806
+          },
+          {
+            "n": 67,
+            "p_media": 0.19543503338069687,
+            "positivos": 14,
+            "taxa_observada": 0.1806838757082032
+          },
+          {
+            "n": 77,
+            "p_media": 0.2231691955378044,
+            "positivos": 15,
+            "taxa_observada": 0.1518903467711174
+          },
+          {
+            "n": 90,
+            "p_media": 0.2885322515256865,
+            "positivos": 15,
+            "taxa_observada": 0.20371953139420676
+          }
+        ],
+        "inclinacao": 0.214313656518329,
+        "intercepto_cil": -0.16925893793383154,
+        "o_e": 0.8693881742264261
+      },
+      "ganho_calibrada": {
+        "b": 1000,
+        "estimativa": 0.00013655763150244304,
+        "ic_inf": -0.0008080637421645636,
+        "ic_sup": 0.0012248903974775346,
+        "nivel": 0.95
+      },
+      "log_loss_antes": 0.5310315835082502,
+      "log_loss_depois": 0.5308950258767478,
+      "sigmoide_por_dobra": [
+        {
+          "inclinacao": 0.7870242381388982,
+          "intercepto": -0.24833463328178051
+        },
+        {
+          "inclinacao": 0.8074834070769933,
+          "intercepto": -0.23008503268330774
+        },
+        {
+          "inclinacao": 0.8891000041031588,
+          "intercepto": -0.12670337898493758
+        },
+        {
+          "inclinacao": 0.8566830744901769,
+          "intercepto": -0.16845198389004198
+        },
+        {
+          "inclinacao": 0.8409948566522538,
+          "intercepto": -0.17144998476317946
+        }
+      ],
+      "vencedor": "C",
+      "veredito": "refutada"
+    },
+    "status": "ok"
+  },
+  "natureza": "confirmatório",
+  "nome": "calibracao",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}

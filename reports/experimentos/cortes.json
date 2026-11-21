@@ -1,0 +1,149 @@
+{
+  "commit": "621b38422283",
+  "configuracao": {
+    "cortes": {
+      "alta": 80.0,
+      "media": 50.0,
+      "ocasiao": 75.0,
+      "preferencia": 50.0
+    },
+    "decisao": "só relata: os cortes ficam os do pré-registro",
+    "posicoes": "posicoes_ponderadas (peso_final) nas células, sobre a previsão fora da dobra",
+    "sensibilidade": "quadrante = (posição da parte 1 >= corte da ocasião, posição da parte 2 >= corte da preferência), com as partes do produto, que são as que o Decision Engine usa; parcela ponderada das células que muda de quadrante com cada corte a ±10"
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "edicao": "2008-2009",
+    "n": 669030,
+    "positivos": 101,
+    "setores": 4328
+  },
+  "data_hora": "2026-11-20T23:43:53-03:00",
+  "metricas": {
+    "classificacao": {
+      "alta": 0.2000062156527863,
+      "baixa": 0.49999949976204977,
+      "media": 0.29999428458516386
+    },
+    "resumo": {
+      "brier": 0.0001812594406387761,
+      "calibracao": {
+        "curva": [
+          {
+            "n": 76935,
+            "p_media": 2.616869624366987e-06,
+            "positivos": 0,
+            "taxa_observada": 0.0
+          },
+          {
+            "n": 72746,
+            "p_media": 6.6154949211180215e-06,
+            "positivos": 0,
+            "taxa_observada": 0.0
+          },
+          {
+            "n": 68786,
+            "p_media": 1.0817171946988494e-05,
+            "positivos": 0,
+            "taxa_observada": 0.0
+          },
+          {
+            "n": 66483,
+            "p_media": 1.587751786818698e-05,
+            "positivos": 0,
+            "taxa_observada": 0.0
+          },
+          {
+            "n": 66138,
+            "p_media": 2.2689674243663833e-05,
+            "positivos": 2,
+            "taxa_observada": 4.035822222028834e-05
+          },
+          {
+            "n": 64941,
+            "p_media": 3.2962025073047825e-05,
+            "positivos": 2,
+            "taxa_observada": 3.7014295079340175e-05
+          },
+          {
+            "n": 63015,
+            "p_media": 5.153886841883528e-05,
+            "positivos": 6,
+            "taxa_observada": 0.0001116069937205409
+          },
+          {
+            "n": 63308,
+            "p_media": 9.97958347130428e-05,
+            "positivos": 1,
+            "taxa_observada": 1.1928275340025695e-05
+          },
+          {
+            "n": 65989,
+            "p_media": 0.00027781874547311384,
+            "positivos": 17,
+            "taxa_observada": 0.0001950308825495856
+          },
+          {
+            "n": 60689,
+            "p_media": 0.0014114764778643618,
+            "positivos": 73,
+            "taxa_observada": 0.0014189250801491143
+          }
+        ],
+        "inclinacao": 1.008164776399079,
+        "intercepto_cil": -0.016016662946927218,
+        "o_e": 0.9392726304304123
+      },
+      "concentracao_topo": 0.7818361854962781,
+      "corte_alta": {
+        "f1": 0.0016124495208837439,
+        "matriz": {
+          "fn": 63301.32239930001,
+          "fp": 629652100.4641967,
+          "vn": 2520481230.48451,
+          "vp": 508512.09904242
+        },
+        "precision": 0.0008069563360585136,
+        "recall": 0.8892972427270112
+      },
+      "log_loss": 0.0014623509434004468,
+      "n": 669030,
+      "positivos": 101,
+      "pr_auc": 0.0026265402791704404,
+      "prevalencia": 0.00018148744336278735,
+      "roc_auc": 0.9144609649249164
+    },
+    "score": "produto",
+    "sensibilidade": {
+      "ocasiao": {
+        "corte": 75.0,
+        "mais_10": 0.10000083010881065,
+        "menos_10": 0.0999956448157523
+      },
+      "preferencia": {
+        "corte": 50.0,
+        "mais_10": 0.09999551980769326,
+        "menos_10": 0.09999983598330578
+      },
+      "quadrantes": {
+        "ocasiao_alta_preferencia_alta": 0.0760330194840062,
+        "ocasiao_alta_preferencia_baixa": 0.17397229035833536,
+        "ocasiao_baixa_preferencia_alta": 0.42396733099378686,
+        "ocasiao_baixa_preferencia_baixa": 0.3260273591638715
+      }
+    },
+    "status": "ok"
+  },
+  "natureza": "exploratório",
+  "nome": "cortes",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}
