@@ -184,6 +184,23 @@ def mostrar_resultado(r: Resultado) -> None:
     st.write(r.recommendation_reason)
 
 
+_ROTULO_METRICA = {
+    "pr_auc": "PR-AUC",
+    "log_loss": "log loss",
+    "roc_auc": "ROC-AUC",
+    "brier": "Brier",
+    "pr_auc_degrau_a": "PR-AUC do degrau A",
+}
+
+
+def _linha_metricas(metricas: dict[str, float] | None) -> str:
+    """Os números do teste temporal da receita, se o artefato os trouxer."""
+    if not metricas:
+        return ""
+    itens = "; ".join(f"{_ROTULO_METRICA.get(k, k)} {v:.4g}" for k, v in metricas.items())
+    return f"- **Métricas do teste temporal (2017-2018):** {itens}\n"
+
+
 def sobre_o_modelo(r: Resultado) -> None:
     m = r.model_metadata
     st.subheader("Sobre o modelo")
@@ -193,6 +210,7 @@ def sobre_o_modelo(r: Resultado) -> None:
         f"- **Commit da receita:** `{m.receita_commit}`\n"
         f"- **Instante de previsão:** {m.instante_de_previsao}\n"
         f"- **Métricas:** {m.descricao_metricas}\n"
+        f"{_linha_metricas(m.metricas_da_receita)}"
         f"- **Versão do contrato:** {m.versao_contrato}"
     )
     st.markdown("**Limites da fonte (POF/IBGE)**")

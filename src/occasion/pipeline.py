@@ -17,6 +17,7 @@ from occasion.config import (
     DADOS_BRUTOS,
     DADOS_INTERIM,
     DADOS_PROCESSADOS,
+    EDICAO_TESTE,
     EDICAO_TREINO,
     EDICOES,
     MODELOS,
@@ -151,6 +152,34 @@ def _avaliado(pasta_modelos: Path = MODELOS) -> None:
     print(f"assinatura da receita: {assinatura}")
 
 
+def _servido(pasta_modelos: Path = MODELOS) -> None:
+    """Reajusta a receita para a aplicação e grava em `<modelos>/servido` (seção 12 do design).
+
+    Só com `reports/teste_final.json` commitado; os dados de treino vêm de H9 (`pos_teste.json`).
+    """
+    # importação local: `experimentos` importa `commit_da_receita` deste módulo
+    from occasion.inference.servido import treinar_servido
+
+    receita = carregar_receita(RELATORIOS / "receita.json")
+    pos_teste = json.loads((RELATORIOS / "pos_teste.json").read_text(encoding="utf-8"))
+    teste_final = json.loads((RELATORIOS / "teste_final.json").read_text(encoding="utf-8"))
+    bases = {
+        f"{nome}_{edicao}": carregar_base(nome, edicao)
+        for nome in ("celulas", "ocasioes_refri")
+        for edicao in (EDICAO_TREINO, EDICAO_TESTE)
+    }
+    commit = commit_da_receita(RAIZ)
+    try:
+        artefato = treinar_servido(receita, bases, pos_teste, teste_final, commit)
+    except TesteBloqueado as erro:
+        sys.exit(f"make servido recusado: {erro}")
+    destino = salvar_artefato(artefato, pasta_modelos / "servido")
+    print(f"gravado: {destino}")
+    print(f"treinado em: {artefato.metadados.treinado_em}")
+    print(f"calibração do score: {artefato.calibracao_score}")
+    print(f"UFs de mídia regional: {sorted(artefato.ufs_midia_regional)}")
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="occasion.pipeline", description=__doc__)
     subcomandos = parser.add_subparsers(dest="comando", required=True)
@@ -171,6 +200,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     subcomandos.add_parser(
         "avaliado", help="monta o artefato avaliado a partir de reports/receita.json"
     )
+    subcomandos.add_parser("servido", help="reajusta a receita para a aplicação (modelo servido)")
     args = parser.parse_args(argv)
     if args.comando == "interim":
         _interim(args.edicao)
@@ -187,6 +217,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         _baseline()
     elif args.comando == "avaliado":
         _avaliado()
+    elif args.comando == "servido":
+        _servido()
 
 
 if __name__ == "__main__":

@@ -94,7 +94,7 @@ _BASE_DA_PARTE: dict[ParteModelo, Literal["celulas", "ocasioes"]] = {
     "preferencia": "ocasioes",
 }
 
-__all__ = ["executar", "rodar_pos_teste", "treino_servido"]
+__all__ = ["dobras_de_2017", "executar", "rodar_pos_teste", "treino_servido"]
 
 
 # ---------------------------------------------------------------------------------- um braço
@@ -178,6 +178,19 @@ def _com_pizza(ocasioes: pd.DataFrame) -> pd.DataFrame:
     return cast(pd.DataFrame, ocasioes[ocasioes["tem_pizza"] == 1])
 
 
+def dobras_de_2017(
+    celulas17: pd.DataFrame, ocasioes17: pd.DataFrame
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """As dobras externas por setor de 2017-2018 (as mesmas do pós-teste e do modelo servido)."""
+    alvos = {
+        "y_pizza_refri": (celulas17, "y_pizza_refri"),
+        "y_pizza_guarana": (celulas17, "y_pizza_guarana"),
+        "y_guarana": (ocasioes17, "y_guarana"),
+        "y_guarana_com_pizza": (_com_pizza(ocasioes17), "y_guarana"),
+    }
+    return escolher_dobras(tabela_de_upas(celulas17), alvos)
+
+
 def executar(
     celulas08: pd.DataFrame,
     ocasioes08: pd.DataFrame,
@@ -199,13 +212,7 @@ def executar(
     fora = set(ocasioes17["cod_upa"]) - set(celulas17["cod_upa"])
     if fora:
         raise ValueError(f"setores das ocasiões ausentes das células: {sorted(fora)[:10]}")
-    alvos = {
-        "y_pizza_refri": (celulas17, "y_pizza_refri"),
-        "y_pizza_guarana": (celulas17, "y_pizza_guarana"),
-        "y_guarana": (ocasioes17, "y_guarana"),
-        "y_guarana_com_pizza": (_com_pizza(ocasioes17), "y_guarana"),
-    }
-    dobras, registro_dobras = escolher_dobras(tabela_de_upas(celulas17), alvos)
+    dobras, registro_dobras = dobras_de_2017(celulas17, ocasioes17)
     fold_cel = dobra_das_linhas(celulas17, dobras)
     fold_oc = dobra_das_linhas(ocasioes17, dobras)
     partes = _partes_da_receita(receita)

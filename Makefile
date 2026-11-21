@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido
 
 ambiente:
 	uv sync
@@ -42,6 +42,10 @@ pos-teste:
 # curva de aprendizado de C e D (exploratória, 2008-2009); o resultado não troca o modelo servido
 curva-aprendizado:
 	uv run python -m occasion.experimentos curva-aprendizado
+
+# modelo servido: receita reajustada com os dados que H9 mandou; só com teste_final.json commitado
+servido:
+	uv run python -m occasion.pipeline servido
 
 tudo: dados-brutos bases auditoria baseline
 
