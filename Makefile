@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
+.PHONY: contagens ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
 
 ambiente:
 	uv sync
@@ -94,3 +94,6 @@ experimentos: dobras peso escada h4 embaralhado calibracao produto cortes receit
 
 app:
 	uv run streamlit run app/streamlit_app.py
+
+contagens:
+	uv run python -m occasion.relatorios.contagens

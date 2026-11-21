@@ -1,0 +1,35 @@
+{
+  "2008-2009": {
+    "dias_pessoa": 66903,
+    "celulas": 669030,
+    "dias_pizza_refri": 651,
+    "dias_pizza_guarana": 101,
+    "ocasioes_refri": 19182,
+    "dias_por_dia_semana": {
+      "1": 5013,
+      "2": 14699,
+      "3": 8686,
+      "4": 17383,
+      "5": 10314,
+      "6": 6430,
+      "7": 4378
+    }
+  },
+  "2017-2018": {
+    "dias_pessoa": 85018,
+    "celulas": 850180,
+    "dias_pizza_refri": 796,
+    "dias_pizza_guarana": 180,
+    "ocasioes_refri": 16112,
+    "dias_por_dia_semana": {
+      "1": 13179,
+      "2": 14668,
+      "3": 14281,
+      "4": 14799,
+      "5": 7644,
+      "6": 3862,
+      "7": 16585
+    }
+  },
+  "nota": "Contagens das bases de modelagem (células e ocasiões com refrigerante), depois das exclusões. Por isso 2017-2018 tem 796 dias com pizza e refrigerante no mesmo horário, e não os 797 da tabela de referência do parser, e 16.112 ocasiões com refrigerante, e não 16.122 (10 saem por local indeterminado). 'Dias com pizza' (sem refrigerante) não entra: exigiria ler a base pessoa x dia de 2017-2018 fora de `carregar_base`, a única porta de leitura do alvo da edição de teste."
+}
