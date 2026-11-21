@@ -10,7 +10,12 @@ from pathlib import Path
 import pandas as pd
 
 from occasion.audit.auditoria import rodar_auditoria
-from occasion.bases.acesso import TesteBloqueado, assinatura_da_receita, carregar_base
+from occasion.bases.acesso import (
+    TesteBloqueado,
+    assinatura_da_receita,
+    carregar_base,
+    exigir_receita_intacta,
+)
 from occasion.bases.modelagem import montar_celulas, montar_ocasioes_refri
 from occasion.bases.ocasioes import montar_ocasioes, montar_pessoa_dia
 from occasion.config import (
@@ -160,16 +165,17 @@ def _servido(pasta_modelos: Path = MODELOS) -> None:
     # importação local: `experimentos` importa `commit_da_receita` deste módulo
     from occasion.inference.servido import treinar_servido
 
-    receita = carregar_receita(RELATORIOS / "receita.json")
-    pos_teste = json.loads((RELATORIOS / "pos_teste.json").read_text(encoding="utf-8"))
-    teste_final = json.loads((RELATORIOS / "teste_final.json").read_text(encoding="utf-8"))
-    bases = {
-        f"{nome}_{edicao}": carregar_base(nome, edicao)
-        for nome in ("celulas", "ocasioes_refri")
-        for edicao in (EDICAO_TREINO, EDICAO_TESTE)
-    }
-    commit = commit_da_receita(RAIZ)
     try:
+        exigir_receita_intacta(RAIZ)
+        receita = carregar_receita(RELATORIOS / "receita.json")
+        pos_teste = json.loads((RELATORIOS / "pos_teste.json").read_text(encoding="utf-8"))
+        teste_final = json.loads((RELATORIOS / "teste_final.json").read_text(encoding="utf-8"))
+        bases = {
+            f"{nome}_{edicao}": carregar_base(nome, edicao)
+            for nome in ("celulas", "ocasioes_refri")
+            for edicao in (EDICAO_TREINO, EDICAO_TESTE)
+        }
+        commit = commit_da_receita(RAIZ)
         artefato = treinar_servido(receita, bases, pos_teste, teste_final, commit)
     except TesteBloqueado as erro:
         sys.exit(f"make servido recusado: {erro}")

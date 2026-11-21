@@ -99,3 +99,21 @@ def test_tela_avisa_quando_o_contexto_mudou_depois_do_calculo(
     assert any("Calcular" in w.value for w in at.warning)
     at.sidebar.button[0].click().run()
     assert not at.warning
+
+
+def test_linha_de_metricas_tem_rotulo_e_virgula() -> None:
+    from app.streamlit_app import _linha_metricas
+
+    linha = _linha_metricas({"pr_auc": 0.0018773, "pr_auc_degrau_a": 0.0019113})
+    assert "Métricas do teste temporal da receita (2017-2018)" in linha
+    assert "PR-AUC 0,001877" in linha and "." not in linha.split(":**")[1]
+    assert _linha_metricas(None) == ""
+
+
+def test_limitacao_das_edicoes_depende_do_modelo() -> None:
+    from app.streamlit_app import limitacao_das_edicoes
+
+    assert "(treino) e 2017-2018 (teste)" in limitacao_das_edicoes("avaliado")
+    servido = limitacao_das_edicoes("servido")
+    assert "reajustado com as duas edições" in servido
+    assert "não tem teste temporal próprio" in servido

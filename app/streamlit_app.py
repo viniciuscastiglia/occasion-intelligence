@@ -197,8 +197,20 @@ def _linha_metricas(metricas: dict[str, float] | None) -> str:
     """Os números do teste temporal da receita, se o artefato os trouxer."""
     if not metricas:
         return ""
-    itens = "; ".join(f"{_ROTULO_METRICA.get(k, k)} {v:.4g}" for k, v in metricas.items())
-    return f"- **Métricas do teste temporal (2017-2018):** {itens}\n"
+    itens = "; ".join(
+        f"{_ROTULO_METRICA.get(k, k)} {v:.4g}".replace(".", ",") for k, v in metricas.items()
+    )
+    return f"- **Métricas do teste temporal da receita (2017-2018):** {itens}\n"
+
+
+def limitacao_das_edicoes(modelo: str) -> str:
+    """O que dizer das edições, conforme o modelo seja o avaliado ou o servido."""
+    if modelo == "servido":
+        return (
+            "A receita foi avaliada com treino em 2008-2009 e teste em 2017-2018; o modelo "
+            "servido foi reajustado com as duas edições e não tem teste temporal próprio"
+        )
+    return "As edições são 2008-2009 (treino) e 2017-2018 (teste)"
 
 
 def sobre_o_modelo(r: Resultado) -> None:
@@ -223,7 +235,7 @@ def sobre_o_modelo(r: Resultado) -> None:
         "recordatório de 24 horas em 2017-2018.\n"
         "- O local de 2008-2009 é a fonte do alimento (dentro ou fora do domicílio), e não o "
         "local de refeição de 2017-2018.\n"
-        "- As edições são 2008-2009 (treino) e 2017-2018 (teste); o score descreve "
+        f"- {limitacao_das_edicoes(m.modelo)}; o score descreve "
         "associação nos dados, não efeito de nenhuma ativação."
     )
     st.caption(m.aviso)
