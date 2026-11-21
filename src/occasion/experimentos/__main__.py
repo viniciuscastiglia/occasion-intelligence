@@ -25,7 +25,7 @@ def main() -> None:
         "etapa",
         choices=[
             "dobras", "peso", "escada", "h4", "embaralhado",
-            "calibracao", "produto", "cortes", "receita",
+            "calibracao", "produto", "cortes", "receita", "avaliacao-2008",
         ],
     )  # fmt: skip
     parser.add_argument(
@@ -45,6 +45,7 @@ def main() -> None:
         "produto": etapas.etapa_produto,
         "cortes": etapas.etapa_cortes,
         "receita": etapas.etapa_receita,
+        "avaliacao-2008": etapas.etapa_avaliacao_2008,
     }
     acoes[args.etapa]()
 

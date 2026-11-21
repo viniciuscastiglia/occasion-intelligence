@@ -1,5 +1,6 @@
 """Etapas dos experimentos do Plano 2 sobre 2008-2009: dobras, peso (H5), escada, H4, controle,
-calibração, produto (H6 e H7), cortes e a receita.
+calibração, produto (H6 e H7), cortes, a receita e a avaliação (segmentos, erros, explicabilidade
+e região fora).
 
 Cada etapa lê as bases por `carregar_base` (só `EDICAO_TREINO`; nada de 2017-2018 passa por
 aqui), grava o relatório com `registrar` em `reports/` e os objetos pesados com `salvar_resultado`
@@ -28,6 +29,9 @@ from typing import Any, Literal, cast
 import numpy as np
 import pandas as pd
 
+from occasion.avaliacao.erros import contextos_com_mais_erro
+from occasion.avaliacao.explicacao import estabilidade, importancia_global
+from occasion.avaliacao.segmentos import colunas_de_segmento, metricas_por_segmento
 from occasion.bases.acesso import carregar_base
 from occasion.config import (
     DADOS_EXPERIMENTOS,
@@ -59,10 +63,12 @@ from occasion.experimentos.regras import (
     superioridade,
     vencedor_escada,
 )
-from occasion.models.base import logit, sigmoide
+from occasion.features.variaveis import DOMINIOS
+from occasion.inference.treino import ajustar_parte
+from occasion.models.base import ModeloParte, logit, sigmoide
 from occasion.models.escada import Degrau
 from occasion.models.logistica import ModeloLogistico
-from occasion.receita import Receita, ReceitaParte, salvar_receita
+from occasion.receita import Receita, ReceitaParte, carregar_receita, salvar_receita
 from occasion.score.score import CORTE_ALTA, CORTE_MEDIA
 from occasion.validacao.bootstrap import B_PADRAO, Intervalo, intervalo_estatistica, intervalo_ganho
 from occasion.validacao.dobras import dobra_das_linhas, escolher_dobras, tabela_de_upas
@@ -1097,3 +1103,282 @@ def etapa_receita() -> None:
         caminho = salvar_receita(receita, RELATORIOS / "receita.json")
         r.metricas["receita"] = _relativo(caminho)
         print(f"receita gravada em {caminho}", flush=True)
+
+
+# ---------------------------------------------------------------------------------- avaliação
+
+_DECLARACAO_REGIAO_FORA = (
+    "análise secundária, que não muda a receita: para cada grande região, cada parte é treinada "
+    "nas outras quatro, com os parâmetros e o uso de peso da receita, e avaliada na região "
+    "deixada de fora; as UFs dessa região ficam ausentes do treino. Os dois lados estão sem "
+    "calibração (sem a sigmoide): o lado 'treinada_nas_outras_quatro' é a receita sem a sigmoide, "
+    "e o lado 'fora_da_dobra' é a previsão crua do vencedor (dobras por setor), nas linhas da "
+    "mesma região. O score é o produto das duas partes (a preferência com tem_pizza = 1) ou o "
+    "modelo direto, conforme a receita."
+)
+
+
+def _conferir_receita_e_selecoes(
+    receita: Receita, dobras: pd.DataFrame, hash_dobras: str
+) -> dict[ParteModelo, dict[str, Any]]:
+    """Recusa uma receita que não é a dos relatórios e das seleções em uso; devolve as seleções."""
+    h5 = _usar_peso_decidido()
+    cal = _relatorio("calibracao", dobras)["metricas"]
+    prod = _relatorio("h6_h7_produto", dobras)["metricas"]
+    selecoes: dict[ParteModelo, dict[str, Any]] = {}
+    partes: list[tuple[ParteModelo, ReceitaParte, Parte]] = [
+        ("ocasiao", receita.ocasiao, "ocasiao"),
+        ("preferencia", receita.preferencia, "preferencia"),
+    ]
+    if receita.score == "direto" and receita.direto is not None:
+        partes.append(("direto", receita.direto, "ocasiao"))
+    for parte, rp, fonte in partes:
+        if (
+            rp.degrau != _vencedor(fonte, dobras)
+            or rp.usar_peso != h5[fonte]
+            or rp.calibrar != bool(cal[fonte]["calibrar"])
+        ):
+            raise ValueError(
+                f"receita.json não confere com os relatórios na parte {parte!r}: "
+                "rode `make receita` de novo"
+            )
+        sel = carregar_resultado(f"selecao_{parte}")
+        if (
+            sel.get("hash_dobras") != hash_dobras
+            or sel["degrau"] != rp.degrau
+            or sel["parametros"] != rp.parametros
+        ):
+            raise ValueError(f"selecao_{parte}.joblib não é a da receita: rode `make receita`")
+        selecoes[parte] = sel
+    if receita.score != prod["score"] or receita.calibrar_score != bool(
+        prod["H7"]["calibrar_score"]
+    ):
+        raise ValueError("receita.json e h6_h7_produto.json discordam do score")
+    return selecoes
+
+
+def _avaliar(base: pd.DataFrame, alvo: str, p: np.ndarray, posicao: bool = False) -> dict[str, Any]:
+    """Resumo, métricas por segmento e contextos com mais erro de uma previsão fora da dobra."""
+    y, w = base[alvo].to_numpy(), base["peso_final"].to_numpy()
+    return {
+        "resumo": resumo(y, p, w, posicao=posicoes_ponderadas(p, w) if posicao else None),
+        "segmentos": metricas_por_segmento(y, p, w, colunas_de_segmento(base)),
+        "erros": contextos_com_mais_erro(base, y, p),
+    }
+
+
+def _oof_decidido(
+    res: ResultadoAninhado, base: pd.DataFrame, alvo: str, dobras: pd.DataFrame, calibrar: bool
+) -> np.ndarray:
+    """A previsão fora da dobra do vencedor, com a sigmoide por dobra se a calibração entrou."""
+    oof = _sem_nan(np.asarray(res.oof, dtype=float), alvo)
+    if not calibrar:
+        return oof
+    por_linha = dobra_das_linhas(base, dobras)
+    sig = _sigmoides_por_dobra(res, base[alvo].to_numpy(), base["peso_final"].to_numpy(), por_linha)
+    return _sem_nan(_calibrar_por_dobra(oof, por_linha, sig), f"{alvo} calibrada")
+
+
+def _explicar(
+    final: ModeloParte, res: ResultadoAninhado, base: pd.DataFrame, parte: ParteModelo
+) -> dict[str, Any]:
+    """Importância no modelo final (2008-2009 inteira) e estabilidade nos modelos das dobras."""
+    X = cast(pd.DataFrame, base[variaveis_da_parte(parte)])
+    w = base["peso_final"].to_numpy()
+    return {
+        # lista, não dicionário: o registro grava as chaves em ordem alfabética
+        "importancia_global": [
+            {"variavel": v, "importancia": x} for v, x in importancia_global(final, X, w).items()
+        ],
+        "estabilidade": estabilidade(res.modelos, X, w),
+    }
+
+
+def _fora_da_regiao(
+    parte: ParteModelo,
+    rp: ReceitaParte,
+    alvo: str,
+    base: pd.DataFrame,
+    extra: pd.DataFrame | None = None,
+) -> tuple[np.ndarray, np.ndarray | None]:
+    """Para cada região, a parte treinada nas outras quatro (sem sigmoide) e prevista nela.
+
+    Devolve a previsão em `base` e, se houver `extra` (as células, na preferência, com
+    `tem_pizza = 1`), nele também.
+    """
+    sem_sigmoide = rp.model_copy(update={"calibrar": False})
+    p = np.full(len(base), np.nan)
+    p_extra = None if extra is None else np.full(len(extra), np.nan)
+    colunas = variaveis_da_parte(parte)
+    for regiao in DOMINIOS["regiao"]:
+        dentro = (base["regiao"] == regiao).to_numpy()
+        if not dentro.any():
+            continue
+        print(f"região fora {parte}: {regiao}", flush=True)
+        treino = cast(pd.DataFrame, base[~dentro])
+        modelo = ajustar_parte(treino, alvo, parte, sem_sigmoide, np.empty(0))
+        p[dentro] = modelo.predict_proba(cast(pd.DataFrame, base[dentro][colunas]))
+        if extra is not None and p_extra is not None:
+            fora_extra = (extra["regiao"] == regiao).to_numpy()
+            if fora_extra.any():
+                x = cast(pd.DataFrame, extra[fora_extra].assign(tem_pizza=1)[colunas])
+                p_extra[fora_extra] = modelo.predict_proba(x)
+    return _sem_nan(p, f"{parte} região fora"), p_extra
+
+
+def _linhas_por_regiao(base: pd.DataFrame, alvo: str, p: np.ndarray) -> list[dict[str, Any]]:
+    regiao = cast(pd.Series, base["regiao"])
+    return metricas_por_segmento(
+        base[alvo].to_numpy(), p, base["peso_final"].to_numpy(), {"regiao": regiao}
+    )
+
+
+def etapa_avaliacao_2008() -> None:
+    """Avaliação do modelo em 2008-2009: segmentos, erros, explicabilidade e região fora.
+
+    Lê a receita e os resultados salvos pelas etapas anteriores (conferindo dobras e vencedores)
+    e grava `reports/avaliacao_2008.json`. Não muda a receita nem usa 2017-2018.
+    """
+    config: dict[str, Any] = {
+        "o_que": "segmentos, contextos com mais erro, importância global, estabilidade e região "
+        "fora, para a ocasião, a preferência (todas e com pizza) e o score",
+        "previsoes": "fora da dobra do vencedor de cada parte, com a calibração decidida; o score "
+        "é o salvo em previsoes_score (a calibração de H7 já aplicada)",
+        "pesos": "peso_final em todas as métricas",
+        "segmentos": "dia_semana, faixa_horario, regiao, faixa_etaria, sexo, faixa_renda, local",
+        "erros": "contextos por regiao, dia_semana, faixa_horario e local, z = (O - E) / "
+        "sqrt(soma de w² p (1 - p)), w com média 1; só contextos com 500 linhas ou mais",
+        "importancia_global": "lista da maior para a menor; média ponderada de |contribuição| no modelo final, treinado em "
+        "2008-2009 inteira (com a sigmoide, se a receita a usa)",
+        "estabilidade": "contribuição média por nível nos modelos das dobras externas do vencedor "
+        "(sem a sigmoide, que só reescala); instável se os sinais divergem e o maior valor "
+        "absoluto passa de 0,05 log-chances",
+        "regiao_fora": _DECLARACAO_REGIAO_FORA,
+    }
+    with _experimento("avaliacao_2008", "exploratório", config, RELATORIOS) as r:
+        celulas, ocasioes, dobras = _celulas(), _ocasioes(), _dobras()
+        r.dados["dobras"] = _info_dobras(dobras)
+        _conferir_dobras_de_h5(dobras)
+        hash_dobras = r.dados["dobras"]["hash"]
+        receita = carregar_receita(RELATORIOS / "receita.json")
+        selecoes = _conferir_receita_e_selecoes(receita, dobras, hash_dobras)
+        r.dados.update(
+            celulas=_dados(celulas, ALVO_SCORE), ocasioes_refri=_dados(ocasioes, "y_guarana")
+        )
+        r.dados["receita"] = _relativo(RELATORIOS / "receita.json")
+        r.configuracao["receita"] = {
+            "ocasiao": receita.ocasiao.degrau,
+            "preferencia": receita.preferencia.degrau,
+            "score": receita.score,
+            "calibrar": {
+                "ocasiao": receita.ocasiao.calibrar,
+                "preferencia": receita.preferencia.calibrar,
+            },
+            "calibrar_score": receita.calibrar_score,
+        }
+        rps: dict[Parte, ReceitaParte] = {
+            "ocasiao": receita.ocasiao,
+            "preferencia": receita.preferencia,
+        }
+        resultados: dict[Parte, ResultadoAninhado] = {}
+        oof: dict[Parte, np.ndarray] = {}
+        finais: dict[Parte, ModeloParte] = {}
+        for parte in PARTES:
+            base, alvo, _ = _base_da_parte(parte, celulas, ocasioes)
+            rp = rps[parte]
+            resultados[parte] = _carregar_aninhada(f"aninhada_{parte}_{rp.degrau}", hash_dobras)
+            oof[parte] = _oof_decidido(resultados[parte], base, alvo, dobras, rp.calibrar)
+            print(f"avaliação {parte}: modelo final", flush=True)
+            finais[parte] = ajustar_parte(base, alvo, parte, rp, selecoes[parte]["oof"])
+
+        # ocasião
+        m_oc: dict[str, Any] = {
+            "degrau": receita.ocasiao.degrau,
+            "calibrado": receita.ocasiao.calibrar,
+        }
+        m_oc.update(_avaliar(celulas, "y_pizza_refri", oof["ocasiao"]))
+        m_oc.update(_explicar(finais["ocasiao"], resultados["ocasiao"], celulas, "ocasiao"))
+        r.metricas["ocasiao"] = m_oc
+
+        # preferência: todas as ocasiões com refrigerante e o recorte com pizza
+        com_pizza = (ocasioes["tem_pizza"] == 1).to_numpy()
+        m_pref: dict[str, Any] = {
+            "degrau": receita.preferencia.degrau,
+            "calibrado": receita.preferencia.calibrar,
+            "todas": _avaliar(ocasioes, "y_guarana", oof["preferencia"]),
+            "com_pizza": _avaliar(
+                cast(pd.DataFrame, ocasioes[com_pizza]), "y_guarana", oof["preferencia"][com_pizza]
+            ),
+        }
+        m_pref.update(
+            _explicar(finais["preferencia"], resultados["preferencia"], ocasioes, "preferencia")
+        )
+        r.metricas["preferencia"] = m_pref
+
+        # score: o fora da dobra decidido em H6 e H7
+        salvo = carregar_resultado("previsoes_score")
+        if (
+            salvo["hash_dobras"] != hash_dobras
+            or salvo["tipo"] != receita.score
+            or bool(salvo["calibrar_score"]) != receita.calibrar_score
+        ):
+            raise ValueError("previsoes_score.joblib não é o da receita: rode `make produto`")
+        score = _sem_nan(np.asarray(salvo["score"], dtype=float), "score")
+        m_score: dict[str, Any] = {"tipo": receita.score, "calibrado": receita.calibrar_score}
+        m_score.update(_avaliar(celulas, ALVO_SCORE, score, posicao=True))
+        res_direto: ResultadoAninhado | None = None
+        final_direto: ModeloParte | None = None
+        if receita.score == "direto" and receita.direto is not None:
+            res_direto = _carregar_aninhada(f"aninhada_direto_{receita.direto.degrau}", hash_dobras)
+            final_direto = ajustar_parte(
+                celulas, ALVO_SCORE, "direto", receita.direto, selecoes["direto"]["oof"]
+            )
+            m_score["explicacao_do_direto"] = _explicar(final_direto, res_direto, celulas, "direto")
+        else:
+            m_score["explicacao"] = (
+                "o score é o produto: ver a importância e a estabilidade de cada parte"
+            )
+        r.metricas["score"] = m_score
+
+        # região fora (seção 6.4), sem sigmoide dos dois lados
+        regiao: dict[str, Any] = {"declaracao": _DECLARACAO_REGIAO_FORA}
+        p_oc, _ = _fora_da_regiao("ocasiao", receita.ocasiao, "y_pizza_refri", celulas)
+        p_pref, p_pref_cel = _fora_da_regiao(
+            "preferencia", receita.preferencia, "y_guarana", ocasioes, extra=celulas
+        )
+        if final_direto is not None and receita.direto is not None:
+            p_score, _ = _fora_da_regiao("direto", receita.direto, ALVO_SCORE, celulas)
+            cru_score = _sem_nan(
+                np.asarray(cast(ResultadoAninhado, res_direto).oof, float), "direto"
+            )
+        else:
+            p_score = p_oc * _sem_nan(cast(np.ndarray, p_pref_cel), "preferência nas células")
+            cru_score = _sem_nan(
+                np.asarray(resultados["ocasiao"].oof, float), "ocasião"
+            ) * _sem_nan(
+                np.asarray(resultados["preferencia"].oof_extras["celulas"], float),
+                "preferência nas células",
+            )
+        for nome, base, alvo, fora, cru in (
+            (
+                "ocasiao",
+                celulas,
+                "y_pizza_refri",
+                p_oc,
+                np.asarray(resultados["ocasiao"].oof, float),
+            ),
+            (
+                "preferencia",
+                ocasioes,
+                "y_guarana",
+                p_pref,
+                np.asarray(resultados["preferencia"].oof, float),
+            ),
+            ("score", celulas, ALVO_SCORE, p_score, cru_score),
+        ):
+            regiao[nome] = {
+                "treinada_nas_outras_quatro": _linhas_por_regiao(base, alvo, fora),
+                "fora_da_dobra": _linhas_por_regiao(base, alvo, _sem_nan(cru, nome)),
+            }
+        r.metricas["regiao_fora"] = regiao
+    print("avaliação 2008-2009: relatório gravado", flush=True)

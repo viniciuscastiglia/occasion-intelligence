@@ -13,7 +13,7 @@ from occasion.config import EDICAO_TREINO, SEMENTE
 from occasion.decision.engine import CORTE_OCASIAO, CORTE_PREFERENCIA
 from occasion.experimentos import etapas, registro
 from occasion.experimentos.aninhada import PrevisaoInterna, ResultadoAninhado
-from occasion.experimentos.especificacao import INTERACOES, espaco_lightgbm
+from occasion.experimentos.especificacao import INTERACOES, espaco_lightgbm, variaveis_da_parte
 from occasion.experimentos.regras import melhor_logistico, padrao, sinal_negativo, superioridade
 from occasion.models import escada
 from occasion.models.base import logit, sigmoide
@@ -397,6 +397,102 @@ def _conferir_cadeia(pastas: Path, esperado_score: str, forcado: bool = False) -
         assert "direto" not in receita.referencia_a
 
 
+def _conferir_avaliacao(pastas: Path, esperado_score: str) -> None:
+    rel = _json(pastas / "reports" / "avaliacao_2008.json")
+    assert all(c in rel for c in CHAVES) and rel["natureza"] == "exploratório"
+    assert rel["metricas"]["status"] == "ok"
+    hash_dobras = _json(pastas / "reports" / "dobras.json")["dados"]["hash_dobras"]
+    assert rel["dados"]["dobras"]["hash"] == hash_dobras
+    celulas = pd.read_parquet(pastas / "processed" / f"celulas_{EDICAO_TREINO}.parquet")
+    ocasioes = pd.read_parquet(pastas / "processed" / f"ocasioes_refri_{EDICAO_TREINO}.parquet")
+    m = rel["metricas"]
+    receita = carregar_receita(pastas / "reports" / "receita.json")
+    guardado = pastas / "experimentos"
+
+    segmentos = {
+        "dia_semana",
+        "faixa_horario",
+        "regiao",
+        "faixa_etaria",
+        "sexo",
+        "faixa_renda",
+        "local",
+    }
+    blocos = {
+        "ocasiao": (m["ocasiao"], celulas, "y_pizza_refri"),
+        "preferencia_todas": (m["preferencia"]["todas"], ocasioes, "y_guarana"),
+        "score": (m["score"], celulas, "y_pizza_guarana"),
+    }
+    for nome, (bloco, base, alvo) in blocos.items():
+        linhas = bloco["segmentos"]
+        assert {l["segmento"] for l in linhas} == segmentos, nome
+        for seg in segmentos:  # cada segmento cobre a base inteira
+            assert sum(l["n"] for l in linhas if l["segmento"] == seg) == len(base), (nome, seg)
+        assert bloco["resumo"]["n"] == len(base)
+        assert bloco["resumo"]["positivos"] == int(np.sum(base[alvo].to_numpy()))
+        assert set(bloco["erros"]) == {"subestimados", "superestimados"}
+        for l in bloco["erros"]["subestimados"] + bloco["erros"]["superestimados"]:
+            assert l["n"] >= 500
+        z = [l["z"] for l in bloco["erros"]["subestimados"]]
+        assert z == sorted(z, reverse=True)
+    com_pizza = m["preferencia"]["com_pizza"]
+    assert com_pizza["resumo"]["n"] == int(np.sum(ocasioes["tem_pizza"].to_numpy() == 1))
+
+    # o score avaliado é o salvo por H6 e H7, lido do arquivo
+    salvo = joblib.load(guardado / "previsoes_score.joblib")
+    y_s, w_s = celulas["y_pizza_guarana"].to_numpy(), celulas["peso_final"].to_numpy()
+    assert m["score"]["resumo"]["log_loss"] == pytest.approx(
+        log_loss_ponderado(y_s, salvo["score"], w_s)
+    )
+    assert "corte_alta" in m["score"]["resumo"]
+    assert m["score"]["tipo"] == esperado_score == receita.score
+
+    # explicabilidade: variáveis da parte, ordem decrescente, cinco modelos de dobra por nível
+    explicados = [("ocasiao", m["ocasiao"]), ("preferencia", m["preferencia"])]
+    if esperado_score == "direto":
+        explicados.append(("direto", m["score"]["explicacao_do_direto"]))
+    else:
+        assert "explicacao_do_direto" not in m["score"]
+    for parte, bloco in explicados:
+        imp = [(l["variavel"], l["importancia"]) for l in bloco["importancia_global"]]
+        assert {v for v, _ in imp} == set(variaveis_da_parte(parte))  # type: ignore[arg-type]
+        assert [x for _, x in imp] == sorted((x for _, x in imp), reverse=True)
+        assert all(x >= 0 for _, x in imp)
+        for linha in bloco["estabilidade"]:
+            c = linha["contribuicao_por_modelo"]
+            assert len(c) == 5
+            assert linha["instavel"] == (min(c) < 0 < max(c) and max(map(abs, c)) > 0.05)
+
+    # região fora: o lado cru confere com o resultado aninhado salvo; os dois lados cobrem a base
+    regioes = m["regiao_fora"]
+    assert (
+        "sem calibração" in regioes["declaracao"] and "não muda a receita" in regioes["declaracao"]
+    )
+    cru_oc = joblib.load(guardado / f"aninhada_ocasiao_{receita.ocasiao.degrau}.joblib")
+    cru_oc = cru_oc["resultado"] if isinstance(cru_oc, dict) else cru_oc
+    y_o, w_o = celulas["y_pizza_refri"].to_numpy(), celulas["peso_final"].to_numpy()
+    for lado in ("treinada_nas_outras_quatro", "fora_da_dobra"):
+        for nome, base in (("ocasiao", celulas), ("preferencia", ocasioes), ("score", celulas)):
+            linhas = regioes[nome][lado]
+            assert sum(l["n"] for l in linhas) == len(base), (nome, lado)
+    for linha in regioes["ocasiao"]["fora_da_dobra"]:
+        dentro = (celulas["regiao"] == linha["valor"]).to_numpy()
+        assert linha["log_loss"] == pytest.approx(
+            log_loss_ponderado(y_o[dentro], cru_oc.oof[dentro], w_o[dentro])
+        )
+    for linha in regioes["ocasiao"]["treinada_nas_outras_quatro"]:
+        assert linha["positivos"] >= 0 and linha["log_loss"] > 0
+
+
+def test_avaliacao_recusa_o_que_nao_existe_e_registra_a_falha(pastas: Path) -> None:
+    etapas.etapa_dobras()
+    with pytest.raises(FileNotFoundError):
+        etapas.etapa_avaliacao_2008()
+    rel = _json(pastas / "reports" / "avaliacao_2008.json")
+    assert rel["metricas"]["status"] == "falhou"
+    assert rel["metricas"]["erro"]["tipo"] == "FileNotFoundError"
+
+
 def test_calibracao_produto_cortes_e_receita(pastas: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     etapas.etapa_dobras()
     etapas.etapa_peso()
@@ -409,6 +505,8 @@ def test_calibracao_produto_cortes_e_receita(pastas: Path, monkeypatch: pytest.M
     h6 = _json(pastas / "reports" / "experimentos" / "h6_h7_produto.json")["metricas"]["H6"]
     esperado = "direto" if h6["veredito"] == "padrão refutado" else "produto"
     _conferir_cadeia(pastas, esperado)
+    etapas.etapa_avaliacao_2008()
+    _conferir_avaliacao(pastas, esperado)
 
     # o outro caminho: H6 forçado a promover o direto
     monkeypatch.setattr(etapas, "padrao", lambda ic: "padrão refutado")
@@ -416,6 +514,8 @@ def test_calibracao_produto_cortes_e_receita(pastas: Path, monkeypatch: pytest.M
     etapas.etapa_cortes()
     etapas.etapa_receita()
     _conferir_cadeia(pastas, "direto", forcado=True)
+    etapas.etapa_avaliacao_2008()
+    _conferir_avaliacao(pastas, "direto")
     # com o score direto, a sensibilidade continua sobre as partes, e o JSON avisa
     cortes = _json(pastas / "reports" / "experimentos" / "cortes.json")
     assert "partes do produto" in cortes["metricas"]["aviso_direto"]

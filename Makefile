@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita experimentos avaliado
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado
 
 ambiente:
 	uv sync
@@ -65,8 +65,11 @@ cortes:
 receita:
 	uv run python -m occasion.experimentos receita
 
+avaliacao-2008:
+	uv run python -m occasion.experimentos avaliacao-2008
+
 # a cadeia inteira dos experimentos de 2008-2009, na ordem (make sem -j roda em sequência)
-experimentos: dobras peso escada h4 embaralhado calibracao produto cortes receita
+experimentos: dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008
 
 app:
 	uv run streamlit run app/streamlit_app.py
