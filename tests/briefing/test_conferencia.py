@@ -43,6 +43,11 @@ def test_reprova_numero_inventado(contexto: Contexto, resultado: Resultado) -> N
         "Elas aumentam as vendas.",
         "Isso aumentou as vendas.",
         "Ação eficaz neste contexto.",
+        "Eles causaram o aumento.",
+        "Eles causariam o aumento.",
+        "O causador do efeito.",
+        "Elas aumentaram as vendas.",
+        "Elas aumentarão as vendas.",
     ],
 )
 def test_reprova_termo_proibido(contexto: Contexto, resultado: Resultado, texto: str) -> None:
@@ -57,6 +62,9 @@ def test_reprova_termo_proibido(contexto: Contexto, resultado: Resultado, texto:
         "Não há leitura causal aqui.",
         "A causalidade não é estimada.",
         "Só a clausura e a pausa.",
+        "Fatores causais não são medidos.",
+        "Relações causais e causalidade ficam fora.",
+        "Houve uma acusação.",
     ],
 )
 def test_nao_reprova_causal_nem_palavra_parecida(

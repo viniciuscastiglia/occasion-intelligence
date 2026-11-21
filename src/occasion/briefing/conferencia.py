@@ -29,10 +29,11 @@ TERMOS_PROIBIDOS: tuple[str, ...] = (
 # Padrão (já sem acento, em minúsculas) de cada termo, com as formas derivadas.
 # O que não está aqui vale como a palavra inteira.
 _FORMAS: dict[str, str] = {
-    "vende mais": r"vend(?:e|em|eu|endo)\s+mais",
-    "aumenta as vendas": r"aument(?:a|am|ou|ando)\s+(?:as\s+)?vendas",
-    "aumentar as vendas": r"aumentar\s+(?:as\s+)?vendas",
-    "causa": r"caus(?:a|as|ar|ara|aria|ou|am|ando|ado|ada|ados|adas|e|em)",
+    "vende mais": r"vend(?:e|em|eu|eram|era|erao|eria|eriam|endo|er)\s+mais",
+    "aumenta as vendas": r"aument\w*\s+(?:as\s+)?vendas",
+    "aumentar as vendas": r"aument\w*\s+(?:as\s+)?vendas",
+    # Qualquer palavra que começa com "caus", menos causal, causais e causalidade.
+    "causa": r"caus(?!al|ais)\w*",
     "garante": r"garant\w*",
     "garantir": r"garant\w*",
     "impacto": r"impact\w*",
