@@ -73,7 +73,7 @@ def _diferencas(caminho: str, a: Any, b: Any) -> list[str]:
     if isinstance(a, dict) and isinstance(b, dict):
         saida: list[str] = []
         for chave in sorted(set(a) | set(b)):
-            if caminho == "model_metadata" and chave == "receita_commit":
+            if caminho.endswith(".model_metadata") and chave == "receita_commit":
                 continue
             saida += _diferencas(f"{caminho}.{chave}", a.get(chave), b.get(chave))
         return saida

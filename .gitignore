@@ -5,7 +5,10 @@ __pycache__/
 data/raw/
 .impeccable/
 data/
-/models/
+/models/*
+!/models/servido/
 reports/*
 !reports/*.json
 !reports/experimentos/
+.DS_Store
+.streamlit/secrets.toml
