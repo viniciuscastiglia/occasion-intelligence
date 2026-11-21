@@ -1,7 +1,9 @@
-"""Artefato do modelo e função única de inferência.
+"""Função única de inferência da tela e do contrato, e o baseline do Plano 1.
 
-`treinar_baseline` ajusta o degrau A só em 2008-2009. `prever` é a função que a tela e o
-processamento em lote chamam: ambos passam por `pontuar`, então dão o mesmo score.
+`prever` transforma um `Contexto` no `Resultado` do contrato (score, fatores e recomendação);
+`treinar_baseline` ajusta o degrau A só em 2008-2009; `salvar_artefato` e `carregar_artefato`
+gravam e leem o artefato. A tela e o processamento em lote passam pelo mesmo `pontuar`, então
+dão o mesmo score.
 
 `ArtefatoModelo`, `pontuar` e o que monta o artefato avaliado moram em
 `occasion.inference.artefato`, que é assinado com a receita; este módulo (a resposta da tela e do

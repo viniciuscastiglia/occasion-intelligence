@@ -27,6 +27,7 @@ from occasion.experimentos.especificacao import variaveis_da_parte
 from occasion.experimentos.registro import _para_json
 from occasion.experimentos.teste_final import (
     REFERENCIA_TESTE,
+    REFERENCIA_TREINO,
     _conferir_contagens,
     _conferir_versoes,
     _tag_da_receita,
@@ -43,11 +44,6 @@ from occasion.versoes_da_receita import VERSOES_DA_RECEITA
 
 B_TESTE = 20  # réplicas do bootstrap nos testes (o teste final real usa B = 1000)
 N_CELULAS, N_OCASIOES, CELULAS_POR_DIA = 1500, 1000, 10
-# as contagens de referência das bases sintéticas de 2017-2018 (as reais ficam em REFERENCIA_TESTE)
-REFERENCIA_SINTETICA = {
-    "dias_pessoa": N_CELULAS // CELULAS_POR_DIA,
-    "linhas_ocasioes_refri": N_OCASIOES,
-}
 
 _GIT = [
     "git",
@@ -119,6 +115,32 @@ def _bases() -> dict[tuple[str, str], pd.DataFrame]:
         ("celulas", EDICAO_TESTE): _celulas(EDICAO_TESTE, 30),
         ("ocasioes_refri", EDICAO_TESTE): _ocasioes(EDICAO_TESTE, 40),
     }
+
+
+def _contar(celulas: pd.DataFrame, ocasioes: pd.DataFrame) -> dict[str, int]:
+    """As contagens de referência de uma edição sintética, contadas aqui por outro caminho."""
+    por_dia = cast(
+        pd.DataFrame, celulas.groupby("id_dia")[["y_pizza_refri", "y_pizza_guarana"]].max()
+    )
+    refri = por_dia["y_pizza_refri"].to_numpy()
+    guarana = por_dia["y_pizza_guarana"].to_numpy()
+    return {
+        "dias_pessoa": len(por_dia),
+        "linhas_celulas": len(celulas),
+        "dias_pizza_refri": int(np.sum(refri == 1)),
+        "dias_pizza_guarana": int(np.sum(guarana == 1)),
+        "linhas_ocasioes_refri": len(ocasioes),
+    }
+
+
+# as contagens de referência das bases sintéticas (as reais ficam em REFERENCIA_TREINO e
+# REFERENCIA_TESTE)
+_SINTETICAS = _bases()
+REFERENCIA_SINTETICA = {
+    edicao: _contar(_SINTETICAS[("celulas", edicao)], _SINTETICAS[("ocasioes_refri", edicao)])
+    for edicao in (EDICAO_TREINO, EDICAO_TESTE)
+}
+assert REFERENCIA_SINTETICA[EDICAO_TESTE]["dias_pessoa"] == N_CELULAS // CELULAS_POR_DIA
 
 
 # ------------------------------------------------------------------------------ receita e relatórios
@@ -363,7 +385,12 @@ def sem_leitura_de_bases(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def _rodar(repo: Path, b: int = B_TESTE) -> Path:
-    return rodar_teste_final(repo, b=b, referencia=REFERENCIA_SINTETICA)
+    return rodar_teste_final(
+        repo,
+        b=b,
+        referencia=REFERENCIA_SINTETICA[EDICAO_TESTE],
+        referencia_treino=REFERENCIA_SINTETICA[EDICAO_TREINO],
+    )
 
 
 def _json(caminho: Path) -> dict[str, Any]:
@@ -514,7 +541,13 @@ def test_relatorio_do_teste_final(repo_com_tag: Path, artefato_da_tag: Path) -> 
     )
     assert set(m["erros"]) == {"score", "ocasiao", "preferencia_todas", "preferencia_com_pizza"}
     assert d["dados"]["celulas_teste"]["n"] == N_CELULAS
-    assert d["dados"]["contagens_de_referencia"] == REFERENCIA_SINTETICA
+    assert d["dados"]["contagens_de_referencia"] == {
+        edicao: {
+            "esperado": REFERENCIA_SINTETICA[edicao],
+            "encontrado": REFERENCIA_SINTETICA[edicao],
+        }
+        for edicao in (EDICAO_TREINO, EDICAO_TESTE)
+    }
     validacao = d["dados"]["validacao"]
     assert sorted(validacao) == sorted(teste_final._RELATORIOS_DE_VALIDACAO.values())
     for relativo, sha in validacao.items():
@@ -567,34 +600,65 @@ def test_teste_final_nao_muda_receita_nem_artefato(repo_com_tag: Path, artefato_
 # ------------------------------------------------------------------------------ pré-congelamento
 
 
-def test_referencia_do_teste_real_e_a_do_claude_md() -> None:
-    # tabela "Números de referência" do CLAUDE.md: 85.018 dias-pessoa; 797 dias com pizza e
-    # refrigerante, menos 1 dia sem célula positiva por local indeterminado (reports/bases.json);
-    # 180 dias com pizza e guaraná, ou 179 se esse dia tiver guaraná; 16.122 ocasiões com
-    # refrigerante, das quais 10 saem da base da parte 2 por local indeterminado (Ruling R-v)
+def test_referencias_reais_sao_as_do_claude_md() -> None:
+    # tabela "Números de referência" do CLAUDE.md e exclusões de reports/bases.json.
+    # 2017-2018: 85.018 dias-pessoa (10 células por dia); 797 dias com pizza e refrigerante,
+    # menos 1 dia sem célula positiva por local indeterminado; 180 dias com pizza e guaraná,
+    # dos quais até 10 podem perder o guaraná nas células pelas 10 ocasiões excluídas (Ruling
+    # R-w); 16.122 ocasiões com refrigerante, menos as 10 excluídas.
     assert REFERENCIA_TESTE == {
         "dias_pessoa": 85_018,
+        "linhas_celulas": 850_180,
         "dias_pizza_refri": 796,
-        "dias_pizza_guarana": frozenset({179, 180}),
+        "dias_pizza_guarana": frozenset(range(170, 181)),
         "linhas_ocasioes_refri": 16_112,
     }
+    # 2008-2009: nenhuma exclusão, tudo exato
+    assert REFERENCIA_TREINO == {
+        "dias_pessoa": 66_903,
+        "linhas_celulas": 669_030,
+        "dias_pizza_refri": 651,
+        "dias_pizza_guarana": 101,
+        "linhas_ocasioes_refri": 19_182,
+    }
+    assert set(REFERENCIA_TESTE) == set(REFERENCIA_TREINO) == set(teste_final._CONTAGENS)
     padrao = teste_final.rodar_teste_final.__kwdefaults__
-    assert padrao is not None and padrao["referencia"] is REFERENCIA_TESTE
+    assert padrao is not None
+    assert padrao["referencia"] is REFERENCIA_TESTE
+    assert padrao["referencia_treino"] is REFERENCIA_TREINO
 
 
+@pytest.mark.parametrize("edicao", [EDICAO_TREINO, EDICAO_TESTE])
 @pytest.mark.parametrize(
-    "divergente",
-    [
-        {**REFERENCIA_SINTETICA, "dias_pessoa": REFERENCIA_SINTETICA["dias_pessoa"] + 1},
-        {**REFERENCIA_SINTETICA, "linhas_ocasioes_refri": N_OCASIOES - 1},
-    ],
-)
+    "chave",
+    ["dias_pessoa", "linhas_celulas", "dias_pizza_refri", "dias_pizza_guarana",
+     "linhas_ocasioes_refri"],
+)  # fmt: skip
 def test_bloqueia_bases_fora_das_contagens_de_referencia(
-    artefato_da_tag: Path, divergente: dict[str, int]
+    artefato_da_tag: Path, edicao: str, chave: str
 ) -> None:
-    with pytest.raises(acesso.TesteBloqueado, match="contagens de referência"):
-        rodar_teste_final(artefato_da_tag, b=B_TESTE, referencia=divergente)
+    referencias = {e: dict(REFERENCIA_SINTETICA[e]) for e in (EDICAO_TREINO, EDICAO_TESTE)}
+    referencias[edicao][chave] += 1
+    with pytest.raises(acesso.TesteBloqueado, match=f"bases de {edicao}.*{chave}"):
+        rodar_teste_final(
+            artefato_da_tag,
+            b=B_TESTE,
+            referencia=referencias[EDICAO_TESTE],
+            referencia_treino=referencias[EDICAO_TREINO],
+        )
     assert not (artefato_da_tag / "reports" / "teste_final.json").exists()
+
+
+def test_referencia_sem_todas_as_chaves_e_recusada(artefato_da_tag: Path) -> None:
+    sem_guarana = dict(REFERENCIA_SINTETICA[EDICAO_TESTE])
+    del sem_guarana["dias_pizza_guarana"]
+    with pytest.raises(ValueError, match="precisa ter as chaves"):
+        rodar_teste_final(
+            artefato_da_tag,
+            b=B_TESTE,
+            referencia=sem_guarana,
+            referencia_treino=REFERENCIA_SINTETICA[EDICAO_TREINO],
+        )
 
 
 def test_contagens_de_referencia_nas_bases() -> None:
@@ -608,17 +672,21 @@ def test_contagens_de_referencia_nas_bases() -> None:
     ocasioes = pd.DataFrame({"id_dia": ["a", "b", "b"]})
     esperado = {
         "dias_pessoa": 3,
+        "linhas_celulas": 6,
         "dias_pizza_refri": 2,
         "dias_pizza_guarana": 1,
         "linhas_ocasioes_refri": 3,
     }
-    assert _conferir_contagens(celulas, ocasioes, esperado) == esperado
+    assert _conferir_contagens(celulas, ocasioes, esperado, "e") == esperado
     with pytest.raises(acesso.TesteBloqueado, match="encontrado"):
-        _conferir_contagens(celulas, ocasioes, {**esperado, "dias_pizza_refri": 3})
-    with pytest.raises(ValueError, match="desconhecidas"):
-        _conferir_contagens(celulas, ocasioes, {"dias_com_pizza": 1})
-    with pytest.raises(ValueError, match="nenhuma"):
-        _conferir_contagens(celulas, ocasioes, {})
+        _conferir_contagens(celulas, ocasioes, {**esperado, "dias_pizza_refri": 3}, "e")
+    with pytest.raises(ValueError, match="precisa ter as chaves"):
+        _conferir_contagens(celulas, ocasioes, {**esperado, "dias_com_pizza": 1}, "e")
+    sem_linhas = {k: v for k, v in esperado.items() if k != "linhas_celulas"}
+    with pytest.raises(ValueError, match="precisa ter as chaves"):
+        _conferir_contagens(celulas, ocasioes, sem_linhas, "e")
+    with pytest.raises(ValueError, match="precisa ter as chaves"):
+        _conferir_contagens(celulas, ocasioes, {}, "e")
 
 
 def test_versoes_instaladas_sao_as_da_receita() -> None:
@@ -661,13 +729,16 @@ def test_tag_anotada_grava_o_objeto_da_tag_e_o_commit(tmp_path: Path) -> None:
     assert tag["objeto"] != tag["commit"]
 
 
-@pytest.mark.parametrize(("guarana", "aceita"), [(180, True), (179, True), (178, False)])
+@pytest.mark.parametrize(
+    ("guarana", "aceita"), [(180, True), (175, True), (170, True), (169, False), (181, False)]
+)
 def test_dias_com_pizza_e_guarana_aceitam_o_conjunto_da_referencia(
     guarana: int, aceita: bool
 ) -> None:
-    """Na referência real, 179 e 180 passam e 178 é recusado; o resto fica fixo."""
+    """Na referência real, de 170 a 180 passam; 169 e 181 são recusados; o resto fica fixo."""
     encontrado = {
         "dias_pessoa": 85_018,
+        "linhas_celulas": 850_180,
         "dias_pizza_refri": 796,
         "dias_pizza_guarana": guarana,
         "linhas_ocasioes_refri": 16_112,
@@ -677,10 +748,10 @@ def test_dias_com_pizza_e_guarana_aceitam_o_conjunto_da_referencia(
     with pytest.MonkeyPatch.context() as m:
         m.setattr(teste_final, "_CONTAGENS", contagens)
         if aceita:
-            assert _conferir_contagens(vazio, vazio, REFERENCIA_TESTE) == encontrado
+            assert _conferir_contagens(vazio, vazio, REFERENCIA_TESTE, "t") == encontrado
         else:
             with pytest.raises(acesso.TesteBloqueado, match="dias_pizza_guarana"):
-                _conferir_contagens(vazio, vazio, REFERENCIA_TESTE)
+                _conferir_contagens(vazio, vazio, REFERENCIA_TESTE, "t")
 
 
 def test_contagem_com_conjunto_nas_bases() -> None:
@@ -688,10 +759,14 @@ def test_contagem_com_conjunto_nas_bases() -> None:
         {"id_dia": ["a", "a", "b"], "y_pizza_refri": [1, 0, 1], "y_pizza_guarana": [1, 0, 0]}
     )
     ocasioes = pd.DataFrame({"id_dia": ["a"]})
-    esperado = {"dias_pizza_guarana": frozenset({1, 2}), "dias_pizza_refri": 2}
-    assert _conferir_contagens(celulas, ocasioes, esperado) == {
+    fixas = {"dias_pessoa": 2, "linhas_celulas": 3, "linhas_ocasioes_refri": 1}
+    esperado = {**fixas, "dias_pizza_guarana": frozenset({1, 2}), "dias_pizza_refri": 2}
+    assert _conferir_contagens(celulas, ocasioes, esperado, "e") == {
+        **fixas,
         "dias_pizza_guarana": 1,
         "dias_pizza_refri": 2,
     }
     with pytest.raises(acesso.TesteBloqueado, match="dias_pizza_guarana"):
-        _conferir_contagens(celulas, ocasioes, {"dias_pizza_guarana": frozenset({2, 3})})
+        _conferir_contagens(
+            celulas, ocasioes, {**esperado, "dias_pizza_guarana": frozenset({2, 3})}, "e"
+        )

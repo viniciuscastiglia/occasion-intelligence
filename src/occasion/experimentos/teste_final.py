@@ -4,15 +4,17 @@
 
 1. a tag `receita-congelada` existe e a assinatura da receita na árvore de trabalho é a da tag
    (`exigir_receita_intacta`);
-2. o artefato é `models/avaliado/artefato.joblib` (não o servido nem o baseline), montado com
-   essa assinatura e com os degraus de `reports/receita.json`;
-3. as versões instaladas das bibliotecas que mudam número são as de
+2. as versões instaladas das bibliotecas que mudam número são as de
    `occasion.versoes_da_receita` (assinado);
-4. os relatórios de validação de 2008-2009 existem, terminaram bem e são os da receita.
+3. a tag é registrada (o objeto e o commit para onde ela aponta);
+4. o artefato é `models/avaliado/artefato.joblib` (não o servido nem o baseline), montado com
+   essa assinatura e com os degraus de `reports/receita.json`;
+5. os relatórios de validação de 2008-2009 existem, terminaram bem e são os da receita.
 
-Depois de ler as bases de 2017-2018, e antes de calcular H8, confere nelas as contagens da tabela
-"Números de referência" do `CLAUDE.md` (`REFERENCIA_TESTE`): uma divergência indica deriva no
-código que monta as bases ou nos arquivos de `data/processed`, e bloqueia o teste.
+Depois de ler as bases das duas edições, e antes de qualquer cálculo, confere nelas as contagens
+da tabela "Números de referência" do `CLAUDE.md` (`REFERENCIA_TREINO` e `REFERENCIA_TESTE`):
+uma divergência indica deriva no código que monta as bases ou nos arquivos de `data/processed`,
+e bloqueia o teste. As referências esperadas e as contagens encontradas vão para o relatório.
 
 Nada aqui muda a receita nem o artefato: o degrau A de H8 é ajustado de novo em 2008-2009, em
 memória, com a configuração de `receita.referencia_a` e o uso de peso decidido em H5.
@@ -59,7 +61,13 @@ from occasion.validacao.bootstrap import B_PADRAO, Intervalo, intervalo_ganho
 from occasion.validacao.metricas import concentracao_topo, pr_auc_ponderada, resumo
 from occasion.versoes_da_receita import VERSOES_DA_RECEITA
 
-__all__ = ["NOME", "REFERENCIA_TESTE", "posicoes_na_referencia", "rodar_teste_final"]
+__all__ = [
+    "NOME",
+    "REFERENCIA_TESTE",
+    "REFERENCIA_TREINO",
+    "posicoes_na_referencia",
+    "rodar_teste_final",
+]
 
 NOME = "teste_final"
 NATUREZA: Natureza = "confirmatório"
@@ -82,21 +90,34 @@ _RELATORIOS_DE_VALIDACAO: dict[str, str] = {
     "avaliacao_2008": "reports/avaliacao_2008.json",
 }
 
-# Contagens de referência de 2017-2018 nas bases que o teste final lê, tiradas da tabela "Números
-# de referência" do `CLAUDE.md` (conferidas nos microdados e já testadas no parser do Plano 1):
-#   - dias_pessoa: 85.018 dias-pessoa (`id_dia` distintos nas células; cada dia tem 10 células);
+# Contagens de referência nas bases que o teste final lê, tiradas da tabela "Números de
+# referência" do `CLAUDE.md` (conferidas nos microdados e já testadas no parser do Plano 1) e das
+# exclusões por local indeterminado de `reports/bases.json`:
+#   - dias_pessoa: `id_dia` distintos nas células;
+#   - linhas_celulas: 10 células por dia (5 faixas de horário x 2 locais);
 #   - dias_pizza_refri: dias com alguma célula com `y_pizza_refri == 1`;
 #   - dias_pizza_guarana: dias com alguma célula com `y_pizza_guarana == 1`;
-#   - linhas_ocasioes_refri: as 16.122 ocasiões com refrigerante, menos as 10 de local
-#     indeterminado, que ficam fora da base da parte 2 (16.112 linhas).
-# Cada valor é um inteiro ou o conjunto dos valores aceitos.
+#   - linhas_ocasioes_refri: as ocasiões com refrigerante de local determinado (base da parte 2).
+# Cada valor é um inteiro ou o conjunto dos valores aceitos. As duas referências precisam ter
+# todas as chaves de `_CONTAGENS`.
 Contagem = int | frozenset[int]
+# 2008-2009: nenhuma exclusão por local indeterminado (reports/bases.json), então tudo é exato.
+REFERENCIA_TREINO: dict[str, Contagem] = {
+    "dias_pessoa": 66_903,
+    "linhas_celulas": 669_030,
+    "dias_pizza_refri": 651,
+    "dias_pizza_guarana": 101,
+    "linhas_ocasioes_refri": 19_182,
+}
 REFERENCIA_TESTE: dict[str, Contagem] = {
     "dias_pessoa": 85_018,
+    "linhas_celulas": 850_180,
     # 797 da tabela menos 1 dia excluído por local indeterminado (reports/bases.json)
     "dias_pizza_refri": 796,
-    # 180 da tabela; 179 se o dia excluído tiver guaraná, o que só se sabe lendo o alvo
-    "dias_pizza_guarana": frozenset({179, 180}),
+    # 180 da tabela; até 10 dias podem perder o guaraná nas células, pelas 10 ocasiões excluídas
+    # por local indeterminado (reports/bases.json)
+    "dias_pizza_guarana": frozenset(range(170, 181)),
+    # 16.122 ocasiões com refrigerante, menos as 10 de local indeterminado
     "linhas_ocasioes_refri": 16_112,
 }
 
@@ -109,9 +130,10 @@ def _dias(celulas: pd.DataFrame, alvo: str | None = None) -> int:
     return int(dias.nunique())
 
 
-# Como cada contagem sai das bases (células, ocasiões com refrigerante) de 2017-2018.
+# Como cada contagem sai das bases (células, ocasiões com refrigerante) de uma edição.
 _CONTAGENS: dict[str, Callable[[pd.DataFrame, pd.DataFrame], int]] = {
     "dias_pessoa": lambda cel, oc: _dias(cel),
+    "linhas_celulas": lambda cel, oc: len(cel),
     "dias_pizza_refri": lambda cel, oc: _dias(cel, ALVO_OCASIAO),
     "dias_pizza_guarana": lambda cel, oc: _dias(cel, ALVO_SCORE),
     "linhas_ocasioes_refri": lambda cel, oc: len(oc),
@@ -242,31 +264,36 @@ def _aceita(esperado: Contagem, valor: int) -> bool:
     return valor == esperado
 
 
-def _conferir_contagens(
-    celulas: pd.DataFrame, ocasioes_refri: pd.DataFrame, esperado: Mapping[str, Contagem]
-) -> dict[str, int]:
-    """Confere as contagens de referência nas bases de 2017-2018; devolve as encontradas.
+def _legivel(esperado: Mapping[str, Contagem]) -> dict[str, int | list[int]]:
+    """A referência em forma de JSON: conjuntos viram listas ordenadas."""
+    return {nome: sorted(v) if isinstance(v, frozenset) else v for nome, v in esperado.items()}
 
-    Cada contagem esperada é um inteiro ou o conjunto dos valores aceitos.
+
+def _conferir_contagens(
+    celulas: pd.DataFrame,
+    ocasioes_refri: pd.DataFrame,
+    esperado: Mapping[str, Contagem],
+    edicao: str,
+) -> dict[str, int]:
+    """Confere as contagens de referência nas bases da edição; devolve as encontradas.
+
+    Cada contagem esperada é um inteiro ou o conjunto dos valores aceitos, e a referência precisa
+    ter exatamente as chaves de `_CONTAGENS` (uma referência com menos chaves é recusada).
     """
-    if not esperado:
-        raise ValueError("nenhuma contagem de referência para conferir")
-    desconhecidas = sorted(set(esperado) - set(_CONTAGENS))
-    if desconhecidas:
-        raise ValueError(f"contagens de referência desconhecidas: {desconhecidas}")
-    encontrado = {nome: _CONTAGENS[nome](celulas, ocasioes_refri) for nome in esperado}
+    if set(esperado) != set(_CONTAGENS):
+        raise ValueError(
+            f"a referência de {edicao} precisa ter as chaves {sorted(_CONTAGENS)}; "
+            f"veio {sorted(esperado)}"
+        )
+    encontrado = {nome: _CONTAGENS[nome](celulas, ocasioes_refri) for nome in _CONTAGENS}
     divergentes = sorted(
         nome for nome, valor in encontrado.items() if not _aceita(esperado[nome], valor)
     )
     if divergentes:
-        legivel = {
-            nome: sorted(v) if isinstance(v, frozenset) else v for nome, v in esperado.items()
-        }
         raise TesteBloqueado(
-            f"as bases de {EDICAO_TESTE} não batem com as contagens de referência em "
-            f"{divergentes}: esperado {legivel}, encontrado {encontrado}. Confira o código das "
-            "bases e refaça "
-            "`make bases` antes do teste final"
+            f"as bases de {edicao} não batem com as contagens de referência em "
+            f"{divergentes}: esperado {_legivel(esperado)}, encontrado {encontrado}. Confira o "
+            "código das bases e refaça `make bases` antes do teste final"
         )
     return encontrado
 
@@ -396,13 +423,15 @@ def rodar_teste_final(
     *,
     b: int = B_PADRAO,
     referencia: Mapping[str, Contagem] = REFERENCIA_TESTE,
+    referencia_treino: Mapping[str, Contagem] = REFERENCIA_TREINO,
 ) -> Path:
     """Roda o teste final (H8 e o relatado à parte) e devolve o caminho do relatório gravado.
 
     Todos os caminhos saem de `raiz`. `b` é o número de réplicas do bootstrap (1000 no teste
-    real; menor só nos testes do código). `referencia` são as contagens conferidas nas bases de
-    2017-2018 antes de H8 (`REFERENCIA_TESTE` no teste real; outras só nas bases sintéticas dos
-    testes do código).
+    real; menor só nos testes do código). `referencia` e `referencia_treino` são as contagens
+    conferidas nas bases de 2017-2018 e de 2008-2009 antes de qualquer cálculo
+    (`REFERENCIA_TESTE` e `REFERENCIA_TREINO` no teste real; outras só nas bases sintéticas dos
+    testes do código). As duas, esperadas e encontradas, vão para `dados.contagens_de_referencia`.
     """
     assinatura = exigir_receita_intacta(raiz)
     _conferir_versoes()
@@ -417,7 +446,16 @@ def rodar_teste_final(
     oc08 = carregar_base("ocasioes_refri", EDICAO_TREINO, pasta=pasta, raiz=raiz)
     cel17 = carregar_base("celulas", EDICAO_TESTE, pasta=pasta, raiz=raiz)
     oc17 = carregar_base("ocasioes_refri", EDICAO_TESTE, pasta=pasta, raiz=raiz)
-    contagens = _conferir_contagens(cel17, oc17, referencia)
+    contagens = {
+        EDICAO_TREINO: {
+            "esperado": _legivel(referencia_treino),
+            "encontrado": _conferir_contagens(cel08, oc08, referencia_treino, EDICAO_TREINO),
+        },
+        EDICAO_TESTE: {
+            "esperado": _legivel(referencia),
+            "encontrado": _conferir_contagens(cel17, oc17, referencia, EDICAO_TESTE),
+        },
+    }
     print(f"teste final: contagens de referência conferidas ({contagens})", flush=True)
     com_pizza = (oc17["tem_pizza"] == 1).to_numpy()
     oc17_pizza = cast(pd.DataFrame, oc17[com_pizza])
