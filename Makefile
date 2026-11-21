@@ -1,4 +1,4 @@
-.PHONY: contagens ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
+.PHONY: contagens ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app api investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
 
 ambiente:
 	uv sync
@@ -91,6 +91,9 @@ avaliacao-2008:
 
 # a cadeia inteira dos experimentos de 2008-2009, na ordem (make sem -j roda em sequência)
 experimentos: dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008
+
+api:
+	uv run uvicorn occasion.api.app:app --port 8000
 
 app:
 	uv run streamlit run app/streamlit_app.py
