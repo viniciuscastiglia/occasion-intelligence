@@ -1,4 +1,5 @@
-"""Diagnóstico depois do teste e H9 em bases sintéticas, sem tocar `data/` nem `reports/`.
+"""Diagnóstico depois do teste e H9 em bases sintéticas, sem tocar `data/` nem escrever em `reports/`
+(só lê `reports/receita.json`).
 
 As linhas de 2008-2009 levam `n_moradores_uc == 7` (as de 2017-2018 têm no máximo 6): o construtor
 espião lê essa marca na entrada de cada `fit` para provar quem entrou no treino.
@@ -18,7 +19,6 @@ from occasion.bases import acesso
 from occasion.bases.acesso import exigir_teste_commitado
 from occasion.config import EDICAO_TESTE, EDICAO_TREINO
 from occasion.experimentos import pos_teste
-from occasion.experimentos.especificacao import variaveis_da_parte
 from occasion.experimentos.registro import _para_json
 from occasion.models.base import ModeloParte, sigmoide
 from occasion.models.calibracao import ModeloCalibrado
@@ -288,5 +288,39 @@ def test_regra_de_h9_qualquer_recusa_leva_a_2017(vereditos: list[str], esperado:
     assert pos_teste.treino_servido(vereditos) == esperado
 
 
-def test_variaveis_da_receita_usadas(bases: dict[str, pd.DataFrame]) -> None:
-    assert "tem_pizza" in variaveis_da_parte("preferencia")
+def test_h9_declara_que_nao_e_validacao_temporal(bases: dict[str, pd.DataFrame]) -> None:
+    from occasion.receita import carregar_receita
+
+    receita = carregar_receita().model_copy(
+        update={"ocasiao": _receita_parte(False), "preferencia": _receita_parte(False)}
+    )
+    resultado = pos_teste.executar(
+        bases["celulas08"], bases["ocasioes08"], bases["celulas17"], bases["ocasioes17"],
+        receita, _teste_final_ficticio(), b=10,
+    )  # fmt: skip
+    assert "não é validação temporal" in resultado["H9"]["validacao"]
+    assert "H8" in resultado["H9"]["validacao"]
+    assert "prevalencia" not in resultado["diagnostico_6_8"]["partes"]["ocasiao"]["diferenca"]
+
+
+def test_calibrar_score_verdadeiro_e_recusado(bases: dict[str, pd.DataFrame]) -> None:
+    from occasion.receita import carregar_receita
+
+    receita = carregar_receita().model_copy(update={"calibrar_score": True})
+    with pytest.raises(NotImplementedError):
+        pos_teste.executar(
+            bases["celulas08"], bases["ocasioes08"], bases["celulas17"], bases["ocasioes17"],
+            receita, _teste_final_ficticio(), b=10,
+        )  # fmt: skip
+
+
+def test_trava_confere_o_arquivo_que_e_lido(tmp_path: Path) -> None:
+    repo = _repo(tmp_path / "r")
+    (repo / "reports").mkdir()
+    (repo / "reports" / "teste_final.json").write_text("{}", encoding="utf-8")
+    _commitar(repo)
+    outro = repo / "outra"
+    outro.mkdir()
+    (outro / "teste_final.json").write_text("{}", encoding="utf-8")  # não rastreado
+    with pytest.raises(acesso.TesteBloqueado):
+        pos_teste.rodar_pos_teste(raiz=repo, pasta_relatorios=outro)

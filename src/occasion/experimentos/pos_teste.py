@@ -49,11 +49,10 @@ from occasion.config import (
     EDICAO_TESTE,
     EDICAO_TREINO,
     RAIZ,
-    RELATORIOS,
     SEMENTE,
 )
 from occasion.experimentos.especificacao import ParteModelo, variaveis_da_parte
-from occasion.experimentos.etapas import _experimento, _hash_das_dobras
+from occasion.experimentos.etapas import experimento, hash_das_dobras
 from occasion.experimentos.regras import padrao
 from occasion.inference.treino import ALVO_DA_PARTE
 from occasion.models.base import ModeloParte
@@ -73,7 +72,7 @@ from occasion.validacao.metricas import ajustar_sigmoide, log_loss_ponderado, re
 Braco = Literal["recente", "inteira"]
 BRACOS: tuple[Braco, ...] = ("recente", "inteira")
 NOME = "pos_teste"
-_DIFERENCAS = ("log_loss", "brier", "pr_auc", "roc_auc", "prevalencia")
+_DIFERENCAS = ("log_loss", "brier", "pr_auc", "roc_auc")
 _NOTA_PESO = (
     "o peso de treino é peso_final normalizado para média 1 dentro de cada conjunto de treino; "
     "os pesos de 2008-2009 e de 2017-2018 são de populações diferentes (cada edição soma a sua) "
@@ -83,6 +82,11 @@ _DECLARACAO_QUEDA = (
     "a diferença entre o braço recente (validação cruzada dentro de 2017-2018) e o teste final é "
     "o efeito conjunto de dez anos e da mudança do método de coleta (registro alimentar em "
     "2008-2009, recordatório de 24 horas em 2017-2018); o projeto não separa os dois"
+)
+VALIDACAO_DE_H9 = (
+    "H9 é validação cruzada por setores dentro de 2017-2018 (não é validação temporal); a "
+    "avaliação temporal da receita (treino em 2008-2009, teste em 2017-2018) é H8, em "
+    "reports/teste_final.json"
 )
 _BASE_DA_PARTE: dict[ParteModelo, Literal["celulas", "ocasioes"]] = {
     "ocasiao": "celulas",
@@ -187,6 +191,11 @@ def executar(
 
     Não toca o disco. As bases de 2008-2009 só entram no treino; as de 2017-2018 trazem o alvo.
     """
+    if receita.calibrar_score:
+        raise NotImplementedError(
+            "receita.calibrar_score = True: o diagnóstico do score não trata a calibração do "
+            "score (a receita congelada não a usa)"
+        )
     fora = set(ocasioes17["cod_upa"]) - set(celulas17["cod_upa"])
     if fora:
         raise ValueError(f"setores das ocasiões ausentes das células: {sorted(fora)[:10]}")
@@ -228,7 +237,7 @@ def executar(
                 avaliada = ~tem_treino
                 X = cast(pd.DataFrame, base17[tipo].loc[avaliada, variaveis_da_parte(parte)])
                 oof[braco][parte][avaliada] = modelos[parte].predict_proba(X)
-            # preferência nas células de teste, com "tem tem pizza" fixado em sim (como no score)
+            # preferência nas células de teste, com `tem_pizza` fixado em sim (como no score)
             cel_av = fold_cel == k
             X_cel = cast(pd.DataFrame, celulas17.loc[cel_av]).assign(tem_pizza=1)
             X_cel = cast(pd.DataFrame, X_cel[variaveis_da_parte("preferencia")])
@@ -317,6 +326,7 @@ def executar(
     return {
         "H9": {
             "natureza": "confirmatório",
+            "validacao": VALIDACAO_DE_H9,
             "enunciado": "treinar com 2008-2009 somado não piora a previsão de 2017-2018 em "
             "relação a treinar só com 2017-2018",
             "padrao": "base inteira",
@@ -343,9 +353,10 @@ def rodar_pos_teste(
     b: int = B_PADRAO,
 ) -> Path:
     """Confere as travas, roda `executar` nas bases reais e grava `reports/pos_teste.json`."""
-    exigir_teste_commitado(raiz)
+    pasta = raiz / "reports" if pasta_relatorios is None else pasta_relatorios
+    # a trava confere o mesmo arquivo que é lido
+    exigir_teste_commitado(raiz, (pasta / "teste_final.json").relative_to(raiz).as_posix())
     assinatura = exigir_receita_intacta(raiz)
-    pasta = RELATORIOS if pasta_relatorios is None else pasta_relatorios
     receita = carregar_receita(pasta / "receita.json")
     teste_final = json.loads((pasta / "teste_final.json").read_text(encoding="utf-8"))
     config: dict[str, Any] = {
@@ -358,7 +369,14 @@ def rodar_pos_teste(
         },
         "dobras": "setores de 2017-2018, critério de 10% a 30% dos positivos dos quatro alvos; "
         "a chave (edicao, cod_upa) deixa 2008-2009 sempre no treino",
-        "bootstrap": {"b": b, "unidade": "cod_upa de 2017-2018", "estrato": "uf", "nivel": 0.95},
+        "semente_dobras_internas": "SEMENTE + k para a dobra externa k (dobras_internas)",
+        "bootstrap": {
+            "semente": SEMENTE,
+            "b": b,
+            "unidade": "cod_upa de 2017-2018",
+            "estrato": "uf",
+            "nivel": 0.95,
+        },
         "peso": _NOTA_PESO,
         "calibracao": {
             "ocasiao": receita.ocasiao.calibrar,
@@ -371,7 +389,7 @@ def rodar_pos_teste(
         "nos_das_curvas": "sem peso (o sample_weight não chega ao SplineTransformer)",
         "linguagem": _DECLARACAO_QUEDA,
     }
-    with _experimento(NOME, "confirmatório", config, pasta) as r:
+    with experimento(NOME, "confirmatório", config, pasta) as r:
         inicio = time.time()
         celulas08 = carregar_base("celulas", EDICAO_TREINO, pasta=pasta_bases, raiz=raiz)
         ocasioes08 = carregar_base("ocasioes_refri", EDICAO_TREINO, pasta=pasta_bases, raiz=raiz)
@@ -385,7 +403,7 @@ def rodar_pos_teste(
         dobras = resultado.pop("_dobras")
         r.semente = int(dobras["registro"]["semente"])
         r.configuracao["tentativas_de_dobras"] = len(dobras["registro"]["tentativas"])
-        r.dados["hash_dobras"] = _hash_das_dobras(dobras["tabela"])
+        r.dados["hash_dobras"] = hash_das_dobras(dobras["tabela"])
         r.metricas.update(resultado)
         r.metricas["segundos"] = round(time.time() - inicio, 1)
     print(f"pos-teste: treino_servido = {resultado['H9']['treino_servido']}", flush=True)

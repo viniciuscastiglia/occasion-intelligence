@@ -65,22 +65,20 @@ def carregar_base(
 ARQUIVO_DO_TESTE_FINAL = "reports/teste_final.json"
 
 
-def exigir_teste_commitado(raiz: Path = RAIZ) -> None:
-    """Exige `reports/teste_final.json` no git e sem alteração em relação ao `HEAD`.
+def exigir_teste_commitado(raiz: Path = RAIZ, arquivo: str = ARQUIVO_DO_TESTE_FINAL) -> None:
+    """Exige `arquivo` (por padrão `reports/teste_final.json`, relativo a `raiz`) no git e sem alteração em relação ao `HEAD`.
 
     O diagnóstico depois do teste, a decisão do modelo servido e o reajuste só leem o alvo de
     2017-2018 depois de o resultado do teste final estar commitado (seção 12 do design).
     """
     try:
-        _git(raiz, "ls-files", "--error-unmatch", "--", ARQUIVO_DO_TESTE_FINAL)
+        _git(raiz, "ls-files", "--error-unmatch", "--", arquivo)
     except TesteBloqueado as erro:
-        raise TesteBloqueado(
-            f"{ARQUIVO_DO_TESTE_FINAL} não está no git: commite o teste final antes."
-        ) from erro
+        raise TesteBloqueado(f"{arquivo} não está no git: commite o teste final antes.") from erro
     try:
-        _git(raiz, "diff", "--quiet", "HEAD", "--", ARQUIVO_DO_TESTE_FINAL)
+        _git(raiz, "diff", "--quiet", "HEAD", "--", arquivo)
     except TesteBloqueado as erro:
         raise TesteBloqueado(
-            f"{ARQUIVO_DO_TESTE_FINAL} tem alteração não commitada: o teste final precisa estar "
+            f"{arquivo} tem alteração não commitada: o teste final precisa estar "
             "commitado e intacto."
         ) from erro

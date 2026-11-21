@@ -156,10 +156,13 @@ def _ic_ganho(
     )
 
 
-def _hash_das_dobras(dobras: pd.DataFrame) -> str:
+def hash_das_dobras(dobras: pd.DataFrame) -> str:
     """sha256 de `cod_upa` e `dobra`, ordenados por setor: identifica a atribuição das dobras."""
     linhas = sorted(f"{u}|{d}" for u, d in zip(dobras["cod_upa"], dobras["dobra"], strict=True))
     return hashlib.sha256("\n".join(linhas).encode("utf-8")).hexdigest()
+
+
+_hash_das_dobras = hash_das_dobras  # nome antigo, usado dentro deste módulo
 
 
 def _info_dobras(dobras: pd.DataFrame) -> dict[str, Any]:
@@ -200,7 +203,7 @@ class _Parcial:
 
 
 @contextmanager
-def _experimento(
+def experimento(
     nome: str, natureza: Natureza, configuracao: dict[str, Any], pasta: Path
 ) -> Iterator[_Parcial]:
     """Grava o relatório da etapa; se ela falhar, grava `status: falhou`, o erro e o parcial."""
@@ -220,6 +223,9 @@ def _experimento(
         nome, natureza, parcial.configuracao, parcial.metricas, parcial.dados,
         pasta=pasta, semente=parcial.semente,
     )  # fmt: skip
+
+
+_experimento = experimento  # nome antigo, usado dentro deste módulo
 
 
 def _sem_nan(p: np.ndarray, o_que: str) -> np.ndarray:
