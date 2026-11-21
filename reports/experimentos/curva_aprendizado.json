@@ -1,0 +1,493 @@
+{
+  "commit": "receita-congelada-5-g89ba7914444a",
+  "configuracao": {
+    "bootstrap": {
+      "b": 1000,
+      "estrato": "uf",
+      "unidade": "cod_upa"
+    },
+    "edicao": "somente 2008-2009",
+    "fracoes": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "fracoes_unidade": "setores (cod_upa) de treino de cada dobra externa, aninhados",
+    "ganho": "D - C no log loss ponderado (positivo favorece o D), bootstrap de setores por UF",
+    "metrica": "log loss e PR-AUC ponderados fora da dobra, nas 5 dobras concatenadas",
+    "o_que": "ganho do D (LightGBM) sobre o C (logística com curvas) em frações do treino",
+    "parametros": "os escolhidos pela validação aninhada em cada dobra externa com 100% dos setores (escada_<parte>.json), reusados nas frações menores; nada é reescolhido",
+    "parametros_por_dobra": {
+      "ocasiao": {
+        "C": [
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.13894954943731375,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.7196856730011522,
+            "interacoes": "pre_declarado"
+          }
+        ],
+        "D": [
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.02959119857788202,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 353,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.018513324527887294,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.02959119857788202,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 353,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.018513324527887294,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          }
+        ]
+      },
+      "preferencia": {
+        "C": [
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          },
+          {
+            "C": 0.02682695795279726,
+            "interacoes": "pre_declarado"
+          }
+        ],
+        "D": [
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.026008027056445275,
+            "max_depth": 4,
+            "min_child_samples": 2000,
+            "n_estimators": 145,
+            "n_jobs": 4,
+            "num_leaves": 16,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 3.0091007881478395,
+            "subsample": 0.7,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.012346626628246544,
+            "max_depth": 2,
+            "min_child_samples": 2000,
+            "n_estimators": 599,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.02111913320276863,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          },
+          {
+            "colsample_bytree": 0.7,
+            "deterministic": true,
+            "force_row_wise": true,
+            "learning_rate": 0.015379048601833553,
+            "max_depth": 2,
+            "min_child_samples": 500,
+            "n_estimators": 433,
+            "n_jobs": 4,
+            "num_leaves": 4,
+            "objective": "binary",
+            "random_state": 20261112,
+            "reg_lambda": 0.012494433828643885,
+            "subsample": 1.0,
+            "subsample_freq": 1,
+            "verbose": -1
+          }
+        ]
+      }
+    },
+    "projecao": {
+      "alvo": "2x os eventos de treino de 100%",
+      "aviso": "a projeção é extrapolação: vai além dos dados medidos e supõe que a tendência em log(n) continua; não é uma medida, e o modelo servido não depende dela",
+      "forma": "ganho(n) = a + b * log(n), reta em log do número de eventos de treino; escolhida no lugar de a + b * n^(-c) porque, com 4 pontos e ruído, a potência tem 3 parâmetros e o ajuste é instável (c e a não se identificam); a reta tem 2 parâmetros e sempre tem solução",
+      "intervalo": "ajuste em cada réplica, mesmo multiplicador em todas as frações"
+    },
+    "regra": "exploratório; o resultado não troca o modelo servido (seção 27 do registro)",
+    "semente_das_fracoes": "SEMENTE + 1000 + k, k = dobra externa",
+    "usar_peso": {
+      "ocasiao": true,
+      "preferencia": true
+    }
+  },
+  "dados": {
+    "dobras": {
+      "hash": "a735801692cd3b19a78ab554d07e2247072252c2c405fea9bc6052d397b130d6",
+      "semente": 20261212
+    },
+    "ocasiao": {
+      "edicao": "2008-2009",
+      "n": 669030,
+      "positivos": 654,
+      "setores": 4328
+    },
+    "preferencia": {
+      "edicao": "2008-2009",
+      "n": 19182,
+      "positivos": 4684,
+      "setores": 3374
+    }
+  },
+  "data_hora": "2026-11-21T12:54:51-03:00",
+  "metricas": {
+    "ocasiao": {
+      "fracoes": [
+        {
+          "eventos_de_treino": 130.2,
+          "eventos_de_treino_por_dobra": [
+            105,
+            128,
+            145,
+            125,
+            148
+          ],
+          "fracao": 0.25,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": 8.348570895443282e-05,
+            "ic_inf": -6.3204690717801e-05,
+            "ic_sup": 0.00023313010518770022
+          },
+          "log_loss_C": 0.008100040850220648,
+          "log_loss_D": 0.008016555141266216,
+          "pr_auc_C": 0.017680929183357216,
+          "pr_auc_D": 0.020912745442907475
+        },
+        {
+          "eventos_de_treino": 267.4,
+          "eventos_de_treino_por_dobra": [
+            255,
+            261,
+            283,
+            263,
+            275
+          ],
+          "fracao": 0.5,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": 5.614177195694889e-06,
+            "ic_inf": -0.00010074770514566064,
+            "ic_sup": 0.00011475776825067912
+          },
+          "log_loss_C": 0.007820149292860946,
+          "log_loss_D": 0.007814535115665251,
+          "pr_auc_C": 0.02223858899929325,
+          "pr_auc_D": 0.026039791099827226
+        },
+        {
+          "eventos_de_treino": 387.4,
+          "eventos_de_treino_por_dobra": [
+            384,
+            369,
+            392,
+            391,
+            401
+          ],
+          "fracao": 0.75,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": 4.20634641061712e-05,
+            "ic_inf": -5.064687394719421e-05,
+            "ic_sup": 0.0001304486532520228
+          },
+          "log_loss_C": 0.0077850692848952675,
+          "log_loss_D": 0.007743005820789096,
+          "pr_auc_C": 0.0229733087427144,
+          "pr_auc_D": 0.027886362422299617
+        },
+        {
+          "eventos_de_treino": 523.2,
+          "eventos_de_treino_por_dobra": [
+            529,
+            498,
+            514,
+            527,
+            548
+          ],
+          "fracao": 1.0,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": 2.3912282118759842e-05,
+            "ic_inf": -6.402007909595693e-05,
+            "ic_sup": 0.00011384641431119453
+          },
+          "log_loss_C": 0.0077704631658596654,
+          "log_loss_D": 0.007746550883740906,
+          "pr_auc_C": 0.02376695832773057,
+          "pr_auc_D": 0.028499296868169214
+        }
+      ],
+      "projecao": {
+        "aviso": "a projeção é extrapolação: vai além dos dados medidos e supõe que a tendência em log(n) continua; não é uma medida, e o modelo servido não depende dela",
+        "eventos_projetados": 1046.4,
+        "forma": "ganho(n) = a + b * log(n), reta em log do número de eventos de treino; escolhida no lugar de a + b * n^(-c) porque, com 4 pontos e ruído, a potência tem 3 parâmetros e o ajuste é instável (c e a não se identificam); a reta tem 2 parâmetros e sempre tem solução",
+        "ganho_projetado": -9.890596890460102e-06,
+        "intervalo": {
+          "b": 1000,
+          "estimativa": -9.890596890460102e-06,
+          "ic_inf": -0.00011503847443605847,
+          "ic_sup": 9.088633027970063e-05
+        },
+        "replicas": 1000,
+        "replicas_que_falharam": 0
+      }
+    },
+    "preferencia": {
+      "fracoes": [
+        {
+          "eventos_de_treino": 915.0,
+          "eventos_de_treino_por_dobra": [
+            910,
+            874,
+            931,
+            899,
+            961
+          ],
+          "fracao": 0.25,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": -0.014680081119517463,
+            "ic_inf": -0.02123118321894962,
+            "ic_sup": -0.007567980960833693
+          },
+          "log_loss_C": 0.5424000766885295,
+          "log_loss_D": 0.557080157808047,
+          "pr_auc_C": 0.2848669513986932,
+          "pr_auc_D": 0.24837336186398337
+        },
+        {
+          "eventos_de_treino": 1837.0,
+          "eventos_de_treino_por_dobra": [
+            1776,
+            1778,
+            1884,
+            1873,
+            1874
+          ],
+          "fracao": 0.5,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": -0.005482543372284265,
+            "ic_inf": -0.010095980069766133,
+            "ic_sup": -0.0007565447811755694
+          },
+          "log_loss_C": 0.5372986504719675,
+          "log_loss_D": 0.5427811938442517,
+          "pr_auc_C": 0.30131250835741136,
+          "pr_auc_D": 0.2816554349519369
+        },
+        {
+          "eventos_de_treino": 2810.2,
+          "eventos_de_treino_por_dobra": [
+            2821,
+            2714,
+            2876,
+            2830,
+            2810
+          ],
+          "fracao": 0.75,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": -0.0017158630168403466,
+            "ic_inf": -0.005159053208465851,
+            "ic_sup": 0.0020890343090262265
+          },
+          "log_loss_C": 0.5330992559352857,
+          "log_loss_D": 0.5348151189521261,
+          "pr_auc_C": 0.3110936468715207,
+          "pr_auc_D": 0.30502661006273435
+        },
+        {
+          "eventos_de_treino": 3747.2,
+          "eventos_de_treino_por_dobra": [
+            3728,
+            3679,
+            3812,
+            3744,
+            3773
+          ],
+          "fracao": 1.0,
+          "ganho_D_menos_C": {
+            "b": 1000,
+            "estimativa": -0.0030151240151486958,
+            "ic_inf": -0.006463645006650031,
+            "ic_sup": 0.000615804785342025
+          },
+          "log_loss_C": 0.5310315835082502,
+          "log_loss_D": 0.5340467075233989,
+          "pr_auc_C": 0.31885409980355905,
+          "pr_auc_D": 0.3089545779820819
+        }
+      ],
+      "projecao": {
+        "aviso": "a projeção é extrapolação: vai além dos dados medidos e supõe que a tendência em log(n) continua; não é uma medida, e o modelo servido não depende dela",
+        "eventos_projetados": 7494.4,
+        "forma": "ganho(n) = a + b * log(n), reta em log do número de eventos de treino; escolhida no lugar de a + b * n^(-c) porque, com 4 pontos e ruído, a potência tem 3 parâmetros e o ajuste é instável (c e a não se identificam); a reta tem 2 parâmetros e sempre tem solução",
+        "ganho_projetado": 0.005395775970719829,
+        "intervalo": {
+          "b": 1000,
+          "estimativa": 0.005395775970719829,
+          "ic_inf": 1.651176805913414e-06,
+          "ic_sup": 0.011481577407513875
+        },
+        "replicas": 1000,
+        "replicas_que_falharam": 0
+      }
+    },
+    "status": "ok"
+  },
+  "natureza": "exploratório",
+  "nome": "curva_aprendizado",
+  "semente": 20261112,
+  "versoes": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.1.1",
+    "python": "3.12.14",
+    "scikit-learn": "1.9.1"
+  }
+}
