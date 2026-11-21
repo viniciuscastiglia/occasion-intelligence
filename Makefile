@@ -1,4 +1,4 @@
-.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final
+.PHONY: ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste
 
 ambiente:
 	uv sync
@@ -34,6 +34,10 @@ avaliado:
 # H8 em 2017-2018: só depois da tag receita-congelada e de `make avaliado` (seção 7 do pré-registro)
 teste-final:
 	uv run python -m occasion.experimentos teste-final
+
+# diagnóstico 6.8 e H9: só com reports/teste_final.json commitado
+pos-teste:
+	uv run python -m occasion.experimentos pos-teste
 
 tudo: dados-brutos bases auditoria baseline
 
