@@ -1,5 +1,5 @@
 {
-  "commit": "receita-congelada-5-g89ba7914444a",
+  "commit": "receita-congelada-13-gb5545fe4f41c-dirty",
   "configuracao": {
     "bootstrap": {
       "b": 1000,
@@ -14,7 +14,7 @@
       1.0
     ],
     "fracoes_unidade": "setores (cod_upa) de treino de cada dobra externa, aninhados",
-    "ganho": "D - C no log loss ponderado (positivo favorece o D), bootstrap de setores por UF",
+    "ganho": "ganho do D sobre o C = log loss ponderado de C menos o de D (positivo favorece o D), bootstrap de setores por UF",
     "metrica": "log loss e PR-AUC ponderados fora da dobra, nas 5 dobras concatenadas",
     "o_que": "ganho do D (LightGBM) sobre o C (logística com curvas) em frações do treino",
     "parametros": "os escolhidos pela validação aninhada em cada dobra externa com 100% dos setores (escada_<parte>.json), reusados nas frações menores; nada é reescolhido",
@@ -273,7 +273,7 @@
       "setores": 3374
     }
   },
-  "data_hora": "2026-11-21T12:54:51-03:00",
+  "data_hora": "2026-11-21T14:06:03-03:00",
   "metricas": {
     "ocasiao": {
       "fracoes": [
@@ -287,7 +287,7 @@
             148
           ],
           "fracao": 0.25,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": 8.348570895443282e-05,
             "ic_inf": -6.3204690717801e-05,
@@ -308,7 +308,7 @@
             275
           ],
           "fracao": 0.5,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": 5.614177195694889e-06,
             "ic_inf": -0.00010074770514566064,
@@ -329,7 +329,7 @@
             401
           ],
           "fracao": 0.75,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": 4.20634641061712e-05,
             "ic_inf": -5.064687394719421e-05,
@@ -350,7 +350,7 @@
             548
           ],
           "fracao": 1.0,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": 2.3912282118759842e-05,
             "ic_inf": -6.402007909595693e-05,
@@ -389,7 +389,7 @@
             961
           ],
           "fracao": 0.25,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": -0.014680081119517463,
             "ic_inf": -0.02123118321894962,
@@ -410,7 +410,7 @@
             1874
           ],
           "fracao": 0.5,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": -0.005482543372284265,
             "ic_inf": -0.010095980069766133,
@@ -431,7 +431,7 @@
             2810
           ],
           "fracao": 0.75,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": -0.0017158630168403466,
             "ic_inf": -0.005159053208465851,
@@ -452,7 +452,7 @@
             3773
           ],
           "fracao": 1.0,
-          "ganho_D_menos_C": {
+          "ganho_de_D_sobre_C": {
             "b": 1000,
             "estimativa": -0.0030151240151486958,
             "ic_inf": -0.006463645006650031,

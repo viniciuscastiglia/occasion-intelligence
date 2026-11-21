@@ -176,7 +176,7 @@
       "ic_sup": 3.4152605467951513e-06,
       "largura": 1.971602532658088e-05,
       "veredito": "refutada",
-      "consequencia": "nenhuma: o produto fica sem a sigmoide de correção.",
+      "consequencia": "nenhuma: a sigmoide de correção não entra na receita e o produto fica como está; isso não é um achado de descalibração.",
       "fonte": "experimentos/h6_h7_produto.json",
       "inclinacao": {
         "b": 1000,
@@ -184,7 +184,8 @@
         "ic_inf": 0.9425718695385569,
         "ic_sup": 1.1003161311854206,
         "nivel": 0.95
-      }
+      },
+      "leitura": "a regra testa se a correção sigmoide melhora o log loss do produto; 'refutada' quer dizer que a correção não entrou, e não que o produto esteja descalibrado. A inclinação da calibração, 1,008 [0,943; 1,100], não mostra descalibração."
     },
     {
       "id": "H8",
