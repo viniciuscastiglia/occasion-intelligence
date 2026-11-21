@@ -35,7 +35,8 @@ import pandas as pd
 
 from occasion.avaliacao.erros import contextos_com_mais_erro
 from occasion.avaliacao.segmentos import colunas_de_segmento, metricas_por_segmento
-from occasion.bases.acesso import TesteBloqueado, carregar_base, exigir_receita_intacta
+from occasion.bases.acesso import carregar_base
+from occasion.bases.assinatura import TesteBloqueado, exigir_receita_intacta
 from occasion.config import EDICAO_TESTE, EDICAO_TREINO, RAIZ, SEMENTE
 from occasion.experimentos.especificacao import ParteModelo
 from occasion.experimentos.registro import Natureza, _para_json
@@ -407,8 +408,7 @@ def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
         segmentos[nome] = metricas_por_segmento(
             y, previsto[nome]["receita"], w, colunas_de_segmento(base)
         )
-        if nome != "preferencia_com_pizza":
-            erros[nome] = contextos_com_mais_erro(base, y, previsto[nome]["receita"])
+        erros[nome] = contextos_com_mais_erro(base, y, previsto[nome]["receita"])
 
     # a queda em relação à validação de 2008-2009
     av = validacao["avaliacao_2008"]
@@ -489,7 +489,6 @@ def rodar_teste_final(raiz: Path = RAIZ, *, b: int = B_PADRAO) -> Path:
         "degrau A, uma referência equivalente nas células de 2008-2009 com as tabelas A; a "
         "preferência nas ocasiões com refrigerante não tem posição (a referência é de células)",
         "bootstrap": {"b": b, "unidade": "cod_upa", "estrato": "uf", "nivel": 0.95},
-        "b": b,
         "receita": {
             "ocasiao": receita.ocasiao.model_dump(),
             "preferencia": receita.preferencia.model_dump(),

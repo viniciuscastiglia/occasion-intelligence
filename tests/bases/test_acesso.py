@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from occasion.bases import acesso
+from occasion.bases import acesso, assinatura
 from occasion.bases.acesso import COLUNAS_DE_ALVO, carregar_base
 from occasion.config import TAG_RECEITA
 
@@ -131,14 +131,20 @@ def _repo_da_receita(pasta: Path, arquivos: dict[str, str] | None = None) -> Pat
 
 
 def test_arquivos_da_receita_sao_os_do_brief() -> None:
+    # o brief, mais as Rulings R-p (regras, receita, avaliação, registro) e R-q (assinatura.py)
     assert acesso.ARQUIVOS_DA_RECEITA == (
         "src/occasion/config.py",
         "src/occasion/features/",
         "src/occasion/bases/modelagem.py",
+        "src/occasion/bases/assinatura.py",
         "src/occasion/models/",
         "src/occasion/score/",
         "src/occasion/validacao/",
+        "src/occasion/avaliacao/",
+        "src/occasion/receita.py",
         "src/occasion/experimentos/especificacao.py",
+        "src/occasion/experimentos/regras.py",
+        "src/occasion/experimentos/registro.py",
         "src/occasion/experimentos/teste_final.py",
         "src/occasion/inference/treino.py",
         "src/occasion/inference/predict.py",
@@ -146,6 +152,15 @@ def test_arquivos_da_receita_sao_os_do_brief() -> None:
         "pyproject.toml",
         "uv.lock",
     )
+    assert acesso.ARQUIVOS_DA_RECEITA is assinatura.ARQUIVOS_DA_RECEITA
+
+
+def test_acesso_reexporta_a_assinatura() -> None:
+    assert acesso.TesteBloqueado is assinatura.TesteBloqueado
+    assert acesso.assinatura_da_receita is assinatura.assinatura_da_receita
+    assert acesso.exigir_receita_intacta is assinatura.exigir_receita_intacta
+    assert acesso.teste_liberado is assinatura.teste_liberado
+    assert "src/occasion/bases/acesso.py" not in acesso.ARQUIVOS_DA_RECEITA
 
 
 def test_assinatura_nao_depende_da_ordem_de_criacao(tmp_path: Path) -> None:
@@ -246,3 +261,30 @@ def test_exigir_receita_intacta(tmp_path: Path) -> None:
     _commitar(repo, "score depois da tag")
     with pytest.raises(acesso.TesteBloqueado, match="mudou"):
         acesso.exigir_receita_intacta(repo)
+
+
+@pytest.mark.parametrize(
+    ("arquivo", "bloqueia"),
+    [
+        ("src/occasion/bases/assinatura.py", True),
+        ("src/occasion/experimentos/regras.py", True),
+        ("src/occasion/receita.py", True),
+        ("src/occasion/avaliacao/segmentos.py", True),
+        ("src/occasion/experimentos/registro.py", True),
+        ("src/occasion/bases/acesso.py", False),
+    ],
+)
+def test_guarda_e_codigo_que_mede_depois_da_tag(
+    tmp_path: Path, arquivo: str, bloqueia: bool
+) -> None:
+    """Mudar a assinatura ou o código que mede depois da tag bloqueia; mudar `acesso.py`, não."""
+    repo = _repo_da_receita(tmp_path / "repo", {**_DA_RECEITA, arquivo: "antes\n"})
+    subprocess.run([*_GIT, "tag", TAG_RECEITA], cwd=repo, check=True)
+    assinatura_da_tag = acesso.exigir_receita_intacta(repo)
+    _escrever(repo, {arquivo: "depois da tag\n"})
+    _commitar(repo, f"muda {arquivo}")
+    if bloqueia:
+        with pytest.raises(acesso.TesteBloqueado, match="mudou"):
+            acesso.exigir_receita_intacta(repo)
+    else:
+        assert acesso.exigir_receita_intacta(repo) == assinatura_da_tag

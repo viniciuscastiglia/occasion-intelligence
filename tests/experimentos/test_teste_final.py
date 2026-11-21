@@ -402,6 +402,51 @@ def test_bloqueia_artefato_do_degrau_a_no_lugar_do_avaliado(
         rodar_teste_final(repo_com_tag, b=B_TESTE)
 
 
+def test_bloqueia_artefato_sem_assinatura(repo_com_tag: Path, sem_leitura_de_bases: None) -> None:
+    _salvar(repo_com_tag, _artefato(repo_com_tag, _receita(), None))
+    with pytest.raises(acesso.TesteBloqueado, match="assinatura"):
+        rodar_teste_final(repo_com_tag, b=B_TESTE)
+
+
+def _mudar_metricas(repo: Path, relativo: str, mudar: Any) -> None:
+    caminho = repo / relativo
+    d = _json(caminho)
+    mudar(d["metricas"])
+    caminho.write_text(json.dumps(d), encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    ("relativo", "mudar", "mensagem"),
+    [
+        ("reports/experimentos/escada_ocasiao.json",
+         lambda m: m.update(vencedor="D"), "escada_ocasiao"),
+        ("reports/experimentos/escada_preferencia.json",
+         lambda m: m.update(vencedor="A"), "escada_preferencia"),
+        ("reports/experimentos/h6_h7_produto.json",
+         lambda m: m.update(score="direto"), "score da receita"),
+        ("reports/experimentos/cortes.json",
+         lambda m: m.update(score="direto"), "score da receita"),
+        ("reports/experimentos/h6_h7_produto.json",
+         lambda m: m["H7"].update(calibrar_score=True), "calibração do score"),
+        ("reports/avaliacao_2008.json", lambda m: m.update(status="falhou"), "falhou"),
+    ],
+)  # fmt: skip
+def test_recusa_relatorio_de_validacao_de_outra_receita(
+    artefato_da_tag: Path, sem_leitura_de_bases: None, relativo: str, mudar: Any, mensagem: str
+) -> None:
+    _mudar_metricas(artefato_da_tag, relativo, mudar)
+    with pytest.raises(ValueError, match=mensagem):
+        rodar_teste_final(artefato_da_tag, b=B_TESTE)
+
+
+def test_recusa_relatorio_de_validacao_ausente(
+    artefato_da_tag: Path, sem_leitura_de_bases: None
+) -> None:
+    (artefato_da_tag / "reports" / "experimentos" / "cortes.json").unlink()
+    with pytest.raises(ValueError, match="falta reports/experimentos/cortes.json"):
+        rodar_teste_final(artefato_da_tag, b=B_TESTE)
+
+
 def test_bloqueia_sem_o_artefato_avaliado(repo_com_tag: Path, sem_leitura_de_bases: None) -> None:
     with pytest.raises(acesso.TesteBloqueado, match="make avaliado"):
         rodar_teste_final(repo_com_tag, b=B_TESTE)
@@ -426,7 +471,7 @@ def test_relatorio_do_teste_final(repo_com_tag: Path, artefato_da_tag: Path) -> 
     assert d["nome"] == "teste_final"
     assert d["natureza"] == "confirmatório"
     assert d["assinatura_receita"] == assinatura_da_receita(repo_com_tag, TAG_RECEITA)
-    assert d["configuracao"]["b"] == B_TESTE
+    assert d["configuracao"]["bootstrap"]["b"] == B_TESTE
     m = d["metricas"]
     h8 = m["H8"]
     assert h8["referencia"] == "produto das tabelas do degrau A"
@@ -446,7 +491,7 @@ def test_relatorio_do_teste_final(repo_com_tag: Path, artefato_da_tag: Path) -> 
     assert queda["diferenca"]["pr_auc"] == pytest.approx(
         queda["teste"]["pr_auc"] - queda["validacao"]["pr_auc"]
     )
-    assert set(m["erros"]) == {"score", "ocasiao", "preferencia_todas"}
+    assert set(m["erros"]) == {"score", "ocasiao", "preferencia_todas", "preferencia_com_pizza"}
     assert d["dados"]["celulas_teste"]["n"] == 1500
 
 
