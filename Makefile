@@ -1,4 +1,4 @@
-.PHONY: contagens ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app api investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
+.PHONY: docs contagens ambiente teste teste-dados qualidade dados-brutos bases auditoria baseline tudo app api investigacao-datas eda dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008 experimentos avaliado teste-final pos-teste curva-aprendizado servido hipoteses
 
 ambiente:
 	uv sync
@@ -100,3 +100,6 @@ app:
 
 contagens:
 	uv run python -m occasion.relatorios.contagens
+
+docs:
+	uv run python -m occasion.relatorios.docs
