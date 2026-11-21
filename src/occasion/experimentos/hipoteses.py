@@ -70,8 +70,9 @@ _TESTES: dict[str, str] = {
         "fora dela; avaliação só fora da dobra externa."
     ),
     "H8": (
-        "uma única vez, depois da tag `receita-congelada`: o score do modelo avaliado contra "
-        "`y_pizza_guarana` nas células de 2017-2018, contra o produto das duas tabelas do degrau A."
+        "avaliação temporal: receita congelada treinada em 2008-2009 e testada uma única vez em "
+        "2017-2018 (depois da tag `receita-congelada`), com o score contra `y_pizza_guarana` nas "
+        "células, comparado ao produto das duas tabelas do degrau A."
     ),
     "H9": (
         "validação cruzada dentro de 2017-2018 com a receita congelada, em dois braços: recente "
@@ -107,6 +108,16 @@ def _ler(pasta: Path, relativo: str) -> dict[str, Any] | None:
     if not caminho.exists():
         return None
     return json.loads(caminho.read_text(encoding="utf-8"))
+
+
+def _chave(dados: dict[str, Any], fonte: str, *caminho: str) -> Any:
+    """Lê `dados["metricas"][...caminho]`; chave ausente vira erro que diz o arquivo e a chave."""
+    atual: Any = dados
+    for nome in ("metricas", *caminho):
+        if not isinstance(atual, dict) or nome not in atual:
+            raise KeyError(f"{fonte}: chave ausente `{'.'.join(('metricas', *caminho))}` ({nome})")
+        atual = atual[nome]
+    return atual
 
 
 def _entrada(
@@ -159,25 +170,29 @@ def _sem_arquivo(id_: str, parte: str | None, fonte: str) -> dict[str, Any]:
     return _ausente(id_, parte, fonte, f"o arquivo {fonte} não existe (a etapa não rodou).")
 
 
-def _consequencia_escada(id_: str, parte: str, veredito: str) -> str:
+def _consequencia_escada(id_: str, parte: str, veredito: str, vencedor: str | None) -> str:
     confirmada = veredito == "confirmada"
+    final = f" Degrau vencedor da escada na parte {parte}: {vencedor}." if vencedor else ""
     if id_ == "H1":
-        return (
-            f"degrau B supera a tabela de taxas na parte {parte}."
+        texto = (
+            f"a logística (B) supera a tabela de taxas na parte {parte}."
             if confirmada
-            else f"a tabela de taxas vira o modelo da parte {parte}: o ML não acrescentou."
+            else f"a logística (B) não supera a tabela de taxas na parte {parte}: o ML simples "
+            "não acrescentou."
         )
-    if id_ == "H2":
-        return (
-            f"degrau C (curvas e interações) entra na parte {parte}."
+    elif id_ == "H2":
+        texto = (
+            f"curvas e interações (C) superam a logística simples na parte {parte}."
             if confirmada
-            else f"fica o degrau B na parte {parte}."
+            else f"curvas e interações (C) não superam a logística simples na parte {parte}."
         )
-    return (
-        f"o LightGBM supera o melhor logístico na parte {parte}."
-        if confirmada
-        else f"o melhor modelo logístico fica como o escolhido na parte {parte}."
-    )
+    else:
+        texto = (
+            f"o LightGBM (D) supera o melhor logístico na parte {parte}."
+            if confirmada
+            else f"o LightGBM (D) não supera o melhor logístico na parte {parte}."
+        )
+    return texto + final
 
 
 def _escada(pasta: Path) -> list[dict[str, Any]]:
@@ -197,9 +212,12 @@ def _escada(pasta: Path) -> list[dict[str, Any]]:
                     fonte,
                     comp["intervalo"],
                     comp["veredito"],
-                    _consequencia_escada(id_, parte, comp["veredito"]),
+                    _consequencia_escada(
+                        id_, parte, comp["veredito"], dados["metricas"].get("vencedor")
+                    ),
                     candidato=comp.get("candidato"),
                     referencia=comp.get("referencia"),
+                    vencedor=dados["metricas"].get("vencedor"),
                 )
             )
     return saida
@@ -210,13 +228,12 @@ def _h4(pasta: Path) -> dict[str, Any]:
     dados = _ler(pasta, fonte)
     if dados is None:
         return _sem_arquivo("H4", "preferencia", fonte)
-    m = dados["metricas"]
     return _entrada(
         "H4",
         "preferencia",
         fonte,
-        m["intervalo"],
-        m["veredito"],
+        _chave(dados, fonte, "intervalo"),
+        _chave(dados, fonte, "veredito"),
         "nenhuma: a variável `tem_pizza` permanece no modelo em todos os casos. "
         "Mede associação, não efeito causal da pizza sobre a escolha.",
     )
@@ -286,22 +303,33 @@ def _h6_h7(pasta: Path) -> list[dict[str, Any]]:
     ]
 
 
+def _consequencia_h8(veredito: str) -> str:
+    base = "nenhuma: é a avaliação final e a receita não muda depois dela."
+    if veredito == "refutada":
+        return (
+            f"{base} A receita não superou a tabela de taxas na PR-AUC de 2017-2018; a "
+            "limitação vai para a tela e para o README."
+        )
+    if veredito == "confirmada":
+        return f"{base} A receita superou a tabela de taxas na PR-AUC de 2017-2018."
+    return f"{base} Veredito: {veredito}."
+
+
 def _h8(pasta: Path) -> dict[str, Any]:
     fonte = "teste_final.json"
     dados = _ler(pasta, fonte)
     if dados is None:
         return _sem_arquivo("H8", None, fonte)
-    h8 = dados["metricas"]["H8"]
+    veredito = _chave(dados, fonte, "H8", "veredito")
     return _entrada(
         "H8",
         None,
         fonte,
-        h8["ganho"],
-        h8["veredito"],
-        "nenhuma: é a avaliação final e a receita não muda depois dela. Se refutada, a "
-        "limitação vai para a tela e para o README.",
-        pr_auc=h8.get("pr_auc"),
-        referencia=h8.get("referencia"),
+        _chave(dados, fonte, "H8", "ganho"),
+        veredito,
+        _consequencia_h8(veredito),
+        pr_auc=_chave(dados, fonte, "H8", "pr_auc"),
+        referencia=_chave(dados, fonte, "H8", "referencia"),
     )
 
 
@@ -311,8 +339,7 @@ def _h9(pasta: Path) -> list[dict[str, Any]]:
     nomes = ("ocasiao", "preferencia", "preferencia_com_pizza")
     if dados is None:
         return [_sem_arquivo("H9", n, fonte) for n in nomes]
-    h9 = dados["metricas"]["H9"]
-    servido = h9["treino_servido"]
+    servido = _chave(dados, fonte, "H9", "treino_servido")
     conseq = (
         "o modelo servido é treinado com as duas edições (a agregação das três comparações "
         "mantém a base inteira)."
@@ -325,8 +352,8 @@ def _h9(pasta: Path) -> list[dict[str, Any]]:
             "H9",
             nome,
             fonte,
-            h9["comparacoes"][nome]["ganho"],
-            h9["comparacoes"][nome]["veredito"],
+            _chave(dados, fonte, "H9", "comparacoes", nome, "ganho"),
+            _chave(dados, fonte, "H9", "comparacoes", nome, "veredito"),
             conseq,
             treino_servido=servido,
         )

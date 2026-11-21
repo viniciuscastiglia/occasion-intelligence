@@ -30,11 +30,12 @@ def _tudo(pasta: Path) -> None:
             pasta,
             f"experimentos/escada_{parte}.json",
             {
+                "vencedor": "C",
                 "comparacoes": {
                     "H1": _comp("B", "A", _iv(0.01, 0.005, 0.02), "confirmada"),
                     "H2": _comp("C", "B", _iv(0.001, 0.0002, 0.002), "confirmada"),
                     "H3": _comp("D", "C", _iv(0.0, -0.001, 0.001), "refutada"),
-                }
+                },
             },
         )
     _gravar(
@@ -73,7 +74,14 @@ def _tudo(pasta: Path) -> None:
     _gravar(
         pasta,
         "teste_final.json",
-        {"H8": {"ganho": _iv(0.0, -0.001, 0.001), "pr_auc": {}, "veredito": "refutada"}},
+        {
+            "H8": {
+                "ganho": _iv(0.0, -0.001, 0.001),
+                "pr_auc": {},
+                "referencia": "x",
+                "veredito": "refutada",
+            }
+        },
     )
     nomes = ("ocasiao", "preferencia", "preferencia_com_pizza")
     _gravar(
@@ -190,7 +198,7 @@ def test_veredito_vem_do_json_nao_do_intervalo(tmp_path: Path) -> None:
 def test_consequencia_segue_o_json(tmp_path: Path) -> None:
     _tudo(tmp_path)
     res = consolidar(tmp_path)
-    assert "degrau C" in _por_id(res, "H2")[0]["consequencia"]
+    assert "(C) superam" in _por_id(res, "H2")[0]["consequencia"]
     assert "duas edições" in _por_id(res, "H9")[0]["consequencia"]
     assert "com peso" in _por_id(res, "H5")[0]["consequencia"]
 
@@ -201,3 +209,54 @@ def test_rodar_hipoteses_grava_json(tmp_path: Path, monkeypatch: pytest.MonkeyPa
     caminho = hipoteses.rodar_hipoteses()
     assert caminho == tmp_path / "hipoteses.json"
     assert len(json.loads(caminho.read_text(encoding="utf-8"))["hipoteses"]) == 16
+
+
+def test_escada_usa_o_vencedor_do_json(tmp_path: Path) -> None:
+    _tudo(tmp_path)
+    res = consolidar(tmp_path)
+    for id_ in ("H1", "H2", "H3"):
+        for h in _por_id(res, id_):
+            assert h["vencedor"] == "C"
+            assert "vencedor da escada" in h["consequencia"]
+            assert h["consequencia"].endswith(": C.")
+
+
+def test_h8_teste_e_avaliacao_temporal_e_consequencia_segue_o_veredito(tmp_path: Path) -> None:
+    _tudo(tmp_path)
+    h = _por_id(consolidar(tmp_path), "H8")[0]
+    assert "temporal" in h["teste"] and "2008-2009" in h["teste"]
+    assert "Se refutada" not in h["consequencia"]
+    assert "não superou" in h["consequencia"]
+    _gravar(
+        tmp_path,
+        "teste_final.json",
+        {
+            "H8": {
+                "ganho": _iv(0.1, 0.05, 0.2),
+                "pr_auc": {},
+                "referencia": "x",
+                "veredito": "confirmada",
+            }
+        },
+    )
+    h = _por_id(consolidar(tmp_path), "H8")[0]
+    assert "superou" in h["consequencia"] and "não superou" not in h["consequencia"]
+    assert "limitação" not in h["consequencia"]
+
+
+@pytest.mark.parametrize(
+    ("arquivo", "id_"),
+    [
+        ("experimentos/h4_tem_pizza.json", "H4"),
+        ("teste_final.json", "H8"),
+        ("pos_teste.json", "H9"),
+    ],
+)
+def test_chave_ausente_em_json_existente_da_erro_claro(
+    tmp_path: Path, arquivo: str, id_: str
+) -> None:
+    _tudo(tmp_path)
+    _gravar(tmp_path, arquivo, {"H8": {}, "H9": {}})
+    with pytest.raises(KeyError, match=arquivo.replace(".", r"\.")) as erro:
+        consolidar(tmp_path)
+    assert "chave ausente" in str(erro.value)
