@@ -27,9 +27,11 @@ from occasion.inference.predict import (
     treinar_baseline,
 )
 from occasion.inference.treino import ajustar_parte, treinar_avaliado
+from occasion.models.base import logit, sigmoide
 from occasion.models.calibracao import ModeloCalibrado
 from occasion.receita import Receita, ReceitaParte
 from occasion.score.score import CORTE_ALTA, CORTE_MEDIA, classificar, probabilidades
+from occasion.validacao.metricas import ajustar_sigmoide
 
 _D = {
     "objective": "binary",
@@ -226,11 +228,21 @@ def test_degrau_descrito_em_portugues_com_curvas_e_interacoes() -> None:
 
 
 def test_paridade_lote_e_prever_com_logistica_e_lightgbm() -> None:
+    contextos = [
+        CONTEXTO,
+        CONTEXTO.model_copy(update={"uf": "BA", "faixa_horario": "almoco", "local": "em_casa"}),
+        CONTEXTO.model_copy(update={"dia_semana": "terca", "idade": 70, "sexo": "masculino"}),
+        CONTEXTO.model_copy(update={"uf": "RS", "situacao": "rural", "faixa_renda": "ate_meio_sm"}),
+    ]
     for artefato in (_artefato_d_b(), _artefato_direto()):
-        ctx = CONTEXTO
-        lote = pontuar(pd.concat([contexto_para_linha(ctx)] * 3, ignore_index=True), artefato)
-        assert len(set(lote["score"].to_numpy().tolist())) == 1
-        assert prever(ctx, artefato).occasion_score == pytest.approx(float(lote["score"].iloc[0]))
+        lote = pontuar(
+            pd.concat([contexto_para_linha(c) for c in contextos], ignore_index=True), artefato
+        )
+        assert len(set(lote["score"].to_numpy().tolist())) > 1
+        for i, ctx in enumerate(contextos):
+            r = prever(ctx, artefato)
+            assert r.occasion_score == pytest.approx(float(lote["score"].iloc[i]))
+            assert r.occasion_probability == pytest.approx(float(lote["p_produto"].iloc[i]))
 
 
 @settings(max_examples=25, deadline=None)
@@ -317,7 +329,6 @@ def test_calibracao_do_score_nao_muda_as_posicoes() -> None:
     com = _artefato_d_b()
     sem = treinar_avaliado(_receita(calibrar_score=False), celulas, ocasioes, selecoes, "abc")
     assert com.calibracao_score is not None
-    assert com.calibracao_score[0] > 0
     X = celulas.sample(100, random_state=0)
     a, b = pontuar(X, com), pontuar(X, sem)
     assert not np.allclose(a["p_produto"], b["p_produto"])  # a probabilidade muda
@@ -348,15 +359,80 @@ def test_treinar_avaliado_recusa_selecao_de_outro_degrau_ou_outras_dobras() -> N
 
 def test_ajustar_parte_calibra_com_a_previsao_fora_da_dobra_e_peso_final() -> None:
     celulas = _celulas()
-    oof = np.clip(np.random.default_rng(6).uniform(0.05, 0.6, size=len(celulas)), 0.01, 0.99)
+    y = celulas["y_pizza_refri"].to_numpy(dtype=float)
+    # pesos bem desiguais: o peso 1 daria outra sigmoide
+    celulas["peso_final"] = np.where(y == 1, 20.0, 1.0) * np.random.default_rng(7).uniform(
+        0.5, 1.5, size=len(celulas)
+    )
+    w = celulas["peso_final"].to_numpy(dtype=float)
+    oof = np.clip(0.2 + 0.3 * y + np.random.default_rng(6).normal(0, 0.1, len(y)), 0.01, 0.99)
     calibrado = ajustar_parte(celulas, "y_pizza_refri", "ocasiao", _parte("B"), oof)
     assert isinstance(calibrado, ModeloCalibrado)
+    inclinacao, intercepto = ajustar_sigmoide(oof, y, w)
+    assert calibrado.inclinacao == pytest.approx(inclinacao)
+    assert calibrado.intercepto == pytest.approx(intercepto)
+    sem_peso = ajustar_sigmoide(oof, y, np.ones_like(w))
+    assert abs(sem_peso[1] - intercepto) > 0.1  # o contraste: com peso 1 a sigmoide é outra
+    # a previsão dentro da amostra (o modelo base prevendo a própria base) daria outra sigmoide
+    dentro = calibrado.modelo_base.predict_proba(celulas)
+    assert not np.allclose(ajustar_sigmoide(dentro, y, w), (inclinacao, intercepto), atol=1e-3)
     puro = ajustar_parte(celulas, "y_pizza_refri", "ocasiao", _parte("B", calibrar=False), oof)
     assert not isinstance(puro, ModeloCalibrado)
     with pytest.raises(ValueError, match="NaN"):
         ajustar_parte(
             celulas, "y_pizza_refri", "ocasiao", _parte("B"), np.full(len(celulas), np.nan)
         )
+
+
+def _sigmoide_do_oof(modelo: Any, oof: np.ndarray) -> np.ndarray:
+    assert isinstance(modelo, ModeloCalibrado)
+    return sigmoide(modelo.inclinacao * logit(oof) + modelo.intercepto)
+
+
+def test_calibracao_do_score_e_a_sigmoide_do_produto_fora_da_dobra() -> None:
+    celulas, ocasioes = _celulas(), _ocasioes()
+    selecoes = _selecoes(len(celulas), len(ocasioes))
+    a = _artefato_d_b()
+    produto = _sigmoide_do_oof(a.modelo_p1, selecoes["ocasiao"]["oof"]) * _sigmoide_do_oof(
+        a.modelo_p2, selecoes["preferencia"]["oof_extras"]["celulas"]
+    )
+    esperado = ajustar_sigmoide(
+        produto,
+        celulas["y_pizza_guarana"].to_numpy(dtype=float),
+        celulas["peso_final"].to_numpy(dtype=float),
+    )
+    assert a.calibracao_score == pytest.approx(esperado)
+
+
+def test_calibracao_do_score_no_ramo_direto_usa_o_oof_do_direto() -> None:
+    celulas, ocasioes = _celulas(), _ocasioes()
+    selecoes = _selecoes(len(celulas), len(ocasioes), True)
+    a = _artefato_direto()
+    esperado = ajustar_sigmoide(
+        _sigmoide_do_oof(a.modelo_direto, selecoes["direto"]["oof"]),
+        celulas["y_pizza_guarana"].to_numpy(dtype=float),
+        celulas["peso_final"].to_numpy(dtype=float),
+    )
+    assert a.calibracao_score == pytest.approx(esperado)
+
+
+def test_inclinacao_nao_positiva_do_score_e_recusada() -> None:
+    celulas, ocasioes = _celulas(), _ocasioes()
+    selecoes = _selecoes(len(celulas), len(ocasioes))
+    y = celulas["y_pizza_guarana"].to_numpy(dtype=float)
+    selecoes["ocasiao"]["oof"] = 0.05 + 0.5 * (1 - y)  # anticorrelacionada com o alvo do score
+    receita = _receita(ocasiao=_parte("D", calibrar=False), preferencia=_parte("B", calibrar=False))
+    with pytest.raises(ValueError, match="inclinação"):
+        treinar_avaliado(receita, celulas, ocasioes, selecoes, "abc")
+
+
+def test_selecao_sem_hash_das_dobras_e_recusada() -> None:
+    celulas, ocasioes = _celulas(), _ocasioes()
+    selecoes = _selecoes(len(celulas), len(ocasioes))
+    del selecoes["ocasiao"]["hash_dobras"]
+    del selecoes["preferencia"]["hash_dobras"]
+    with pytest.raises(ValueError, match="hash_dobras"):
+        treinar_avaliado(_receita(), celulas, ocasioes, selecoes, "abc")
 
 
 def test_usar_peso_muda_o_ajuste() -> None:

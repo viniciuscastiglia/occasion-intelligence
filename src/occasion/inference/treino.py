@@ -104,6 +104,9 @@ def _selecao(selecoes: dict[str, Any], parte: ParteModelo, degrau: str) -> dict[
 def _conferir_dobras(selecoes: dict[str, Any]) -> None:
     """As seleções precisam vir das mesmas dobras: a calibração do score junta as previsões."""
     hashes = {nome: s.get("hash_dobras") for nome, s in selecoes.items()}
+    sem_hash = sorted(nome for nome, h in hashes.items() if not h)
+    if sem_hash:
+        raise ValueError(f"seleções sem `hash_dobras`: {sem_hash}")
     if len(set(hashes.values())) > 1:
         raise ValueError(f"seleções de dobras diferentes: {hashes}")
 
@@ -179,6 +182,11 @@ def treinar_avaliado(
             celulas[ALVO_DA_PARTE["direto"]].to_numpy(dtype=float),
             celulas["peso_final"].to_numpy(dtype=float),
         )
+        if not calibracao_score[0] > 0:
+            raise ValueError(
+                f"inclinação da calibração do score não positiva ({calibracao_score[0]:.4g}): "
+                "a sigmoide inverteria as posições"
+            )
 
     referencia = construir_referencia(
         celulas, modelo_p1, modelo_p2, calibracao_score, modelo_direto
