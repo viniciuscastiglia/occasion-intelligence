@@ -3,20 +3,25 @@
 import json
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 import pytest
 from tests.models.bases_sinteticas import contexto_sintetico
 
 from occasion.config import EDICAO_TREINO, SEMENTE
+from occasion.decision.engine import CORTE_OCASIAO, CORTE_PREFERENCIA
 from occasion.experimentos import etapas, registro
-from occasion.experimentos.especificacao import espaco_lightgbm
+from occasion.experimentos.aninhada import PrevisaoInterna, ResultadoAninhado
+from occasion.experimentos.especificacao import INTERACOES, espaco_lightgbm
 from occasion.experimentos.regras import melhor_logistico, padrao, sinal_negativo, superioridade
 from occasion.models import escada
-from occasion.models.base import sigmoide
+from occasion.models.base import logit, sigmoide
+from occasion.receita import carregar_receita
+from occasion.score.score import CORTE_ALTA, CORTE_MEDIA
 from occasion.validacao.bootstrap import Intervalo
 from occasion.validacao.dobras import dobra_das_linhas
-from occasion.validacao.metricas import log_loss_ponderado
+from occasion.validacao.metricas import log_loss_ponderado, posicoes_ponderadas
 
 CHAVES = ("configuracao", "metricas", "commit")
 
@@ -236,3 +241,190 @@ def test_rotulos_embaralhados_na_preferencia_nao_vencem_a_constante(
     etapas.etapa_embaralhado(partes=("preferencia",), usar_peso={"preferencia": True})
     r = _json(tmp_path / "reports" / "experimentos" / "rotulos_embaralhados.json")
     assert r["metricas"]["preferencia"]["veredito"] == "refutada"
+
+
+# ------------------------------------------------- calibração, produto (H6 e H7), cortes, receita
+
+
+def _interno(indices: list[int], p: list[float]) -> PrevisaoInterna:
+    return PrevisaoInterna(np.array(indices), np.array(p))
+
+
+def test_sigmoide_da_dobra_usa_so_as_previsoes_internas() -> None:
+    rng = np.random.default_rng(0)
+    n = 600
+    por_linha = np.repeat([0, 1], n // 2)
+    p = rng.uniform(0.05, 0.6, n)
+    y = (rng.random(n) < p).astype(float)
+    w = rng.uniform(0.5, 2.0, n)
+    fora_0, fora_1 = np.flatnonzero(por_linha != 0), np.flatnonzero(por_linha != 1)
+    res = ResultadoAninhado(
+        oof=p, oof_extras={}, parametros=[{}, {}], modelos=[],
+        interno=[PrevisaoInterna(fora_0, p[fora_0]), PrevisaoInterna(fora_1, p[fora_1])],
+    )  # fmt: skip
+    sigmoides = etapas._sigmoides_por_dobra(res, y, w, por_linha)
+    # mudar o alvo das linhas da dobra 0 não muda a sigmoide que a dobra 0 recebe
+    y_mudado = y.copy()
+    y_mudado[por_linha == 0] = 1 - y_mudado[por_linha == 0]
+    assert etapas._sigmoides_por_dobra(res, y_mudado, w, por_linha)[0] == sigmoides[0]
+    assert etapas._sigmoides_por_dobra(res, y_mudado, w, por_linha)[1] != sigmoides[1]
+    calibrado = etapas._calibrar_por_dobra(p, por_linha, sigmoides)
+    a, b = sigmoides[1]
+    assert calibrado[por_linha == 1] == pytest.approx(sigmoide(a * logit(p[por_linha == 1]) + b))
+
+
+def test_sigmoide_recusa_previsao_interna_da_propria_dobra() -> None:
+    por_linha = np.array([0, 0, 1, 1])
+    res = ResultadoAninhado(
+        oof=np.full(4, 0.5), oof_extras={}, parametros=[{}], modelos=[],
+        interno=[_interno([0, 2, 3], [0.2, 0.3, 0.4])],  # a linha 0 é da dobra externa 0
+    )  # fmt: skip
+    with pytest.raises(ValueError, match="dobra externa"):
+        etapas._sigmoides_por_dobra(res, np.array([0, 1, 0, 1]), np.ones(4), por_linha)
+
+
+def test_produto_interno_exige_as_mesmas_linhas_nas_duas_partes() -> None:
+    oc = etapas._PrevisoesCelulas(
+        np.array([0.1, 0.2, 0.3]), [(np.array([1, 2]), np.array([0.2, 0.3]))]
+    )
+    pref = etapas._PrevisoesCelulas(
+        np.array([0.5, 0.5, 0.4]), [(np.array([1, 2]), np.array([0.5, 0.4]))]
+    )
+    produto = etapas._produto(oc, pref)
+    assert produto.fora == pytest.approx([0.05, 0.1, 0.12])
+    assert produto.interno[0][1] == pytest.approx([0.1, 0.12])
+    torto = etapas._PrevisoesCelulas(pref.fora, [(np.array([0, 2]), np.array([0.5, 0.4]))])
+    with pytest.raises(ValueError, match="mesmas linhas"):
+        etapas._produto(oc, torto)
+
+
+def _parcela_que_muda(
+    oc: np.ndarray, pref: np.ndarray, w: np.ndarray, qual: str, d: float
+) -> float:
+    po, pp = posicoes_ponderadas(oc, w), posicoes_ponderadas(pref, w)
+    antes = (po >= CORTE_OCASIAO, pp >= CORTE_PREFERENCIA)
+    if qual == "ocasiao":
+        depois = (po >= CORTE_OCASIAO + d, antes[1])
+    else:
+        depois = (antes[0], pp >= CORTE_PREFERENCIA + d)
+    muda = (antes[0] != depois[0]) | (antes[1] != depois[1])
+    return float(np.sum(w[muda]) / np.sum(w))
+
+
+def _conferir_cadeia(pastas: Path, esperado_score: str) -> None:
+    rel = pastas / "reports" / "experimentos"
+    hash_dobras = _json(pastas / "reports" / "dobras.json")["dados"]["hash_dobras"]
+    h5 = _json(rel / "h5_peso.json")["metricas"]
+    cal = _json(rel / "calibracao.json")
+    prod = _json(rel / "h6_h7_produto.json")
+    cortes = _json(rel / "cortes.json")
+    for r in (cal, prod, cortes):
+        assert all(c in r for c in CHAVES)
+        assert r["metricas"]["status"] == "ok"
+        assert r["dados"]["dobras"]["hash"] == hash_dobras
+
+    for parte in ("ocasiao", "preferencia"):
+        m = cal["metricas"][parte]
+        assert m["vencedor"] == _json(rel / f"escada_{parte}.json")["metricas"]["vencedor"]
+        assert m["veredito"] == superioridade(_ic(m["ganho_calibrada"]))
+        assert m["calibrar"] == (m["veredito"] == "confirmada")
+        for versao in ("antes", "depois"):
+            assert {"o_e", "inclinacao", "intercepto_cil", "curva"} <= set(m[versao])
+        assert len(m["sigmoide_por_dobra"]) == 5
+
+    h6, h7 = prod["metricas"]["H6"], prod["metricas"]["H7"]
+    assert h6["veredito"] == padrao(_ic(h6["ganho_do_direto"])) or esperado_score == "direto"
+    assert prod["metricas"]["score"] == esperado_score
+    assert h6["pr_auc"]["produto"] is not None and h6["pr_auc"]["direto"] is not None
+    degrau_direto = h6["degrau"]
+    assert degrau_direto == cal["metricas"]["ocasiao"]["vencedor"]
+    assert (pastas / "experimentos" / f"aninhada_direto_{degrau_direto}.joblib").exists()
+    assert h7["sobre"] == esperado_score
+    assert h7["veredito"] == superioridade(_ic(h7["ganho_corrigida"]))
+    assert h7["calibrar_score"] == (h7["veredito"] == "confirmada")
+    assert h7["inclinacao"]["b"] > 0
+    assert h7["inclinacao"]["ic_inf"] <= h7["inclinacao"]["ic_sup"]
+
+    # a sensibilidade confere com a conta feita à parte sobre as previsões salvas
+    salvo = joblib.load(pastas / "experimentos" / "previsoes_score.joblib")
+    assert salvo["hash_dobras"] == hash_dobras
+    base = pd.read_parquet(pastas / "processed" / f"celulas_{EDICAO_TREINO}.parquet")
+    w = base["peso_final"].to_numpy()
+    sens = cortes["metricas"]["sensibilidade"]
+    for qual in ("ocasiao", "preferencia"):
+        for chave, d in (("menos_10", -10.0), ("mais_10", 10.0)):
+            assert sens[qual][chave] == pytest.approx(
+                _parcela_que_muda(salvo["ocasiao"], salvo["preferencia"], w, qual, d)
+            )
+    assert "corte_alta" in cortes["metricas"]["resumo"]
+    assert cortes["metricas"]["score"] == esperado_score
+
+    receita = carregar_receita(pastas / "reports" / "receita.json")
+    assert receita.score == esperado_score
+    assert receita.calibrar_score == h7["calibrar_score"]
+    for parte in ("ocasiao", "preferencia"):
+        rp = getattr(receita, parte)
+        assert rp.degrau == cal["metricas"][parte]["vencedor"]
+        assert rp.usar_peso == h5[parte]["usar_peso"]
+        assert rp.calibrar == cal["metricas"][parte]["calibrar"]
+        selecao = joblib.load(pastas / "experimentos" / f"selecao_{parte}.joblib")
+        assert selecao["parametros"] == rp.parametros
+        assert selecao["hash_dobras"] == hash_dobras
+        assert receita.interacoes[parte] == (
+            [tuple(par) for par in INTERACOES[parte][rp.parametros["interacoes"]]]
+            if rp.degrau == "C"
+            else []
+        )
+    assert receita.cortes == {
+        "alta": CORTE_ALTA, "media": CORTE_MEDIA,
+        "ocasiao": CORTE_OCASIAO, "preferencia": CORTE_PREFERENCIA,
+    }  # fmt: skip
+    for caminho in receita.experimentos:
+        assert (pastas / caminho).exists(), caminho
+    assert "reports/experimentos/h6_h7_produto.json" in receita.experimentos
+    if esperado_score == "direto":
+        assert receita.direto is not None
+        assert receita.direto.degrau == receita.ocasiao.degrau
+        assert receita.direto.usar_peso == receita.ocasiao.usar_peso
+        assert receita.direto.calibrar == receita.ocasiao.calibrar
+        assert "direto" in receita.referencia_a
+        assert (pastas / "experimentos" / "selecao_direto.joblib").exists()
+    else:
+        assert receita.direto is None
+        assert "direto" not in receita.referencia_a
+
+
+def test_calibracao_produto_cortes_e_receita(pastas: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    etapas.etapa_dobras()
+    etapas.etapa_peso()
+    etapas.etapa_escada("preferencia")
+    etapas.etapa_escada("ocasiao")
+    etapas.etapa_calibracao()
+    etapas.etapa_produto(b=20)
+    etapas.etapa_cortes()
+    etapas.etapa_receita()
+    h6 = _json(pastas / "reports" / "experimentos" / "h6_h7_produto.json")["metricas"]["H6"]
+    esperado = "direto" if h6["veredito"] == "padrão refutado" else "produto"
+    _conferir_cadeia(pastas, esperado)
+
+    # o outro caminho: H6 forçado a promover o direto
+    monkeypatch.setattr(etapas, "padrao", lambda ic: "padrão refutado")
+    etapas.etapa_produto(b=20)
+    etapas.etapa_cortes()
+    etapas.etapa_receita()
+    _conferir_cadeia(pastas, "direto")
+    # com o score direto, a sensibilidade continua sobre as partes, e o JSON avisa
+    cortes = _json(pastas / "reports" / "experimentos" / "cortes.json")
+    assert "partes do produto" in cortes["metricas"]["aviso_direto"]
+
+
+def test_produto_recusa_calibracao_que_falhou(pastas: Path) -> None:
+    etapas.etapa_dobras()
+    rel = pastas / "reports" / "experimentos"
+    rel.mkdir(parents=True)
+    (rel / "calibracao.json").write_text(
+        json.dumps({"metricas": {"status": "falhou"}, "dados": {}}), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="calibracao.json"):
+        etapas.etapa_produto(b=5)
+    assert _json(rel / "h6_h7_produto.json")["metricas"]["status"] == "falhou"

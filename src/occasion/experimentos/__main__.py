@@ -21,7 +21,13 @@ def _escada(parte: str) -> Callable[[], None]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="python -m occasion.experimentos")
-    parser.add_argument("etapa", choices=["dobras", "peso", "escada", "h4", "embaralhado"])
+    parser.add_argument(
+        "etapa",
+        choices=[
+            "dobras", "peso", "escada", "h4", "embaralhado",
+            "calibracao", "produto", "cortes", "receita",
+        ],
+    )  # fmt: skip
     parser.add_argument(
         "--parte",
         choices=["ocasiao", "preferencia", "ambas"],
@@ -35,6 +41,10 @@ def main() -> None:
         "escada": _escada(args.parte),
         "h4": etapas.etapa_h4,
         "embaralhado": etapas.etapa_embaralhado,
+        "calibracao": etapas.etapa_calibracao,
+        "produto": etapas.etapa_produto,
+        "cortes": etapas.etapa_cortes,
+        "receita": etapas.etapa_receita,
     }
     acoes[args.etapa]()
 

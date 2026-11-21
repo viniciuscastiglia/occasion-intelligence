@@ -1,4 +1,5 @@
-"""Etapas dos experimentos do Plano 2 sobre 2008-2009: dobras, peso (H5), escada, H4 e controle.
+"""Etapas dos experimentos do Plano 2 sobre 2008-2009: dobras, peso (H5), escada, H4, controle,
+calibração, produto (H6 e H7), cortes e a receita.
 
 Cada etapa lê as bases por `carregar_base` (só `EDICAO_TREINO`; nada de 2017-2018 passa por
 aqui), grava o relatório com `registrar` em `reports/` e os objetos pesados com `salvar_resultado`
@@ -8,6 +9,11 @@ teste poder redirecioná-las.
 Resultados aninhados salvos (`salvar_resultado`):
 - `aninhada_<parte>_B_com_peso` e `aninhada_<parte>_B_sem_peso`: as duas versões de H5;
 - `aninhada_<parte>_<degrau>` (A a D): os degraus da escada; o B é o B de H5 com o peso decidido.
+  O B é gravado como `{"resultado", "hash_dobras"}`; A, C e D, como o `ResultadoAninhado` direto
+  (para eles, o hash conferido é o de `escada_<parte>.json`);
+- `aninhada_direto_<degrau>`: o modelo direto de H6, com o hash das dobras;
+- `previsoes_score`: o score fora da dobra decidido em H6 e H7 e as duas partes nas células;
+- `selecao_<parte>`: parâmetros e previsões fora da dobra de `selecao_final` do vencedor.
 """
 
 import hashlib
@@ -27,11 +33,19 @@ from occasion.config import (
     DADOS_EXPERIMENTOS,
     DADOS_PROCESSADOS,
     EDICAO_TREINO,
+    FAIXAS_HORARIO,
     RELATORIOS,
     SEMENTE,
 )
+from occasion.decision.engine import CORTE_OCASIAO, CORTE_PREFERENCIA
 from occasion.experimentos.aninhada import ResultadoAninhado, selecao_final, validacao_aninhada
-from occasion.experimentos.especificacao import ParteModelo, variaveis_da_parte
+from occasion.experimentos.especificacao import (
+    INTERACOES,
+    LIMITE_RILEY_DIRETO,
+    ParteModelo,
+    graus_de_liberdade,
+    variaveis_da_parte,
+)
 from occasion.experimentos.registro import (
     Natureza,
     carregar_resultado,
@@ -45,11 +59,22 @@ from occasion.experimentos.regras import (
     superioridade,
     vencedor_escada,
 )
+from occasion.models.base import logit, sigmoide
 from occasion.models.escada import Degrau
 from occasion.models.logistica import ModeloLogistico
+from occasion.receita import Receita, ReceitaParte, salvar_receita
+from occasion.score.score import CORTE_ALTA, CORTE_MEDIA
 from occasion.validacao.bootstrap import B_PADRAO, Intervalo, intervalo_estatistica, intervalo_ganho
 from occasion.validacao.dobras import dobra_das_linhas, escolher_dobras, tabela_de_upas
-from occasion.validacao.metricas import log_loss_ponderado, resumo
+from occasion.validacao.metricas import (
+    ajustar_sigmoide,
+    calibracao,
+    log_loss_ponderado,
+    posicoes_ponderadas,
+    pr_auc_ponderada,
+    resumo,
+    roc_auc_ponderada,
+)
 
 Parte = Literal["ocasiao", "preferencia"]
 PARTES: tuple[Parte, ...] = ("ocasiao", "preferencia")
@@ -505,3 +530,560 @@ def etapa_embaralhado(
             }
             r.dados[parte] = _dados(base, alvo)
             print(f"embaralhado {parte}: {r.metricas[parte]['veredito']}", flush=True)
+
+
+# ------------------------------------------------- calibração, produto (H6 e H7), cortes e receita
+
+ALVO_SCORE = "y_pizza_guarana"  # o fato observado contra o qual o score é medido, nas células
+_REGRA_DA_SIGMOIDE = (
+    "em cada dobra externa k, ajustar_sigmoide (com peso_final) nas previsões internas de k, "
+    "aplicada às previsões fora da dobra k; a dobra k nunca entra no ajuste da própria sigmoide"
+)
+_BOOTSTRAP = {"b": B_PADRAO, "estrato": "uf", "unidade": "cod_upa"}
+
+
+def _relatorio(nome: str, dobras: pd.DataFrame) -> dict[str, Any]:
+    """Relatório de uma etapa anterior; recusa o que falhou ou o feito com outras dobras."""
+    rel = json.loads((_pasta_relatorios() / f"{nome}.json").read_text(encoding="utf-8"))
+    if rel["metricas"].get("status") != "ok":
+        raise ValueError(f"{nome}.json é de uma execução que falhou: rode a etapa de novo")
+    if rel.get("dados", {}).get("dobras", {}).get("hash") != _hash_das_dobras(dobras):
+        raise ValueError(
+            f"{nome}.json usou outras dobras que o dobras.parquet atual: rode a etapa de novo"
+        )
+    return rel
+
+
+def _vencedor(parte: Parte, dobras: pd.DataFrame) -> Degrau:
+    return cast(Degrau, _relatorio(f"escada_{parte}", dobras)["metricas"]["vencedor"])
+
+
+def _carregar_aninhada(nome: str, hash_dobras: str) -> ResultadoAninhado:
+    """Resultado aninhado salvo, nos dois formatos: com o hash das dobras (conferido) ou direto."""
+    salvo = carregar_resultado(nome)
+    if isinstance(salvo, dict):
+        if salvo.get("hash_dobras") != hash_dobras:
+            raise ValueError(
+                f"{nome}.joblib usou outras dobras que o dobras.parquet atual: rode a etapa de novo"
+            )
+        salvo = salvo["resultado"]
+    if not isinstance(salvo, ResultadoAninhado):
+        raise TypeError(f"{nome}.joblib não guarda um ResultadoAninhado: {type(salvo).__name__}")
+    return salvo
+
+
+def _sigmoides(
+    internos: Sequence[tuple[np.ndarray, np.ndarray]],
+    y: np.ndarray,
+    w: np.ndarray,
+    por_linha: np.ndarray,
+) -> list[tuple[float, float]]:
+    """Uma sigmoide `(inclinacao, intercepto)` por dobra externa, só com as previsões internas.
+
+    `internos[k]` são as posições e as previsões internas da dobra externa `k`; uma posição que
+    pertença à própria dobra `k` seria vazamento e é recusada.
+    """
+    saida = []
+    for k, (posicoes, p) in enumerate(internos):
+        if np.any(por_linha[posicoes] == k):
+            raise ValueError(
+                f"previsão interna da dobra externa {k} inclui linhas da própria dobra"
+            )
+        p = _sem_nan(np.asarray(p, dtype=float), f"previsão interna da dobra externa {k}")
+        saida.append(ajustar_sigmoide(p, y[posicoes], w[posicoes]))
+    return saida
+
+
+def _sigmoides_por_dobra(
+    res: ResultadoAninhado, y: np.ndarray, w: np.ndarray, por_linha: np.ndarray
+) -> list[tuple[float, float]]:
+    """As sigmoides de um resultado aninhado, nas previsões internas da própria base."""
+    return _sigmoides([(i.indices, i.p) for i in res.interno], y, w, por_linha)
+
+
+def _aplicar(p: np.ndarray, sigmoide_k: tuple[float, float]) -> np.ndarray:
+    inclinacao, intercepto = sigmoide_k
+    return np.asarray(sigmoide(inclinacao * logit(p) + intercepto), dtype=float)
+
+
+def _calibrar_por_dobra(
+    p: np.ndarray, por_linha: np.ndarray, sigmoides: Sequence[tuple[float, float]]
+) -> np.ndarray:
+    """Aplica a sigmoide da dobra `k` às previsões fora da dobra das linhas da dobra `k`."""
+    saida = np.full(len(p), np.nan)
+    for k, sig in enumerate(sigmoides):
+        dentro = por_linha == k
+        saida[dentro] = _aplicar(p[dentro], sig)
+    return saida
+
+
+def _sigmoides_em_json(sigmoides: Sequence[tuple[float, float]]) -> list[dict[str, float]]:
+    return [{"inclinacao": a, "intercepto": b} for a, b in sigmoides]
+
+
+@dataclass
+class _PrevisoesCelulas:
+    """Uma parte (ou o score) nas células: fora da dobra e, por dobra externa, as internas."""
+
+    fora: np.ndarray
+    interno: list[tuple[np.ndarray, np.ndarray]]  # dobra k: posições nas células e previsões
+
+
+def _nas_celulas(
+    res: ResultadoAninhado,
+    parte: ParteModelo,
+    sigmoides: Sequence[tuple[float, float]] | None,
+    por_linha_celulas: np.ndarray,
+) -> _PrevisoesCelulas:
+    """As previsões de `res` nas células; com `sigmoides`, calibradas dobra a dobra.
+
+    Na preferência, as células são a base extra (prevista com `tem_pizza = 1`). A sigmoide da
+    dobra `k` é a mesma para a previsão fora da dobra `k` e para as internas de `k`.
+    """
+    if parte == "preferencia":
+        fora = res.oof_extras["celulas"]
+        interno = [i.extras["celulas"] for i in res.interno]
+    else:
+        fora = res.oof
+        interno = [(i.indices, i.p) for i in res.interno]
+    fora = _sem_nan(np.asarray(fora, dtype=float), f"{parte} nas células")
+    if len(fora) != len(por_linha_celulas):
+        raise ValueError(f"o resultado salvo de {parte} não tem uma previsão por célula")
+    if sigmoides is None:
+        return _PrevisoesCelulas(fora, [(pos, np.asarray(p, float)) for pos, p in interno])
+    return _PrevisoesCelulas(
+        _calibrar_por_dobra(fora, por_linha_celulas, sigmoides),
+        [(pos, _aplicar(np.asarray(p, float), sigmoides[k])) for k, (pos, p) in enumerate(interno)],
+    )
+
+
+def _produto(oc: _PrevisoesCelulas, pref: _PrevisoesCelulas) -> _PrevisoesCelulas:
+    """Ocasião vezes preferência, fora da dobra e nas internas de cada dobra externa.
+
+    As internas precisam estar nas mesmas células nas duas partes (as dobras internas saem da
+    tabela de setores); se não estiverem, o produto misturaria modelos que viram o setor.
+    """
+    if len(oc.interno) != len(pref.interno):
+        raise ValueError("as duas partes não têm o mesmo número de dobras externas")
+    interno = []
+    for k, ((pos_o, p_o), (pos_p, p_p)) in enumerate(zip(oc.interno, pref.interno, strict=True)):
+        if not np.array_equal(pos_o, pos_p):
+            raise ValueError(
+                f"as previsões internas da dobra externa {k} não estão nas mesmas linhas "
+                "nas duas partes"
+            )
+        interno.append((pos_o, p_o * p_p))
+    return _PrevisoesCelulas(oc.fora * pref.fora, interno)
+
+
+def _previsoes_da_parte(
+    parte: Parte,
+    celulas: pd.DataFrame,
+    ocasioes: pd.DataFrame,
+    dobras: pd.DataFrame,
+    hash_dobras: str,
+    calibrar: bool,
+) -> _PrevisoesCelulas:
+    """O vencedor da escada da parte, nas células, com a calibração decidida."""
+    degrau = _vencedor(parte, dobras)
+    res = _carregar_aninhada(f"aninhada_{parte}_{degrau}", hash_dobras)
+    base, alvo, _ = _base_da_parte(parte, celulas, ocasioes)
+    sig = None
+    if calibrar:
+        sig = _sigmoides_por_dobra(
+            res, base[alvo].to_numpy(), base["peso_final"].to_numpy(),
+            dobra_das_linhas(base, dobras),
+        )  # fmt: skip
+    return _nas_celulas(res, parte, sig, dobra_das_linhas(celulas, dobras))
+
+
+def _graus_do_direto(degrau: Degrau) -> int | dict[str, int] | None:
+    """Graus de liberdade nominais do direto (B e C); A e D não têm a contagem logística."""
+    if degrau == "B":
+        return graus_de_liberdade("direto", "B")
+    if degrau == "C":
+        return {c: graus_de_liberdade("direto", "C", c) for c in INTERACOES["direto"]}
+    return None
+
+
+def _relativo(caminho: Path) -> str:
+    """Caminho relativo à raiz do repositório (a pasta acima de `reports/`)."""
+    return caminho.relative_to(RELATORIOS.parent).as_posix()
+
+
+# ---------------------------------------------------------------------------------- calibração
+
+
+def etapa_calibracao() -> None:
+    """Sigmoide no vencedor da escada de cada parte; entra se `superioridade` confirmar o ganho."""
+    config = {
+        "o_que": "correção sigmoide no vencedor da escada de cada parte (seção 8.2 do design)",
+        "ajuste": _REGRA_DA_SIGMOIDE,
+        "metrica_da_comparacao": "ganho da versão calibrada no log loss ponderado fora da dobra",
+        "regra": "superioridade",
+        "bootstrap": _BOOTSTRAP,
+        "niveis_de_calibracao": "média (o_e e intercepto_cil), inclinação e curva por faixas",
+    }
+    with _experimento("calibracao", "confirmatório", config, _pasta_relatorios()) as r:
+        celulas, ocasioes, dobras = _celulas(), _ocasioes(), _dobras()
+        r.dados["dobras"] = _info_dobras(dobras)
+        _conferir_dobras_de_h5(dobras)
+        for parte in PARTES:
+            degrau = _vencedor(parte, dobras)
+            res = _carregar_aninhada(f"aninhada_{parte}_{degrau}", r.dados["dobras"]["hash"])
+            base, alvo, _ = _base_da_parte(parte, celulas, ocasioes)
+            y, w = base[alvo].to_numpy(), base["peso_final"].to_numpy()
+            por_linha = dobra_das_linhas(base, dobras)
+            antes = _sem_nan(res.oof, f"{parte} degrau {degrau}")
+            if len(antes) != len(base):
+                raise ValueError(f"aninhada_{parte}_{degrau} não tem uma previsão por linha")
+            sigmoides = _sigmoides_por_dobra(res, y, w, por_linha)
+            depois = _sem_nan(
+                _calibrar_por_dobra(antes, por_linha, sigmoides), f"{parte} calibrada"
+            )
+            ic = _ic_ganho(base, alvo, depois, antes)
+            veredito = superioridade(ic)
+            m: dict[str, Any] = {
+                "vencedor": degrau,
+                "calibrar": veredito == "confirmada",
+                "veredito": veredito,
+                "ganho_calibrada": ic,
+                "log_loss_antes": log_loss_ponderado(y, antes, w),
+                "log_loss_depois": log_loss_ponderado(y, depois, w),
+                "antes": calibracao(y, antes, w),
+                "depois": calibracao(y, depois, w),
+                "sigmoide_por_dobra": _sigmoides_em_json(sigmoides),
+            }
+            if parte == "preferencia":
+                pizza = base["tem_pizza"].to_numpy() == 1
+                m["antes_com_pizza"] = calibracao(y[pizza], antes[pizza], w[pizza])
+                m["depois_com_pizza"] = calibracao(y[pizza], depois[pizza], w[pizza])
+            r.metricas[parte] = m
+            r.dados[parte] = _dados(base, alvo)
+            print(f"calibração {parte} (degrau {degrau}): {veredito}", flush=True)
+
+
+# ---------------------------------------------------------------------------------- H6 e H7
+
+
+def etapa_produto(b: int = B_PADRAO) -> None:
+    """H6 (produto contra o modelo direto) e H7 (calibração do que calcula o score).
+
+    `b` é o número de réplicas do intervalo da inclinação de H7, que só é relatado.
+    """
+    config: dict[str, Any] = {
+        "alvo": f"{ALVO_SCORE} nas células",
+        "produto": "ocasião fora da dobra x preferência fora da dobra nas células "
+        "(tem_pizza = 1), cada parte com a calibração decidida em calibracao.json",
+        "H6": {
+            "direto": "validação aninhada do degrau vencedor da ocasião, parte 'direto', com o "
+            "peso de H5 e a calibração decididos para a ocasião",
+            "metrica": "ganho do direto sobre o produto no log loss ponderado; PR-AUC ao lado",
+            "regra": "padrao (o padrão é o produto)",
+        },
+        "H7": {
+            "ajuste": _REGRA_DA_SIGMOIDE + "; no produto, as internas são o produto das "
+            "internas das partes, nas mesmas células",
+            "regra": "superioridade no log loss ponderado",
+            "inclinacao": f"intervalo com {b} réplicas, reajustando ajustar_sigmoide em cada "
+            "uma; só relatado",
+        },
+        "bootstrap": _BOOTSTRAP,
+    }
+    with _experimento("h6_h7_produto", "confirmatório", config, _pasta_relatorios()) as r:
+        dobras = _dobras()
+        cal = _relatorio("calibracao", dobras)
+        r.dados["dobras"] = _info_dobras(dobras)
+        _conferir_dobras_de_h5(dobras)
+        hash_dobras = r.dados["dobras"]["hash"]
+        celulas, ocasioes = _celulas(), _ocasioes()
+        calibrar = {p: bool(cal["metricas"][p]["calibrar"]) for p in PARTES}
+        r.configuracao["calibrar_partes"] = calibrar
+        oc, pref = (
+            _previsoes_da_parte(p, celulas, ocasioes, dobras, hash_dobras, calibrar[p])
+            for p in PARTES
+        )
+        produto = _produto(oc, pref)
+        y, w = celulas[ALVO_SCORE].to_numpy(), celulas["peso_final"].to_numpy()
+        por_linha = dobra_das_linhas(celulas, dobras)
+        r.dados.update(_dados(celulas, ALVO_SCORE))
+
+        # H6: o modelo direto do mesmo degrau do vencedor da ocasião
+        degrau = _vencedor("ocasiao", dobras)
+        usar_peso = _usar_peso_decidido()["ocasiao"]
+        print(f"H6: modelo direto, degrau {degrau}", flush=True)
+        t0 = time.perf_counter()
+        res_direto = validacao_aninhada(
+            celulas, ALVO_SCORE, degrau, "direto", dobras,
+            usar_peso=usar_peso,
+            progresso=lambda k: print(f"H6: direto {degrau}, dobra externa {k + 1} de 5", flush=True),
+        )  # fmt: skip
+        tempo = time.perf_counter() - t0
+        salvar_resultado(
+            f"aninhada_direto_{degrau}", {"resultado": res_direto, "hash_dobras": hash_dobras}
+        )
+        sig_direto = (
+            _sigmoides_por_dobra(res_direto, y, w, por_linha) if calibrar["ocasiao"] else None
+        )
+        direto = _nas_celulas(res_direto, "direto", sig_direto, por_linha)
+        ic6 = _ic_ganho(celulas, ALVO_SCORE, direto.fora, produto.fora)
+        v6 = padrao(ic6)
+        score: Literal["produto", "direto"] = "direto" if v6 == "padrão refutado" else "produto"
+        r.metricas["H6"] = {
+            "degrau": degrau,
+            "usar_peso": usar_peso,
+            "calibrar": calibrar["ocasiao"],
+            "ganho_do_direto": ic6,
+            "veredito": v6,
+            "log_loss": {
+                "produto": log_loss_ponderado(y, produto.fora, w),
+                "direto": log_loss_ponderado(y, direto.fora, w),
+            },
+            "pr_auc": {
+                "produto": pr_auc_ponderada(y, produto.fora, w),
+                "direto": pr_auc_ponderada(y, direto.fora, w),
+            },
+            "roc_auc": {
+                "produto": roc_auc_ponderada(y, produto.fora, w),
+                "direto": roc_auc_ponderada(y, direto.fora, w),
+            },
+            "graus_de_liberdade_nominais_do_direto": _graus_do_direto(degrau),
+            "limite_riley_do_direto": LIMITE_RILEY_DIRETO,
+            "parametros_por_dobra_do_direto": res_direto.parametros,
+            "tempo_direto_s": tempo,
+        }
+        print(f"H6: {v6}; o score é o {score}", flush=True)
+
+        # H7: a sigmoide sobre o que calcula o score
+        sobre = direto if score == "direto" else produto
+        sigmoides = _sigmoides(sobre.interno, y, w, por_linha)
+        corrigida = _sem_nan(_calibrar_por_dobra(sobre.fora, por_linha, sigmoides), "score")
+        ic7 = _ic_ganho(celulas, ALVO_SCORE, corrigida, sobre.fora)
+        v7 = superioridade(ic7)
+        fora = sobre.fora
+        cod_upa, uf = celulas["cod_upa"].to_numpy(), celulas["uf"].to_numpy()
+        print(f"H7: intervalo da inclinação com {b} réplicas", flush=True)
+        inclinacao = intervalo_estatistica(
+            lambda m: ajustar_sigmoide(fora, y, w * m)[0], cod_upa, uf, b=b
+        )
+        r.metricas["H7"] = {
+            "sobre": score,
+            "veredito": v7,
+            "calibrar_score": v7 == "confirmada",
+            "ganho_corrigida": ic7,
+            "inclinacao": inclinacao,
+            "log_loss_antes": log_loss_ponderado(y, fora, w),
+            "log_loss_depois": log_loss_ponderado(y, corrigida, w),
+            "antes": calibracao(y, fora, w),
+            "depois": calibracao(y, corrigida, w),
+            "sigmoide_por_dobra": _sigmoides_em_json(sigmoides),
+        }
+        r.metricas["score"] = score
+        salvar_resultado(
+            "previsoes_score",
+            {
+                "score": corrigida if v7 == "confirmada" else fora,
+                "tipo": score,
+                "calibrar_score": v7 == "confirmada",
+                "ocasiao": oc.fora,
+                "preferencia": pref.fora,
+                "hash_dobras": hash_dobras,
+            },
+        )
+        print(f"H7: {v7}", flush=True)
+
+
+# ---------------------------------------------------------------------------------- cortes
+
+
+def _quadrantes(
+    pos_oc: np.ndarray, pos_pref: np.ndarray, corte_oc: float, corte_pref: float
+) -> np.ndarray:
+    """Quadrante de cada célula (0 a 3): ocasião alta vale 2, preferência alta vale 1."""
+    return 2 * (pos_oc >= corte_oc).astype(int) + (pos_pref >= corte_pref).astype(int)
+
+
+def etapa_cortes() -> None:
+    """Relata o score no corte de 80 e a sensibilidade dos cortes do Decision Engine (±10)."""
+    config: dict[str, Any] = {
+        "cortes": {
+            "alta": CORTE_ALTA,
+            "media": CORTE_MEDIA,
+            "ocasiao": CORTE_OCASIAO,
+            "preferencia": CORTE_PREFERENCIA,
+        },
+        "posicoes": "posicoes_ponderadas (peso_final) nas células, sobre a previsão fora da dobra",
+        "sensibilidade": "quadrante = (posição da parte 1 >= corte da ocasião, posição da parte 2 "
+        ">= corte da preferência), com as partes do produto, que são as que o Decision Engine "
+        "usa; parcela ponderada das células que muda de quadrante com cada corte a ±10",
+        "decisao": "só relata: os cortes ficam os do pré-registro",
+    }
+    with _experimento("cortes", "exploratório", config, _pasta_relatorios()) as r:
+        dobras = _dobras()
+        prod = _relatorio("h6_h7_produto", dobras)
+        r.dados["dobras"] = _info_dobras(dobras)
+        _conferir_dobras_de_h5(dobras)
+        salvo = carregar_resultado("previsoes_score")
+        if salvo["hash_dobras"] != r.dados["dobras"]["hash"]:
+            raise ValueError("previsoes_score.joblib usou outras dobras: rode `make produto`")
+        if salvo["tipo"] != prod["metricas"]["score"]:
+            raise ValueError("previsoes_score.joblib não é o de h6_h7_produto.json")
+        celulas = _celulas()
+        r.dados.update(_dados(celulas, ALVO_SCORE))
+        y, w = celulas[ALVO_SCORE].to_numpy(), celulas["peso_final"].to_numpy()
+        score = _sem_nan(np.asarray(salvo["score"], float), "score")
+        posicao = posicoes_ponderadas(score, w)
+        total = float(np.sum(w))
+        alta, media = posicao >= CORTE_ALTA, (posicao >= CORTE_MEDIA) & (posicao < CORTE_ALTA)
+        r.metricas["score"] = salvo["tipo"]
+        r.metricas["resumo"] = resumo(y, score, w, posicao=posicao)
+        r.metricas["classificacao"] = {
+            "alta": float(np.sum(w[alta]) / total),
+            "media": float(np.sum(w[media]) / total),
+            "baixa": float(np.sum(w[~alta & ~media]) / total),
+        }
+
+        pos_oc = posicoes_ponderadas(np.asarray(salvo["ocasiao"], float), w)
+        pos_pref = posicoes_ponderadas(np.asarray(salvo["preferencia"], float), w)
+        base_q = _quadrantes(pos_oc, pos_pref, CORTE_OCASIAO, CORTE_PREFERENCIA)
+        sensibilidade: dict[str, Any] = {
+            "quadrantes": {
+                rotulo: float(np.sum(w[base_q == q]) / total)
+                for q, rotulo in enumerate(
+                    (
+                        "ocasiao_baixa_preferencia_baixa",
+                        "ocasiao_baixa_preferencia_alta",
+                        "ocasiao_alta_preferencia_baixa",
+                        "ocasiao_alta_preferencia_alta",
+                    )
+                )
+            }
+        }
+        for qual, corte in (("ocasiao", CORTE_OCASIAO), ("preferencia", CORTE_PREFERENCIA)):
+            sensibilidade[qual] = {"corte": corte}
+            for chave, delta in (("menos_10", -10.0), ("mais_10", 10.0)):
+                cortes = (
+                    (corte + delta, CORTE_PREFERENCIA)
+                    if qual == "ocasiao"
+                    else (CORTE_OCASIAO, corte + delta)
+                )
+                muda = _quadrantes(pos_oc, pos_pref, *cortes) != base_q
+                sensibilidade[qual][chave] = float(np.sum(w[muda]) / total)
+        r.metricas["sensibilidade"] = sensibilidade
+        if salvo["tipo"] == "direto":
+            r.metricas["aviso_direto"] = (
+                "o score é o modelo direto (H6), mas a sensibilidade usa as partes do produto, "
+                "porque o Decision Engine decide pelas partes"
+            )
+        print("cortes: relatório gravado", flush=True)
+
+
+# ---------------------------------------------------------------------------------- receita
+
+_RELATORIOS_DA_RECEITA = (
+    "h5_peso",
+    "escada_ocasiao",
+    "escada_preferencia",
+    "calibracao",
+    "h6_h7_produto",
+    "cortes",
+)
+
+
+def etapa_receita() -> None:
+    """Monta a receita: `selecao_final` do vencedor de cada parte e do degrau A (referência de H8)."""
+    config = {
+        "o_que": "selecao_final do degrau vencedor de cada parte (e do direto, se H6 o promover) "
+        "e do degrau A, a referência de H8",
+        "metrica": "log loss ponderado fora da dobra nas 5 dobras externas",
+        "resultados_salvos": "selecao_<parte> (parâmetros e previsões, com o hash das dobras)",
+        "receita": "reports/receita.json",
+    }
+    with _experimento("selecao_final", "exploratório", config, _pasta_relatorios()) as r:
+        dobras = _dobras()
+        rel = {nome: _relatorio(nome, dobras) for nome in _RELATORIOS_DA_RECEITA}
+        r.dados["dobras"] = _info_dobras(dobras)
+        hash_dobras = r.dados["dobras"]["hash"]
+        celulas, ocasioes = _celulas(), _ocasioes()
+        usar_peso = {p: bool(rel["h5_peso"]["metricas"][p]["usar_peso"]) for p in PARTES}
+        calibrar = {p: bool(rel["calibracao"]["metricas"][p]["calibrar"]) for p in PARTES}
+        score = cast(Literal["produto", "direto"], rel["h6_h7_produto"]["metricas"]["score"])
+        calibrar_score = bool(rel["h6_h7_produto"]["metricas"]["H7"]["calibrar_score"])
+        partes: list[ParteModelo] = ["ocasiao", "preferencia"]
+        if score == "direto":
+            partes.append("direto")
+
+        escolhas: dict[ParteModelo, ReceitaParte] = {}
+        referencia_a: dict[ParteModelo, dict[str, Any]] = {}
+        interacoes: dict[ParteModelo, list[tuple[str, str]]] = {
+            p: [] for p in ("ocasiao", "preferencia", "direto")
+        }
+        for parte in partes:
+            fonte: Parte = "ocasiao" if parte == "direto" else parte
+            degrau = cast(Degrau, rel[f"escada_{fonte}"]["metricas"]["vencedor"])
+            if rel["calibracao"]["metricas"][fonte]["vencedor"] != degrau:
+                raise ValueError(f"calibracao.json e escada_{fonte}.json discordam do vencedor")
+            if parte == "direto":
+                base, alvo, extras = celulas, ALVO_SCORE, {}
+            else:
+                base, alvo, extras = _base_da_parte(fonte, celulas, ocasioes)
+            print(f"receita {parte}: seleção final do degrau {degrau}", flush=True)
+            params, oof, oof_extras = selecao_final(
+                base, alvo, degrau, parte, dobras,
+                usar_peso=usar_peso[fonte], bases_extras=extras,
+            )  # fmt: skip
+            salvar_resultado(
+                f"selecao_{parte}",
+                {
+                    "degrau": degrau,
+                    "parametros": params,
+                    "oof": oof,
+                    "oof_extras": oof_extras,
+                    "hash_dobras": hash_dobras,
+                },
+            )
+            escolhas[parte] = ReceitaParte(
+                degrau=degrau, parametros=params,
+                usar_peso=usar_peso[fonte], calibrar=calibrar[fonte],
+            )  # fmt: skip
+            if degrau == "C":
+                interacoes[parte] = list(INTERACOES[parte][params["interacoes"]])
+            print(f"receita {parte}: seleção final do degrau A", flush=True)
+            params_a, _, _ = selecao_final(
+                base, alvo, "A", parte, dobras, usar_peso=usar_peso[fonte]
+            )
+            referencia_a[parte] = params_a
+            y, w = base[alvo].to_numpy(), base["peso_final"].to_numpy()
+            r.metricas[parte] = {
+                "degrau": degrau,
+                "parametros": params,
+                "log_loss_fora_da_dobra": log_loss_ponderado(y, _sem_nan(oof, parte), w),
+                "referencia_a": params_a,
+            }
+            r.dados[parte] = _dados(base, alvo)
+
+        pasta = _pasta_relatorios()
+        experimentos = [_relativo(RELATORIOS / "dobras.json")]
+        experimentos += [_relativo(pasta / f"{nome}.json") for nome in _RELATORIOS_DA_RECEITA]
+        experimentos.append(_relativo(pasta / "selecao_final.json"))
+        receita = Receita(
+            faixas_horario={nome: list(faixa) for nome, faixa in FAIXAS_HORARIO.items()},
+            variaveis={p: variaveis_da_parte(p) for p in ("ocasiao", "preferencia", "direto")},
+            interacoes=interacoes,
+            ocasiao=escolhas["ocasiao"],
+            preferencia=escolhas["preferencia"],
+            score=score,
+            direto=escolhas.get("direto"),
+            calibrar_score=calibrar_score,
+            referencia_a=referencia_a,
+            cortes={
+                "alta": CORTE_ALTA,
+                "media": CORTE_MEDIA,
+                "ocasiao": CORTE_OCASIAO,
+                "preferencia": CORTE_PREFERENCIA,
+            },
+            experimentos=experimentos,
+        )
+        caminho = salvar_receita(receita, RELATORIOS / "receita.json")
+        r.metricas["receita"] = _relativo(caminho)
+        print(f"receita gravada em {caminho}", flush=True)
