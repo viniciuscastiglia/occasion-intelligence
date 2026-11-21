@@ -678,7 +678,7 @@ Duas decisões mudaram a definição do target e foram aprovadas pelo autor em 1
 
 ## 27. Decisões do Plano 2
 
-Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/pre-registro.md`). As escolhas que vieram do plano estão marcadas como **escolha do executor, aprovada pelo autor**; as que o autor tomou em 20/11/2026, depois da EDA, como **decidido pelo autor**. A aprovação acontece no ponto de parada da tarefa 6.
+Decisões tomadas ao escrever e executar o Plano 2: até o pré-registro (`docs/pre-registro.md`), aprovadas no ponto de parada da tarefa 6, e no congelamento da receita, aprovadas no ponto de parada da tarefa 15 (21/11/2026). As escolhas que vieram do plano ou da execução estão marcadas como **escolha do executor, aprovada pelo autor**; as que o autor tomou, como **decidido pelo autor**.
 
 ### Bootstrap de setores dentro da UF
 
@@ -774,6 +774,44 @@ Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/
 
 **Alternativas descartadas:** rodar H10 com a participação arredondada (sem variação para ordenar os estados); trocar a medida pelas exportações individuais com o filtro "Alimentos e bebidas" (o ruído de marca continuaria, e o volume de busca de 2008-2009 seguiria baixo); substituir o Trends pelo bloco de clima nas capitais (seção 26), que fica como próximo passo no README.
 
+### Receita congelada
+
+**Decisão (decidido pelo autor em 21/11/2026, no ponto de parada da tarefa 15).** A receita é a que as regras do pré-registro escolheram em 2008-2009 (`reports/receita.json`): degrau C nas duas partes (logística regularizada com curvas em idade e renda e o conjunto de interações `pre_declarado`), peso amostral no treino, sem sigmoide nas partes, score igual ao produto das partes, sem calibração do score, e os cortes do pré-registro (80 e 50 na classificação; 75 e 50 no Decision Engine). Os resultados que sustentam cada escolha estão em `reports/experimentos/` e foram reproduzidos do zero antes da tag, com os mesmos números.
+
+**Motivo.** Cada escolha seguiu a regra fixada antes de ver o resultado: H1 e H2 confirmadas nas duas partes, H3 refutada nas duas, H5 sem evidência contra o peso, calibração e H7 refutadas, H6 sem evidência contra o produto. O autor conferiu a receita, as hipóteses H1 a H7 e os cortes antes de aprovar.
+
+**Ponto registrado na aprovação.** Na ocasião, o LightGBM (degrau D) tem PR-AUC fora da dobra maior que o degrau C (0,0285 contra 0,0238), mas empata no log loss, que é o critério pré-registrado (ganho de 0,00002, intervalo de −0,00006 a 0,00011). Trocar o critério depois de ver o resultado seria escolher a métrica pelo vencedor. Na preferência, o modelo ordena pouco (ROC-AUC 0,61 em todas as ocasiões e 0,53 no recorte de pizza, com 101 casos), o que declara como risco a premissa de que a ordem de preferência aprendida em todas as refeições vale para as refeições com pizza; H8 mede o score contra pizza com guaraná em 2017-2018 e testa isso.
+
+**Alternativas descartadas:** servir o LightGBM na ocasião (ver a decisão seguinte); trocar o critério da escada para PR-AUC; mudar os cortes.
+
+### LightGBM com mais dados: o servido é a mesma receita
+
+**Decisão (decidido pelo autor).** O modelo servido (tarefa 18) reajusta a mesma receita, com o degrau C, em 2008-2009 e 2017-2018 juntas, como manda a seção 12 do design. A pergunta "o LightGBM venceria com as duas edições juntas?" vira uma análise exploratória, feita depois da tag: curva de aprendizado em 2008-2009, com C e D treinados em 25%, 50%, 75% e 100% dos setores de treino de cada dobra externa, com os parâmetros já escolhidos, medidos fora da dobra e projetados para o dobro da amostra. A regra é declarada antes de rodar: o resultado não troca o modelo servido. Ele entra no README e sustenta a recomendação de comparar C e D num teste novo, a POF 2024-2025, quando os microdados saírem. A curva pode ser cortada se o prazo apertar.
+
+**Motivo.** O raciocínio do autor tem apoio na literatura: modelos flexíveis tendem a ganhar da logística quando a amostra cresce (Perlich, Provost e Simonoff, 2003), e precisam de muito mais eventos por variável para estabilizar (van der Ploeg, Austin e Steyerberg, 2014). O que limita aqui é o número de eventos, não de linhas: cerca de 650 células positivas na ocasião em 2008-2009, perto de 1.450 com as duas edições. Mas o que se valida é a receita, e o modelo servido é a mesma receita reajustada com todos os dados (Steyerberg e Harrell, 2016; TRIPOD). Servir o D seria servir um procedimento sem nenhuma avaliação temporal, e escolher entre C e D olhando 2017-2018 faria o teste participar da seleção, que então deixa de medir o desempenho de quem foi escolhido (Hastie, Tibshirani e Friedman, cap. 7; Cawley e Talbot, 2010; Kapoor e Narayanan, 2023). Com duas edições, não sobra dado limpo para medir uma escolha feita no teste. A diferença entre D e C no log loss da ocasião (cerca de 0,3%) é também pequena perto da mudança esperada entre 2008 e 2018, que H8 mede.
+
+**Alternativas descartadas:** servir o D sem teste; escolher entre C e D pelo resultado em 2017-2018; trocar a receita para D antes da tag (desfaria a regra pré-registrada por causa de um empate já visto).
+
+### Dados sintéticos para engordar a base
+
+**Decisão (decidido pelo autor).** Não se usam dados gerados artificialmente (SMOTE, redes generativas, cópulas, simulação a partir de um modelo ajustado) para aumentar 2008-2009 e medir se o LightGBM venceria com mais dados. A versão legítima dessa pergunta é a curva de aprendizado da decisão anterior, que só diminui a amostra real e projeta.
+
+**Motivo.** Todo gerador é ajustado nos próprios dados de 2008-2009 e não acrescenta informação sobre a população: os dados sintéticos só repetem, com ruído, o que o gerador aprendeu. A comparação entre C e D viraria circular: um gerador aditivo e suave favorece a logística, um gerador de árvores ou uma rede generativa favorece o LightGBM, e o vencedor seria quem melhor imita o gerador. Em modelos de risco, correções de desbalanceamento como o SMOTE pioram a calibração sem melhorar a discriminação (van den Goorbergh e colegas, 2022), e o pré-registro já proíbe reamostrar o evento raro. Estudos de simulação são legítimos para estudar métodos, mas respondem para o mundo suposto pelo simulador, não para a POF. Diminuir a amostra real é legítimo; aumentar exige inventar a verdade. Projetar curvas de aprendizado é prática estabelecida (Figueroa e colegas, 2012), e o dobro da amostra é uma extrapolação modesta.
+
+**Alternativas descartadas:** aumentar a base com dados sintéticos; reamostrar o evento raro (bootstrap ou SMOTE) para simular uma amostra maior.
+
+### O que a tag protege
+
+**Decisão (escolha do executor, aprovada pelo autor).** A assinatura da receita (`src/occasion/bases/assinatura.py`) cobre mais que a lista do plano e deixa de cobrir três arquivos:
+
+- **Entram:** as regras de decisão (`experimentos/regras.py`), a leitura da receita (`receita.py`), a avaliação por segmento e os erros (`avaliacao/`), o registro dos JSON (`experimentos/registro.py`), a definição do alvo e a ingestão (`bases/ocasioes.py`, `ingest/`), as faixas de idade e renda (`eda/descritivas.py`), o cálculo do score a partir do artefato (`inference/artefato.py`, separado de `predict.py`), um arquivo com as versões das bibliotecas que mudam número (`versoes_da_receita.py`: numpy, pandas, scipy, scikit-learn, lightgbm, pyarrow) e o próprio módulo da assinatura.
+- **Saem:** `pyproject.toml`, `uv.lock` e `inference/predict.py`. O teste final confere as versões instaladas contra o arquivo assinado.
+- **Contagens de referência:** antes de medir H8, o teste final confere as bases que lê e recusa se não baterem. Em 2008-2009, exatas: 66.903 dias-pessoa, 669.030 células, 651 dias com pizza e refrigerante, 101 com pizza e guaraná, 19.182 ocasiões com refrigerante. Em 2017-2018: 85.018 dias-pessoa, 850.180 células, 796 dias com pizza e refrigerante (797 da tabela menos um dia excluído por local indeterminado), dias com pizza e guaraná entre 170 e 180 (até 10 dias podem sair pelas 10 ocasiões excluídas, e o número exato só se sabe lendo o alvo) e 16.112 ocasiões com refrigerante.
+
+**Motivo.** A revisão antes do congelamento achou dois furos. Primeiro, a definição do alvo, os dados de teste e o código que decide H8 ficavam fora da assinatura, e uma mudança neles depois da tag passaria em silêncio. Segundo, o Plano 3 precisa mexer em `pyproject.toml`, `uv.lock` e `predict.py` (API, briefing, tela), e assiná-los bloquearia para sempre a reexecução do teste final, que a seção 6.7 do design exige que seja possível e reproduza o resultado. As versões assinadas protegem o que pode mudar um número; o resto das dependências fica livre. Nenhuma dessas mudanças altera modelo nem métrica: a reprodução completa depois delas deu os mesmos números.
+
+**Alternativas descartadas:** a lista literal do plano (os dois furos); assinar `acesso.py` (a tarefa 17 o modifica, por isso a assinatura foi para um módulo próprio); ler a base pessoa x dia de 2017-2018 para conferir as contagens exatas de pizza (abriria uma segunda porta de leitura do alvo fora de `carregar_base`).
+
 ---
 
 ## Fontes consultadas
@@ -825,3 +863,15 @@ Decisões tomadas ao escrever e executar o Plano 2, até o pré-registro (`docs/
 - [Exploring pre-registration for predictive modeling](https://statmodeling.stat.columbia.edu/2023/12/06/exploring-pre-registration-for-predictive-modeling/)
 - [Beyond Accuracy: Behavioral Testing with CheckList](https://arxiv.org/pdf/2005.04118)
 - [Validating and testing ML pipelines with pandera](https://flyte.readthedocs.io/en/latest/flytesnacks/examples/pandera_plugin/validating_and_testing_ml_pipelines.html)
+
+**Método: referências citadas no congelamento da receita** (citadas de memória na conversa com o autor, sem link conferido)
+
+- Perlich, Provost e Simonoff (2003). Tree Induction vs. Logistic Regression: A Learning-Curve Analysis. *Journal of Machine Learning Research*.
+- van der Ploeg, Austin e Steyerberg (2014). Modern modelling techniques are data hungry. *BMC Medical Research Methodology*.
+- Christodoulou e colegas (2019). A systematic review shows no performance benefit of machine learning over logistic regression for clinical prediction models. *Journal of Clinical Epidemiology*.
+- Hastie, Tibshirani e Friedman. *The Elements of Statistical Learning*, cap. 7 (seleção e avaliação de modelos).
+- Cawley e Talbot (2010). On over-fitting in model selection and subsequent selection bias in performance evaluation. *Journal of Machine Learning Research*.
+- Steyerberg e Harrell (2016). Prediction models need appropriate internal, internal-external, and external validation. *Journal of Clinical Epidemiology*.
+- van den Goorbergh e colegas (2022). The harm of class imbalance corrections for risk prediction models. *Journal of the American Medical Informatics Association*.
+- Figueroa e colegas (2012). Predicting sample size required for classification performance. *BMC Medical Informatics and Decision Making*.
+- Hestness e colegas (2017). Deep Learning Scaling is Predictable, Empirically. arXiv.

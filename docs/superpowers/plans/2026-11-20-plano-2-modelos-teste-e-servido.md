@@ -742,6 +742,23 @@ def test_segunda_execucao_nao_sobrescreve_e_confere(repo_com_tag, artefato_da_ta
 
 ---
 
+### Tarefa 17a: curva de aprendizado de C e D (exploratória; pode ser cortada pelo prazo)
+
+Acrescentada no congelamento por decisão do autor (21/11/2026, seção 27 do registro de decisões, "LightGBM com mais dados"). Só 2008-2009; não toca a receita nem arquivo assinado. **Regra declarada antes de rodar: o resultado não troca o modelo servido.**
+
+**Arquivos:**
+- Criar: `src/occasion/experimentos/curva_aprendizado.py`, `tests/experimentos/test_curva_aprendizado.py`
+- Modificar: `src/occasion/experimentos/__main__.py`, `Makefile`
+
+**Interfaces:**
+- `etapa_curva_aprendizado() -> None`: para cada parte e cada dobra externa, sorteia (semente declarada) 25%, 50%, 75% e 100% dos setores de treino, aninhados (cada fração contém a anterior); treina C com os parâmetros de `reports/receita.json` e D com os de `selecao_final` do D (`reports/experimentos/escada_<parte>.json`, ou `selecao_final` refeita), com o peso decidido em H5; mede log loss e PR-AUC ponderados na dobra externa; grava, por fração, as métricas de C, de D e a diferença D − C com intervalo por `intervalo_ganho` nas previsões fora da dobra. Ajusta uma curva de potência à diferença em função do número de eventos de treino e projeta para o dobro (aproximadamente 2008-2009 + 2017-2018), com o intervalo da projeção pelas réplicas do bootstrap. Natureza "exploratório". Grava `reports/experimentos/curva_aprendizado.json`.
+- Alvo `make curva-aprendizado`.
+
+- [ ] **Passo 1: testes que falham** em base sintética: frações aninhadas; nenhum setor da dobra externa no treino; JSON com as chaves declaradas.
+- [ ] **Passo 2: implementar, rodar os testes, rodar nos dados.** Commit do código e do JSON. O README relata o resultado e a recomendação de comparar C e D na POF 2024-2025.
+
+---
+
 ### Tarefa 18: modelo servido e a tela com ele
 
 **Arquivos:**
