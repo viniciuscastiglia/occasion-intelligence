@@ -179,7 +179,7 @@ How to read the rows that are easy to misread:
 A part is 'supported' only if the 95% interval of the PR-AUC gain excludes zero in favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018 cells, weighted.
 <!-- END:teste_final -->
 
-**Segments of the final test.** In every segment the observed / expected ratio is above 1: the event is more frequent in 2017-2018 than the 2008-2009 recipe expects. The shift is not uniform: 1.948 at home against 1.106 away from home, 1.958 in the Southeast against 1.203 in the South. Under-prediction that varies by segment does change the ranking across segments, so it is part of why the score lost ground over time.
+**Segments of the final test.** In every segment the observed / expected ratio is above 1: the event is more frequent in 2017-2018 than the 2008-2009 recipe expects. The shift is not uniform: 1.948 at home against 1.106 away from home, 1.958 in the Southeast against 1.203 in the South. Under-prediction that varies by segment does change the ranking across segments.
 
 <!-- BEGIN:segmentos_teste -->
 | Dimension | Level | Cells | Positives | PR-AUC | Observed / expected |
