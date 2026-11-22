@@ -1,0 +1,500 @@
+{
+  "data": "2026-11-22",
+  "contextos": [
+    {
+      "indice": 0,
+      "contexto": {
+        "uf": "RO",
+        "situacao": "urbano",
+        "dia_semana": "sabado",
+        "faixa_horario": "noite",
+        "local": "em_casa",
+        "idade": 45,
+        "sexo": "feminino",
+        "faixa_renda": "ate_meio_sm",
+        "numero_moradores": 4,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Sustentar",
+      "categoria": "Sustentar, via combo em app de delivery"
+    },
+    {
+      "indice": 1,
+      "contexto": {
+        "uf": "RO",
+        "situacao": "rural",
+        "dia_semana": "sabado",
+        "faixa_horario": "noite",
+        "local": "em_casa",
+        "idade": 19,
+        "sexo": "masculino",
+        "faixa_renda": "ate_meio_sm",
+        "numero_moradores": 4,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Sustentar",
+      "categoria": "Sustentar, via pizza e guaraná juntos no varejo"
+    },
+    {
+      "indice": 2,
+      "contexto": {
+        "uf": "SP",
+        "situacao": "urbano",
+        "dia_semana": "sabado",
+        "faixa_horario": "noite",
+        "local": "em_casa",
+        "idade": 28,
+        "sexo": "feminino",
+        "faixa_renda": "de_2_a_5_sm",
+        "numero_moradores": 3,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Converter",
+      "categoria": "Converter, via influencers e conteúdo digital"
+    },
+    {
+      "indice": 3,
+      "contexto": {
+        "uf": "SC",
+        "situacao": "urbano",
+        "dia_semana": "terca",
+        "faixa_horario": "noite",
+        "local": "em_casa",
+        "idade": 55,
+        "sexo": "feminino",
+        "faixa_renda": "de_2_a_5_sm",
+        "numero_moradores": 2,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Converter",
+      "categoria": "Converter, via combo em app de delivery"
+    },
+    {
+      "indice": 4,
+      "contexto": {
+        "uf": "RS",
+        "situacao": "urbano",
+        "dia_semana": "domingo",
+        "faixa_horario": "almoco",
+        "local": "fora_de_casa",
+        "idade": 45,
+        "sexo": "masculino",
+        "faixa_renda": "mais_de_5_sm",
+        "numero_moradores": 2,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Converter",
+      "categoria": "Converter, via ação na pizzaria"
+    },
+    {
+      "indice": 5,
+      "contexto": {
+        "uf": "BA",
+        "situacao": "rural",
+        "dia_semana": "terca",
+        "faixa_horario": "tarde",
+        "local": "em_casa",
+        "idade": 60,
+        "sexo": "feminino",
+        "faixa_renda": "ate_meio_sm",
+        "numero_moradores": 5,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Criar ocasião",
+      "categoria": "Criar ocasião, via pizza e guaraná juntos no varejo"
+    },
+    {
+      "indice": 6,
+      "contexto": {
+        "uf": "PE",
+        "situacao": "urbano",
+        "dia_semana": "sexta",
+        "faixa_horario": "tarde",
+        "local": "fora_de_casa",
+        "idade": 40,
+        "sexo": "masculino",
+        "faixa_renda": "meio_a_1_sm",
+        "numero_moradores": 6,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Criar ocasião",
+      "categoria": "Criar ocasião, via ação na pizzaria"
+    },
+    {
+      "indice": 7,
+      "contexto": {
+        "uf": "RJ",
+        "situacao": "urbano",
+        "dia_semana": "quinta",
+        "faixa_horario": "manha",
+        "local": "em_casa",
+        "idade": 35,
+        "sexo": "feminino",
+        "faixa_renda": "meio_a_1_sm",
+        "numero_moradores": 3,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Não priorizar",
+      "categoria": "Não priorizar"
+    },
+    {
+      "indice": 8,
+      "contexto": {
+        "uf": "MG",
+        "situacao": "urbano",
+        "dia_semana": "segunda",
+        "faixa_horario": "madrugada",
+        "local": "fora_de_casa",
+        "idade": 50,
+        "sexo": "masculino",
+        "faixa_renda": "de_1_a_2_sm",
+        "numero_moradores": 1,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Não priorizar",
+      "categoria": "Não priorizar"
+    },
+    {
+      "indice": 9,
+      "contexto": {
+        "uf": "CE",
+        "situacao": "rural",
+        "dia_semana": "quarta",
+        "faixa_horario": "almoco",
+        "local": "em_casa",
+        "idade": 70,
+        "sexo": "feminino",
+        "faixa_renda": "ate_meio_sm",
+        "numero_moradores": 2,
+        "versao_contrato": "1.0"
+      },
+      "objetivo": "Criar ocasião",
+      "categoria": "Criar ocasião, via pizza e guaraná juntos no varejo"
+    }
+  ],
+  "parametros": {
+    "temperatura": 0.2,
+    "max_tokens": 400,
+    "tempo_limite_s": 30.0
+  },
+  "pares": [
+    {
+      "modelo": "qwen/qwen3.8-27b",
+      "latencia_mediana_s": 1.438,
+      "latencia_maxima_s": 2.779,
+      "aprovados": 10,
+      "total": 10,
+      "falhas_por_motivo": {},
+      "reprovacoes_por_motivo": {},
+      "chamadas": [
+        {
+          "contexto": 0,
+          "latencia_s": 0.62,
+          "texto": "A recomendação é sustentar a ativação por meio de um combo em aplicativo de delivery, com base em uma associação observada de alta intensidade (score 93,19) entre pizza e refrigerante de guaraná. O contexto de consumo em casa, em área urbana, no sábado à noite, apresenta fatores que aumentam essa associação, enquanto a renda de até meio salário mínimo por pessoa a diminui. É importante destacar que guaraná refere-se ao sabor do refrigerante registrado na POF, não a uma marca específica.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 1,
+          "latencia_s": 1.059,
+          "texto": "O modelo classifica a associação entre pizza e refrigerante de guaraná como alta, com um score de 87,63, para o contexto de consumo em casa, em área rural, no sábado à noite. A faixa de horário noturna é o principal fator que aumenta essa associação, enquanto a renda de até meio salário mínimo por pessoa e a situação rural atuam como fatores que a diminuem. A recomendação é sustentar a ativação, posicionando pizza e guaraná juntos no varejo, alinhada à regra de consumo doméstico em áreas rurais. É importante destacar que guaraná refere-se ao sabor registrado na POF e não a uma marca específica.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 2,
+          "latencia_s": 0.987,
+          "texto": "A análise dos dados da POF/IBGE para o perfil de uma mulher de 28 anos em São Paulo indica uma associação de alta intensidade entre o consumo de pizza e refrigerante de guaraná, com um score de ocasião de 99,82. Essa forte correlação é impulsionada principalmente pelo horário noturno, que aumenta a associação, seguido pelo contexto de consumo em casa e pelo dia sábado, fatores que também contribuem positivamente para o cenário. A recomendação de ativação é da categoria \"Converter, via influencers e conteúdo digital\", alinhada à regra de ocasião alta e preferência baixa para o público abaixo de 30 anos. É importante destacar que guaraná refere-se ao sabor do refrigerante registrado na pesquisa, não a uma marca específica, e que os resultados descrevem uma associação observada, sem estimar efeitos sobre vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 3,
+          "latencia_s": 1.134,
+          "texto": "A análise dos dados da POF/IBGE para o contexto de Santa Catarina, em área urbana, indica uma associação de alta intensidade entre o consumo de pizza e refrigerante de guaraná, com um score de 91,97. Os fatores que aumentam essa associação incluem o horário noturno, o local em casa e a renda per capita de 3,5 salários mínimos, enquanto a idade de 55 anos atua em direção oposta, diminuindo a pontuação. A recomendação de ativação é converter via combo em app de delivery, alinhada à regra de contexto para consumidores em casa em áreas urbanas. É importante destacar que guaraná refere-se ao sabor do refrigerante registrado na pesquisa, não a uma marca específica. Este resultado descreve apenas a associação observada nos dados, sem estimar ou sugerir qualquer efeito sobre as vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 4,
+          "latencia_s": 1.07,
+          "texto": "No Rio Grande do Sul, o perfil de homens de 45 anos com renda superior a 5 salários mínimos apresenta uma associação de intensidade média (score 77,7) entre o consumo de pizza e refrigerante de guaraná em contextos urbanos de almoço de domingo fora de casa. A renda de 7,5 salários mínimos por pessoa e o dia da semana, domingo, são os fatores que aumentam essa associação na dimensão de ocasião, enquanto a renda também atua para diminuir a associação na dimensão de preferência. A recomendação de ativação é converter via ação na pizzaria, alinhada ao contexto de consumo fora de casa, embora o local específico diminua a associação na dimensão de ocasião. É importante destacar que guaraná refere-se ao sabor do refrigerante registrado na POF, não a uma marca, e que os dados descrevem uma associação observada, não um efeito sobre vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 5,
+          "latencia_s": 1.978,
+          "texto": "A análise do contexto na Bahia, para uma mulher de 60 anos em área rural, indica uma classificação de baixa associação entre o consumo de pizza e refrigerante de guaraná. Fatores como a renda de 0,25 salário mínimo por pessoa, a situação rural e a idade de 60 anos diminuem a probabilidade de essa combinação ocorrer nesse cenário específico. A recomendação é criar a ocasião, posicionando pizza e refrigerante de guaraná juntos no varejo, com apoio de mídia regional. Esse resultado descreve apenas a associação observada nos dados e não estima o efeito da ação sobre as vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 6,
+          "latencia_s": 1.964,
+          "texto": "O perfil analisado, um homem de 40 anos em área urbana de Pernambuco, apresenta uma associação de força média entre o consumo de pizza e refrigerante de guaraná, com um score de 64,11. A preferência por essa combinação é impulsionada positivamente pela localização no Nordeste e pelo estado de Pernambuco, enquanto a renda per capita de 0,75 salário mínimo e o horário da tarde exercem uma influência negativa sobre a ocorrência da ocasião. A recomendação de ativação é criar a ocasião por meio de uma ação direta na pizzaria, alinhada ao contexto de consumo fora de casa. Essa estratégia visa aproveitar a forte preferência regional observada nos dados, sem estimar efeitos diretos sobre as vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 7,
+          "latencia_s": 1.819,
+          "texto": "A recomendação para o contexto de uma mulher de 35 anos, em situação urbana no Rio de Janeiro, é de não priorizar a ativação, com uma classificação de associação baixa. O fator de horário da manhã diminui a associação observada, enquanto a localização no estado do Rio de Janeiro e a idade da pessoa aumentam essa métrica. A renda de meio a um salário mínimo por pessoa também atua diminuindo a associação, contribuindo para o resultado final.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 8,
+          "latencia_s": 1.743,
+          "texto": "A análise dos dados da POF/IBGE para o contexto de um homem de 50 anos, em área urbana de Minas Gerais, indica uma classificação de baixa associação entre o consumo de pizza e refrigerante de guaraná. A recomendação é de não priorizar a ativação, pois a faixa de horário da madrugada, o local fora de casa e a idade do perfil diminuem a probabilidade observada dessa combinação. O score de ocasião é de 3,14, com a madrugada sendo o principal fator que puxa o indicador para baixo, seguido pelo consumo fora de casa. Esses resultados descrevem apenas a associação observada nos dados, sem estimar qualquer efeito sobre vendas.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 9,
+          "latencia_s": 2.779,
+          "texto": "A recomendação para o contexto rural no Ceará é criar uma ocasião, posicionando pizza e refrigerante de guaraná juntos no varejo. A associação observada é classificada como baixa, com um score de 2,50, impulsionada principalmente pela preferência, que apresenta uma probabilidade de 0,36. Fatores como renda de até meio salário mínimo, idade de 70 anos e a situação rural diminuem a pontuação de ocasião, enquanto a localização no Ceará contribui positivamente. É importante destacar que guaraná refere-se ao sabor registrado na POF, não a uma marca específica.",
+          "aprovado": true,
+          "motivos": []
+        }
+      ],
+      "provedor": "groq",
+      "base_url": "https://api.groq.com/openai/v1"
+    },
+    {
+      "modelo": "openai/gpt-oss-120b",
+      "latencia_mediana_s": 2.909,
+      "latencia_maxima_s": 2.909,
+      "aprovados": 1,
+      "total": 10,
+      "falhas_por_motivo": {
+        "resposta_invalida": 9
+      },
+      "reprovacoes_por_motivo": {},
+      "chamadas": [
+        {
+          "contexto": 0,
+          "latencia_s": 2.315,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 1,
+          "latencia_s": 1.79,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 2,
+          "latencia_s": 1.466,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 3,
+          "latencia_s": 1.56,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 4,
+          "latencia_s": 1.757,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 5,
+          "latencia_s": 1.634,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 6,
+          "latencia_s": 1.518,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 7,
+          "latencia_s": 2.909,
+          "texto": "A análise indica que, para o contexto de manhã, a ocasião tende a diminuir a associação entre pizza e guaraná. Na UF 33, a ocasião aumenta, enquanto a renda per capita de 0.75 salário mínimo reduz a associação. O ambiente urbano e a idade de 35 anos também contribuem positivamente para a ocasião. Diante desses fatores, a recomendação é Não priorizar.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 8,
+          "latencia_s": 2.1,
+          "falha": "resposta_invalida"
+        },
+        {
+          "contexto": 9,
+          "latencia_s": 2.219,
+          "falha": "resposta_invalida"
+        }
+      ],
+      "provedor": "groq",
+      "base_url": "https://api.groq.com/openai/v1"
+    },
+    {
+      "modelo": "minimaxai/minimax-m3.1-flash",
+      "latencia_mediana_s": null,
+      "latencia_maxima_s": null,
+      "aprovados": 0,
+      "total": 10,
+      "falhas_por_motivo": {
+        "tempo_esgotado": 10
+      },
+      "reprovacoes_por_motivo": {},
+      "chamadas": [
+        {
+          "contexto": 0,
+          "latencia_s": 32.58,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 1,
+          "latencia_s": 35.33,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 2,
+          "latencia_s": 35.342,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 3,
+          "latencia_s": 35.918,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 4,
+          "latencia_s": 35.312,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 5,
+          "latencia_s": 35.374,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 6,
+          "latencia_s": 35.295,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 7,
+          "latencia_s": 35.282,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 8,
+          "latencia_s": 35.286,
+          "falha": "tempo_esgotado"
+        },
+        {
+          "contexto": 9,
+          "latencia_s": 35.282,
+          "falha": "tempo_esgotado"
+        }
+      ],
+      "provedor": "nvidia",
+      "base_url": "https://integrate.api.nvidia.com/v1"
+    },
+    {
+      "modelo": "poolside/laguna-xs-2.1",
+      "latencia_mediana_s": 7.517,
+      "latencia_maxima_s": 16.033,
+      "aprovados": 7,
+      "total": 10,
+      "falhas_por_motivo": {},
+      "reprovacoes_por_motivo": {
+        "número 0,52 não existe na entrada": 1,
+        "número 1,49 não existe na entrada": 1,
+        "número 0,46 não existe na entrada": 1,
+        "número 0,35 não existe na entrada": 1,
+        "número 0,29 não existe na entrada": 1,
+        "número 0,20 não existe na entrada": 1,
+        "número 1,83 não existe na entrada": 1,
+        "número 06 não existe na entrada": 1
+      },
+      "chamadas": [
+        {
+          "contexto": 0,
+          "latencia_s": 7.851,
+          "texto": "A recomendação de ativação \"Sustentar, via combo em app de delivery\" é indicada para o perfil feminino de 45 anos, residente em área urbana de Rondônia, em noite de sábado em casa, com renda até meio salário mínimo e 4 moradores. O horário noturno aumenta a associação entre pizza e guaraná, enquanto a renda de 0,25 salário mínimo pessoal reduz essa associação. O local em casa e o dia de fim de semana também impulsionam a ocorrência dessa combinação.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 1,
+          "latencia_s": 6.635,
+          "texto": "A associação entre pizza e refrigerante de guaraná é alta (87,6) nesse contexto rural de RO, no sábado à noite, em casa, para jovens de 19 anos com renda até meio salário mínimo. O horário da noite aumenta a associação, enquanto a renda baixa (0,25 salário mínimo por pessoa) e a situação rural a reduzem. Recomenda-se sustentar a oferta conjunta de pizza e guaraná no varejo, alinhada ao padrão observado.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 2,
+          "latencia_s": 7.733,
+          "texto": "Para o público de 28 anos, feminino, com renda de R$ 3.500, morando em casa no período noturno de sábado, a associação entre pizza e refrigerante de guaraná apresenta alta ocorrência (score 99,82). A recomendação é ativar a categoria \"Converter, via influencers e conteúdo digital\", pois a ocasião é alta, a preferência é baixa e a idade está abaixo de 30 anos. Os fatores que aumentam a associação são: faixa horária noturna (+2,88), local em casa (+0,72), dia de sábado (+0,70), renda de R$ 3.500 (+0,65) e idade de 28 anos (+0,45).",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 3,
+          "latencia_s": 7.138,
+          "texto": "O modelo identificou alta associação entre pizza e refrigerante de guaraná em contextos urbanos de noite em casa, com occasion_score de 91,97 e classificação de alta. Os fatores que aumentam a ocasião são: faixa horário à noite (+2,17), local em casa (+0,72) e renda de 3,5 salários mínimos (+0,65). O fator idade 55 anos reduz a ocasião (-0,52). A recomendação é converter via combo em app de delivery, alinhado ao contexto de em casa e área urbana.",
+          "aprovado": false,
+          "motivos": [
+            "número 0,52 não existe na entrada"
+          ]
+        },
+        {
+          "contexto": 4,
+          "latencia_s": 6.58,
+          "texto": "O contexto de almoço em domingo, fora de casa, em região sul, com renda de 7,5 salários mínimos por pessoa, mostra associação observada entre pizza e refrigerante de guaraná. A recomendação de ativação é \"Converter, via ação na pizzaria\", pois o local \"fora de casa\" está alinhado com a regra. Os fatores que aumentam a associação são renda per capita e dia de domingo; o fator que diminui é a renda per capita no aspecto de preferência.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 5,
+          "latencia_s": 6.885,
+          "texto": "A recomendação indica a criação de ocasião para consumo de pizza e guaraná juntos no varejo, em áreas rurais e em casa. Os fatores renda per capita de 0,25 salário mínimo, situação rural e idade de 60 anos puxam para baixo a ocorrência dessa combinação. A associação entre pizza e guaraná é classificada como baixa, com um occasion score de 7,58. A ativação deve ocorrer via varejo, com mídia regional como apoio.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 6,
+          "latencia_s": 7.551,
+          "texto": "A recomendação indica a criação de ocasião por meio de ação na pizzaria, canal principal para o contexto de estar fora de casa. A associação entre pizza e refrigerante de guaraná apresenta occasion score de 64,11 e classificação média, com contribuição positiva da preferência pela região Nordeste (UF 26) e negativa da renda de 0,75 salário mínimo por pessoa na parte de ocasião.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 7,
+          "latencia_s": 16.033,
+          "texto": "A recomendação de ativação é classificada como \"Não priorizar\", pois a ocasião e a preferência estão abaixo dos cortes estabelecidos. O horário da manhã (faixa_horario) reduz a associação entre pizza e guaraná, enquanto a UF 33 (RJ) e a situação urbano aumentam a associação. A renda de 0,75 salário mínimo por pessoa reduz a associação. A idade de 35 anos aumenta a associação.",
+          "aprovado": true,
+          "motivos": []
+        },
+        {
+          "contexto": 8,
+          "latencia_s": 12.077,
+          "texto": "A recomendação indica \"Não priorizar\" para a ativação de pizza com refrigerante de guaraná no contexto urbano de MG, segunda-feira de madrugada, fora de casa, para homens de 50 anos com renda de 1 a 2 salários mínimos. Os fatores que reduzem a associação observada são: faixa horária madrugada (-1,49), local fora de casa (-0,46), idade 50 anos (-0,35), UF MG (-0,29) e segunda-feira (-0,20). O resultado reflete a associação registrada na POF/IBGE, não efeito de ação comercial.",
+          "aprovado": false,
+          "motivos": [
+            "número 1,49 não existe na entrada",
+            "número 0,46 não existe na entrada",
+            "número 0,35 não existe na entrada",
+            "número 0,29 não existe na entrada",
+            "número 0,20 não existe na entrada"
+          ]
+        },
+        {
+          "contexto": 9,
+          "latencia_s": 7.483,
+          "texto": "A recomendação indica a criação de ocasião, via pizza e guaraná juntos no varejo, para o contexto em que a pessoa está em casa, em área rural do Ceará, em quarta-feira, no almoço. O score de associação observado é de 2,50, com classificação de baixa, e a probabilidade de ocorrência é de 1,83e-06. Os fatores que contribuem para a redução da ocasião são renda per capita de 0,25 salário mínimo, idade de 70 anos, situação rural e quarta-feira. O único fator que aumenta a ocasião é a UF 23 (Ceará).",
+          "aprovado": false,
+          "motivos": [
+            "número 1,83 não existe na entrada",
+            "número 06 não existe na entrada"
+          ]
+        }
+      ],
+      "provedor": "nvidia",
+      "base_url": "https://integrate.api.nvidia.com/v1"
+    }
+  ]
+}
