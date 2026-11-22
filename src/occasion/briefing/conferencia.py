@@ -10,6 +10,8 @@ from typing import Any
 # impactos, impactar; causa, causas, causar, causado; garante, garantia, garantido; vendem mais).
 # "causal" e "causalidade" não reprovam: o aviso do modelo diz "efeito causal" e o texto pode
 # repeti-lo para negar o efeito. A comparação é sem acento e sem diferença de maiúsculas.
+# Marcas: o briefing fala do sabor registrado na POF, nunca de marca. "Coca-Cola" vale com
+# qualquer separador (espaço, hífen não ASCII, nenhum) e "Schin" cobre "Schincariol".
 TERMOS_PROIBIDOS: tuple[str, ...] = (
     "vende mais",
     "aumenta as vendas",
@@ -20,10 +22,15 @@ TERMOS_PROIBIDOS: tuple[str, ...] = (
     "impacto",
     "eficácia",
     "antarctica",
+    "antártica",
     "coca-cola",
-    "coca cola",
     "pepsi",
     "kuat",
+    "ambev",
+    "fanta",
+    "sprite",
+    "schin",
+    "dolly",
 )
 
 # Padrão (já sem acento, em minúsculas) de cada termo, com as formas derivadas.
@@ -38,6 +45,8 @@ _FORMAS: dict[str, str] = {
     "garantir": r"garant\w*",
     "impacto": r"impact\w*",
     "eficácia": r"eficaci\w*|eficaz(?:es)?",
+    "coca-cola": r"coca[\W_]*cola",
+    "schin": r"schin\w*",
 }
 
 # Número com vírgula ou ponto decimal; o `%` não entra no padrão, porque só muda a escala

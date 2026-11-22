@@ -13,6 +13,31 @@ from occasion.inference.contract import Fator
 from occasion.inference.predict import ArtefatoModelo, salvar_artefato
 
 CAMINHO_APP = str(Path(__file__).resolve().parents[2] / "app" / "streamlit_app.py")
+VARIAVEIS_DO_BRIEFING = ("BRIEFING_BASE_URL", "BRIEFING_MODELO", "BRIEFING_CHAVE")
+
+
+def _tela() -> AppTest:
+    """AppTest hermético em relação aos segredos.
+
+    O `AppTest` só troca `st.secrets` quando `at.secrets` não está vazio; vazio, ele lê o
+    `.streamlit/secrets.toml` do projeto e o do usuário, e o Streamlit ainda copia as chaves
+    da raiz para `os.environ`. Uma chave neutra, sem `BRIEFING_*`, isola a tela dos dois.
+    """
+    at = AppTest.from_file(CAMINHO_APP)
+    at.secrets["_tela_em_teste"] = "1"
+    return at
+
+
+@pytest.fixture(autouse=True)
+def tela_sem_rede(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Nenhum teste da tela usa as variáveis do briefing nem chega à rede."""
+    for nome in VARIAVEIS_DO_BRIEFING:
+        monkeypatch.delenv(nome, raising=False)
+
+    def _sem_rede(self: object, mensagens: list[dict[str, str]]) -> str:
+        raise AssertionError("teste da tela tentou chamar o provedor de LLM")
+
+    monkeypatch.setattr("occasion.briefing.cliente.ClienteHTTP.completar", _sem_rede)
 
 
 @pytest.fixture
@@ -29,7 +54,7 @@ def sem_artefato(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_tela_mostra_score_e_recomendacao(artefato_em_disco: ArtefatoModelo) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+    at = _tela().run()
     at.sidebar.button[0].click().run()
     assert not at.exception
     titulos = " ".join(s.value for s in at.subheader)
@@ -39,7 +64,7 @@ def test_tela_mostra_score_e_recomendacao(artefato_em_disco: ArtefatoModelo) -> 
 
 
 def test_tela_sem_artefato_mostra_instrucao_e_nao_quebra(sem_artefato: None) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+    at = _tela().run()
     assert not at.exception
     assert any("make baseline" in e.value for e in at.error)
 
@@ -79,7 +104,7 @@ def test_grafico_tem_um_rotulo_legivel_por_fator() -> None:
 def test_tela_mostra_probabilidade_com_virgula_e_limites_completos(
     artefato_em_disco: ArtefatoModelo,
 ) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+    at = _tela().run()
     at.sidebar.button[0].click().run()
     probabilidade = next(m for m in at.metric if m.label == "Probabilidade conjunta")
     assert "," in probabilidade.value and "." not in probabilidade.value
@@ -95,7 +120,7 @@ def test_tela_mostra_probabilidade_com_virgula_e_limites_completos(
 def test_tela_avisa_quando_o_contexto_mudou_depois_do_calculo(
     artefato_em_disco: ArtefatoModelo,
 ) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+    at = _tela().run()
     at.sidebar.button[0].click().run()
     assert not at.warning
     at.sidebar.number_input[0].set_value(45).run()
@@ -132,16 +157,8 @@ def _celulas_atuais(grafico) -> list[dict]:
     return tabela[tabela["atual"]][["dia_semana", "faixa_horario"]].to_dict("records")
 
 
-@pytest.fixture
-def sem_briefing_configurado(monkeypatch: pytest.MonkeyPatch) -> None:
-    for nome in ("BRIEFING_BASE_URL", "BRIEFING_MODELO", "BRIEFING_CHAVE"):
-        monkeypatch.delenv(nome, raising=False)
-
-
-def test_tela_mostra_mapa_de_calor_depois_de_calcular(
-    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
-) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+def test_tela_mostra_mapa_de_calor_depois_de_calcular(artefato_em_disco: ArtefatoModelo) -> None:
+    at = _tela().run()
     assert len(_graficos(at)) == 0
     at.sidebar.button[0].click().run()
     assert not at.exception
@@ -149,10 +166,8 @@ def test_tela_mostra_mapa_de_calor_depois_de_calcular(
     assert len(_celulas_atuais(_graficos(at)[1])) == 1
 
 
-def test_briefing_sem_chave_mostra_reserva_com_motivo(
-    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
-) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+def test_briefing_sem_chave_mostra_reserva_com_motivo(artefato_em_disco: ArtefatoModelo) -> None:
+    at = _tela().run()
     at.sidebar.button[0].click().run()
     botao = next(b for b in at.button if b.label == "Gerar briefing")
     botao.click().run()
@@ -165,10 +180,8 @@ def test_briefing_sem_chave_mostra_reserva_com_motivo(
     assert "Texto reserva" not in " ".join(c.value for c in at.caption)
 
 
-def test_mapa_e_briefing_usam_o_contexto_calculado(
-    artefato_em_disco: ArtefatoModelo, sem_briefing_configurado: None
-) -> None:
-    at = AppTest.from_file(CAMINHO_APP).run()
+def test_mapa_e_briefing_usam_o_contexto_calculado(artefato_em_disco: ArtefatoModelo) -> None:
+    at = _tela().run()
     at.sidebar.button[0].click().run()
     antes = _celulas_atuais(_graficos(at)[1])
     assert antes == [{"dia_semana": "sabado", "faixa_horario": "noite"}]
@@ -178,3 +191,17 @@ def test_mapa_e_briefing_usam_o_contexto_calculado(
     next(b for b in at.button if b.label == "Gerar briefing").click().run()
     assert at.session_state["contexto_usado"].dia_semana == "sabado"
     assert not at.exception
+    assert at.session_state["chamadas_llm"] == 0
+    assert "Texto reserva: sem chave configurada" in " ".join(c.value for c in at.caption)
+
+
+def test_texto_do_llm_aparece_sem_markdown_nem_latex() -> None:
+    from app.streamlit_app import texto_sem_markdown
+
+    texto = "Custa $5 e $6; veja [aqui](http://x.y) e **isto** :smile: # título"
+    escapado = texto_sem_markdown(texto)
+    assert "\\$5" in escapado and "\\$6" in escapado
+    assert "\\[aqui\\]\\(http" in escapado
+    assert "\\*\\*isto\\*\\*" in escapado and "\\# título" in escapado
+    # Sem os escapes, o texto volta a ser o original.
+    assert escapado.replace("\\", "") == texto

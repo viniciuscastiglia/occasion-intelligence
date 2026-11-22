@@ -5,6 +5,7 @@ A tela só chama `carregar_artefato` e `prever` e formata a saída; não calcula
 
 import contextlib
 import os
+import re
 from pathlib import Path
 from typing import Any, cast, get_args
 
@@ -13,6 +14,7 @@ import pandas as pd
 import streamlit as st
 
 from occasion.briefing.cliente import ClienteHTTP, configuracao_de
+from occasion.briefing.limite import LimiteGlobal
 from occasion.briefing.servico import LIMITE_POR_SESSAO, Briefing, gerar_briefing
 from occasion.config import MODELOS
 from occasion.inference.contract import (
@@ -48,6 +50,9 @@ COR_MAPA_CLARA = "#e8f1fb"
 COR_MAPA_ESCURA = "#0b3d7a"
 LIMITE_TEXTO_CLARO = 55
 VARIAVEIS_DO_BRIEFING = ("BRIEFING_BASE_URL", "BRIEFING_MODELO", "BRIEFING_CHAVE")
+MAXIMO_DE_MAPAS_EM_CACHE = 500
+# Caracteres que o Markdown do Streamlit interpreta (inclusive `$` do LaTeX e `:` dos ícones).
+_MARKDOWN_ATIVO = re.compile(r"([\\`*_{}\[\]()#+\-.!|$~<>:])")
 
 
 def _formatar_opcao(rotulos: dict[str, str]) -> Any:
@@ -65,6 +70,17 @@ def _cache_de_briefings() -> dict[str, Briefing]:
     return {}
 
 
+@st.cache_resource
+def _limite_global() -> LimiteGlobal:
+    """Limite de chamadas ao provedor do processo inteiro, somado ao limite por sessão."""
+    return LimiteGlobal()
+
+
+def texto_sem_markdown(texto: str) -> str:
+    """Escapa o Markdown e o LaTeX do texto do LLM, para que ele apareça como foi escrito."""
+    return _MARKDOWN_ATIVO.sub(r"\\\1", texto)
+
+
 def fonte_da_configuracao() -> dict[str, str]:
     """`st.secrets` e `os.environ` combinados; a variável de ambiente prevalece.
 
@@ -79,7 +95,7 @@ def fonte_da_configuracao() -> dict[str, str]:
     return fonte
 
 
-@st.cache_data(show_spinner="Calculando o mapa de calor...")
+@st.cache_data(show_spinner="Calculando o mapa de calor...", max_entries=MAXIMO_DE_MAPAS_EM_CACHE)
 def _scores_do_mapa(contexto_json: str, pasta: str) -> pd.DataFrame:
     """Tabela do mapa; a chave é o JSON do contexto com dia e faixa normalizados."""
     contexto = Contexto.model_validate_json(contexto_json)
@@ -153,20 +169,22 @@ def mostrar_briefing(contexto: Contexto, resultado: Resultado) -> None:
     if st.button("Gerar briefing"):
         config = configuracao_de(fonte_da_configuracao())
         cliente = ClienteHTTP(config) if config else None
-        briefing, chamou = gerar_briefing(
-            contexto,
-            resultado,
-            cliente,
-            _cache_de_briefings(),
-            st.session_state["chamadas_llm"],
-        )
+        with st.spinner("Gerando briefing..."):
+            briefing, chamou = gerar_briefing(
+                contexto,
+                resultado,
+                cliente,
+                _cache_de_briefings(),
+                st.session_state["chamadas_llm"],
+                _limite_global(),
+            )
         st.session_state["chamadas_llm"] += int(chamou)
         st.session_state["briefing"] = briefing
     briefing: Briefing | None = st.session_state.get("briefing")
     if briefing is None:
         st.caption(f"Até {LIMITE_POR_SESSAO} chamadas ao provedor por sessão.")
         return
-    st.write(briefing.texto)
+    st.markdown(texto_sem_markdown(briefing.texto))
     if briefing.fonte == "llm":
         st.caption(f"Gerado por {briefing.modelo} e conferido automaticamente")
     else:

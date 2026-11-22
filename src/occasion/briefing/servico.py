@@ -1,4 +1,4 @@
-"""Serviço do briefing: cache, limite por sessão, chamada ao LLM e conferência."""
+"""Serviço do briefing: cache, limites (sessão e processo), chamada ao LLM e conferência."""
 
 import hashlib
 import json
@@ -8,6 +8,7 @@ from typing import Literal
 
 from occasion.briefing.cliente import ClienteLLM, FalhaDoLLM
 from occasion.briefing.conferencia import conferir
+from occasion.briefing.limite import LimiteGlobal
 from occasion.briefing.prompt import entrada_do_briefing, montar_mensagens
 from occasion.briefing.reserva import texto_reserva
 from occasion.inference.contract import Contexto, Resultado
@@ -21,6 +22,7 @@ MOTIVOS_DA_FALHA = {
     "resposta_invalida": "resposta inválida do provedor",
     "erro_do_provedor": "erro do provedor",
 }
+MOTIVO_LIMITE_GLOBAL = "limite de briefings da demonstração atingido; tente mais tarde"
 
 
 @dataclass(frozen=True)
@@ -48,14 +50,16 @@ def gerar_briefing(
     cliente: ClienteLLM | None,
     cache: MutableMapping[str, Briefing],
     chamadas_na_sessao: int,
+    limite_global: LimiteGlobal | None = None,
 ) -> tuple[Briefing, bool]:
     """Devolve o briefing e se o provedor foi chamado.
 
     O `bool` é True sempre que a chamada ao provedor foi tentada, mesmo que ela tenha falhado
     ou que o texto tenha sido reprovado na conferência (a tentativa gasta cota). É False
-    quando o briefing veio do cache, da ausência de cliente ou do limite da sessão.
-    Nunca levanta exceção por falha do provedor. Ordem: cache, sem cliente, limite, chamada,
-    conferência. Só texto aprovado entra no cache.
+    quando o briefing veio do cache, da ausência de cliente ou de um dos limites.
+    Nunca levanta exceção por falha do provedor. Ordem: cache, sem cliente, limite da sessão,
+    limite global do processo (se houver), chamada, conferência. Só texto aprovado entra no
+    cache, e o cache não gasta nenhum dos limites.
     """
     chave = chave_do_cache(contexto, resultado)
     if chave in cache:
@@ -64,6 +68,8 @@ def gerar_briefing(
         return _reserva(contexto, resultado, "sem chave configurada"), False
     if chamadas_na_sessao >= LIMITE_POR_SESSAO:
         return _reserva(contexto, resultado, "limite de briefings desta sessão atingido"), False
+    if limite_global is not None and not limite_global.reservar():
+        return _reserva(contexto, resultado, MOTIVO_LIMITE_GLOBAL), False
     try:
         texto = cliente.completar(montar_mensagens(contexto, resultado))
     except FalhaDoLLM as falha:
@@ -74,6 +80,22 @@ def gerar_briefing(
         return _reserva(contexto, resultado, motivo), True
     briefing = Briefing(texto, "llm", cliente.modelo, None)
     cache[chave] = briefing
-    while len(cache) > TAMANHO_MAXIMO_DO_CACHE:
-        del cache[next(iter(cache))]
+    _descartar_excesso(cache)
     return briefing, True
+
+
+def _descartar_excesso(cache: MutableMapping[str, Briefing]) -> None:
+    """Descarta as entradas mais antigas acima do tamanho máximo, sem nunca levantar exceção.
+
+    O cache é compartilhado entre as threads das sessões: outra sessão pode ter removido a
+    chave mais antiga entre a leitura e a remoção (`pop` com padrão ignora a ausência), ou
+    mudado o dicionário durante a iteração (RuntimeError, que encerra o descarte desta vez).
+    """
+    while len(cache) > TAMANHO_MAXIMO_DO_CACHE:
+        try:
+            mais_antiga = next(iter(cache), None)
+        except RuntimeError:
+            return
+        if mais_antiga is None:
+            return
+        cache.pop(mais_antiga, None)

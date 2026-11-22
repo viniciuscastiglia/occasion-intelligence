@@ -88,3 +88,46 @@ def test_aprova_texto_sem_numeros(contexto: Contexto, resultado: Resultado) -> N
     )
     assert r.aprovado
     assert r.motivos == ()
+
+
+@pytest.mark.parametrize(
+    ("texto", "termo"),
+    [
+        ("Pelo Guaraná Antártica.", "antártica"),
+        ("Pelo guarana antartica.", "antártica"),
+        ("Pelo Guaraná Antarctica.", "antarctica"),
+        ("Contra a Coca-Cola.", "coca-cola"),
+        ("Contra a Coca‑Cola.", "coca-cola"),
+        ("Contra a Coca–Cola.", "coca-cola"),
+        ("Contra a Coca Cola.", "coca-cola"),
+        ("Contra a cocacola.", "coca-cola"),
+        ("Contra a COCA_COLA.", "coca-cola"),
+        ("Contra a Pepsi.", "pepsi"),
+        ("Contra o Kuat.", "kuat"),
+        ("Uma ação da Ambev.", "ambev"),
+        ("Melhor que Fanta.", "fanta"),
+        ("Melhor que Sprite.", "sprite"),
+        ("Melhor que Schin.", "schin"),
+        ("Melhor que Schincariol.", "schin"),
+        ("Melhor que Dolly.", "dolly"),
+    ],
+)
+def test_reprova_marca(contexto: Contexto, resultado: Resultado, texto: str, termo: str) -> None:
+    r = conferir(texto, entrada_do_briefing(contexto, resultado))
+    assert not r.aprovado
+    assert f"termo proibido: {termo}" in r.motivos
+
+
+@pytest.mark.parametrize(
+    "texto",
+    [
+        "A fantasia do público e o espírito da noite.",
+        "Refrigerante de guaraná, o sabor registrado na POF, em uma pizzaria da Antártida? Não.",
+        "Um coco e uma cola de papel.",
+    ],
+)
+def test_nao_reprova_palavra_parecida_com_marca(
+    contexto: Contexto, resultado: Resultado, texto: str
+) -> None:
+    r = conferir(texto, entrada_do_briefing(contexto, resultado))
+    assert r.aprovado, r.motivos
