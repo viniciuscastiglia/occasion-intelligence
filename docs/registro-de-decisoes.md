@@ -38,6 +38,8 @@ Os assuntos estão na ordem em que apareceram. Cada um indica quem decidiu: o au
 | 24 | Revisão independente do design | Sete perguntas respondidas e nove inconsistências corrigidas |
 | 25 | Decisões durante a execução do Plano 1 | R12 e R13 (target), R9, R11 e R14 (escolhas do executor) |
 | 26 | Clima e feriados casados com a POF | Fora do score; data exata existe só em 2008-2009; bloco de clima vira próximo passo |
+| 27 | Decisões do Plano 2 | Bootstrap de setores, regra do campeão, receita congelada (degrau C nas duas partes) e servido com a mesma receita |
+| 28 | Decisões do Plano 3 | Artefato servido commitado, demo pública, briefing com cache e limites pelo Groq (`qwen/qwen3.8-27b`), API local, documentação em inglês com números gerados, tudo publicado |
 
 ---
 
@@ -830,6 +832,119 @@ No servido (tarefa 18), as escolhas de execução foram: treino nas duas ediçõ
 
 ---
 
+## 28. Decisões do Plano 3
+
+Decisões tomadas ao escrever e executar o Plano 3 (tela completa, briefing por LLM, API, documentação e demo pública), de 21 a 22/11/2026, na branch `plano-3`. O design é `docs/superpowers/specs/2026-11-21-plano-3-entrega-e-portfolio-design.md`, aprovado pelo autor em 21/11/2026; a seção 7 dele lista as escolhas do redator e as do autor. Aqui as decisões estão marcadas como **decidido pelo autor**, **escolha do redator, aprovada pelo autor** (vieram do design aprovado) ou **escolha do executor** (tomadas durante a execução, registradas no ledger do plano como *rulings*). Nenhuma decisão do Plano 3 tocou a receita: os arquivos assinados e as versões das bibliotecas assinadas foram conferidos ao fim de cada tarefa.
+
+### Artefato servido commitado e refeito da árvore limpa
+
+**Decisão (escolha do redator, aprovada pelo autor; ordem dos passos por escolha do executor).** Só o artefato servido vai para o repositório: o `.gitignore` troca `/models/` por `/models/*` com a exceção `!/models/servido/`, e `avaliado` e `baseline` continuam fora. Antes de commitá-lo, o artefato foi refeito por `make servido` com a árvore limpa e comparado com o anterior por `scripts/comparar_artefatos.py`, numa grade fixa de 140 contextos (os 35 pares de dia e faixa para 4 perfis): zero diferenças fora de `model_metadata.receita_commit`. O `receita_commit` passou de `receita-congelada-13-gb5545fe4f41c-dirty` para `receita-congelada-18-ge09457fa5256`, sem `-dirty`. O arquivo tem cerca de 40 MB e vai no git comum, abaixo do limite de 100 MB por arquivo do GitHub. Pela ordem escolhida pelo executor (Ruling A), o script de comparação foi commitado antes do `make servido` e o `.gitignore` só foi editado depois, para nenhum arquivo rastreado estar modificado quando o `git describe --dirty` rodasse.
+
+**Motivo.** A tela e a demo precisam funcionar a partir de um clone sem `data/`, que não é redistribuído. O artefato antigo mostraria `-dirty` no painel de metadados da demo. A comparação numa grade fixa garante que refazer o artefato não mudou nenhum número.
+
+**Alternativas descartadas:** manter o artefato antigo (o painel mostraria `-dirty`); commitar também `avaliado` e `baseline` (a tela não os usa, e o avaliado se refaz com `make avaliado`); treinar o modelo na subida da tela (exigiria os microdados).
+
+### Demo pública, com o deploy provado antes num repositório privado
+
+**Decisão (decidido pelo autor).** A demo fica no Streamlit Community Cloud, com o LLM chamado de verdade. A organização é a B do design (frentes de código e de documentos), com a primeira tarefa vinda da C: provar o ambiente antes de tudo, com clone limpo e um deploy de verdade a partir de um repositório **privado**. O autor autorizou criar o repositório privado `github.com/viniciuscastiglia/occasion-intelligence` e enviar `main`, `plano-3` e a tag `receita-congelada`, e criou o app na interface do Cloud. Em 21/11/2026 ele conferiu o app ao vivo: a tela carrega e calcula. O Cloud instalou tudo pelo `uv.lock` (que tem prioridade sobre os outros arquivos de dependência), com o pacote local e o LightGBM funcionando, sem `requirements.txt` nem `packages.txt`; o Python 3.12 é escolhido nas configurações avançadas do formulário de deploy. A conferência ficou com o autor porque o app privado exige login e a extensão do Chrome não conseguiu operá-lo. Tornar o repositório público e cadastrar os *secrets* do LLM ficam para a tarefa 14, cada ação confirmada com o autor na hora.
+
+**Escolhas do executor:** os passos que exigem o autor (criar repositório, enviar código, criar o app, chaves, titular da licença) foram feitos perguntando na hora, e as tarefas que não dependiam deles seguiram enquanto isso (Ruling C). O comando de clone do README já traz a URL do repositório, que só funciona depois de público; a tarefa 14 troca só a URL da demo (Ruling H).
+
+**Motivo.** Problemas de ambiente (pacote local em layout `src/`, versões do `uv.lock` para o joblib carregar, `libgomp` do LightGBM, memória) aparecem cedo e com folga, sem expor o repositório antes de o README estar pronto.
+
+**Alternativas descartadas:** organização A, sequencial (o deploy só aconteceria no fim); organização C, deploy público desde o primeiro dia (o repositório ficaria público antes do README); `requirements.txt` (seria um segundo arquivo de dependências, ignorado porque o `uv.lock` tem prioridade); `packages.txt` com `libgomp1` por precaução (o deploy não precisou).
+
+### Briefing por LLM: cache, limites e conferência
+
+**Decisão (escolha do redator, aprovada pelo autor, para cache, limite por sessão, tempo limite e conferência; escolha do executor para o cliente, as formas dos termos proibidos e o teto global).** O módulo `src/occasion/briefing/` separa prompt, cliente, conferência, texto reserva, serviço e limite. O LLM recebe só o `Contexto` e o `Resultado`; nenhum microdado sai da máquina.
+
+- **Cliente:** `httpx` direto, que já era dependência transitiva; o `uv.lock` só ganhou a dependência explícita, sem mudar versão. Tempo limite de 15 s. Resposta truncada (`finish_reason = "length"`), sem `choices`, com JSON inválido, erro HTTP, 429 ou URL malformada viram texto reserva com o motivo, sem exceção na tela.
+- **Cache pela decisão:** a chave é um hash do `Resultado`; só textos aprovados entram no cache.
+- **Limite por sessão:** 5 chamadas ao provedor por sessão do Streamlit.
+- **Teto global por processo (escolha do executor, Ruling G, na revisão final):** 60 chamadas por hora para o processo inteiro, numa janela deslizante (`briefing/limite.py`). A revisão de segurança da tarefa 6 mostrou que o limite por sessão se contorna abrindo sessões novas. Esgotado o teto, entra o texto reserva com o motivo "limite de briefings da demonstração atingido".
+- **Plano gratuito do provedor:** cota esgotada vira erro, não cobrança.
+- **Conferência:** todo número do texto existe na entrada, aceitas as formas equivalentes (vírgula ou ponto, fração ou porcentagem, arredondamento); nenhum termo proibido. Na revisão da tarefa 3 a lista passou a pegar derivados ("impactos", "causaram", "garantia", "aumentaram as vendas"), deixando passar "causal" e "causalidade", porque o aviso do próprio modelo diz "efeito causal". Na revisão final entraram marcas ("Antártica", "Ambev", "Fanta", "Sprite", "Schin" e derivados, "Dolly") e "Coca-Cola" com qualquer separador.
+- **Limite declarado:** a conferência não verifica se cada fator citado está em `top_factors`; a garantia vem do prompt e da conferência de números, e o README diz isso.
+- **Na tela:** o texto do LLM é escapado de Markdown e LaTeX, e a linha de transparência diz se o texto veio do modelo e foi conferido ou se é o texto reserva, com o motivo.
+
+**Pontos aceitos sem correção (escolha do executor):** uma corrida rara entre sessões no cache cheio poderia dar um erro na tela; o padrão de "Schin" reprova "Schindler" e o de "Coca-Cola" reprova "coca, cola". Nos dois últimos casos a reprovação cai no texto reserva, o lado seguro.
+
+**Motivo.** A demo fica pública diante do júri e do vídeo. O provedor não pode ser chamado sem limite, e nenhum texto que cite número inventado, marca ou efeito causal pode chegar à tela.
+
+**Alternativas descartadas:** conferir os fatores pelo nome (o identificador quase nunca aparece, e o rótulo em português também está no contexto, o que reprovaria textos fiéis); só o limite por sessão (contornável); a lista de termos por palavra inteira (deixava passar plurais e derivados); a biblioteca `openai` (acrescentaria dependências ao `uv.lock`).
+
+### Provedor e modelo do briefing
+
+**Decisão (decidido pelo autor em 22/11/2026).** Groq, com o modelo `qwen/qwen3.8-27b` (`BRIEFING_BASE_URL=https://api.groq.com/openai/v1`), registrado no `.env.example`.
+
+**O que foi medido (tarefa 5, executor).** `scripts/comparar_provedores.py` mandou o mesmo prompt, para 10 contextos fixos que cobrem os quatro objetivos do Decision Engine, a dois modelos do Groq e dois do NVIDIA NIM (temperatura 0,2, 400 tokens, tempo limite de 30 s no script). Números lidos de `reports/briefing_provedores.json`; a latência é calculada sobre as respostas recebidas:
+
+| Provedor e modelo | Aprovados | Latência mediana (s) | Latência máxima (s) | Falhas e reprovações |
+|---|---|---|---|---|
+| Groq, `qwen/qwen3.8-27b` | 10 de 10 | 1,438 | 2,779 | nenhuma |
+| Groq, `openai/gpt-oss-120b` | 1 de 10 | 2,909 | 2,909 | 9 respostas inválidas: o raciocínio consome os 400 tokens e a resposta sai truncada |
+| NVIDIA, `minimaxai/minimax-m3.1-flash` | 0 de 10 | sem resposta | sem resposta | 10 tempos esgotados |
+| NVIDIA, `poolside/laguna-xs-2.1` | 7 de 10 | 7,517 | 16,033 | 3 textos reprovados pela conferência por citar números que não existem na entrada |
+
+Os limites do plano gratuito não estão na documentação pública do Groq (ela remete ao painel da conta), e a lista de modelos dos dois provedores mudou em relação ao que se esperava no design.
+
+**Motivo.** O único par que aprovou todos os textos, e o mais rápido.
+
+**Alternativas descartadas:** `openai/gpt-oss-120b` (truncava em 400 tokens); `minimaxai/minimax-m3.1-flash` (tempo esgotado em todas as chamadas); `poolside/laguna-xs-2.1` (lento e com números inventados); a API da Anthropic (sem chave, seção 17).
+
+**Incidente.** Na tarefa 5, o subagente executor imprimiu as duas chaves na própria transcrição ao diagnosticar a configuração. Elas não foram para nenhum arquivo nem commit, e o autor foi avisado para rotacioná-las antes de cadastrar a chave da demo.
+
+### API mínima e local
+
+**Decisão (decidido pelo autor, para manter a FastAPI; escolha do redator, aprovada pelo autor, para o escopo).** `src/occasion/api/` com FastAPI e os tipos de `inference/contract.py`: `POST /predict` (recebe `Contexto`, devolve `Resultado`, o mesmo de `prever`) e `GET /health` (situação e metadados do modelo carregado). O artefato é carregado uma vez, na subida. `make api` sobe o Uvicorn na porta 8000. Sem rota de briefing e sem publicação na internet.
+
+**Motivo.** A API mostra a camada de inferência separada da tela, como serviço, sem duplicar as proteções do briefing nem abrir outra superfície pública.
+
+**Alternativas descartadas:** tirar a FastAPI do escopo; uma rota de briefing (exigiria repetir cache e limites); publicar a API.
+
+### Documentação em inglês, com números gerados
+
+**Decisão (decidido pelo autor, para o idioma e para contar H8 como ponto forte do método; escolha do redator, aprovada pelo autor, para as tabelas geradas, a regra dos números e `make contagens`).** README, Data Card e `docs/REFERENCES.md` em inglês; a tela e o briefing continuam em português, e os identificadores do código não são traduzidos, para não quebrar a assinatura da receita. Os números dos documentos vêm de `make docs` (`occasion.relatorios.docs`), que lê `reports/*.json` e escreve tabelas entre marcadores `<!-- BEGIN:nome -->` e `<!-- END:nome -->`. `tests/relatorios/test_docs_atualizados.py` falha se um bloco estiver desatualizado ou se a prosa citar decimal ou porcentagem que não esteja num bloco do mesmo arquivo. Inteiros, trechos entre crases, blocos de código e URLs ficam fora da regra; por isso uma referência como a seção 5.4 de um documento, escrita com ponto na prosa em inglês, conta como decimal e tem de ir entre crases ou ser reescrita. As contagens de referência saem de `make contagens` (`reports/contagens.json`), que lê o alvo de 2017-2018 pela porta `carregar_base`, com `exigir_teste_commitado`; elas são das bases de modelagem, depois das exclusões (796 dias com pizza e refrigerante em 2017-2018, não 797, e 16.112 ocasiões com refrigerante, não 16.122), e "dias com pizza" fica de fora para não ler a base pessoa x dia de 2017-2018 por outra porta. H8 é contada como veio, sem suavizar e sem pedir desculpa; o README não atribui a queda a nenhuma causa que os dados não sustentem.
+
+**Escolha do executor:** a tabela de segmentos do teste final mostra região, local e sexo, as dimensões em que todos os níveis têm positivos suficientes.
+
+**Motivo.** O leitor do portfólio lê inglês, e um número digitado à mão no texto pode divergir do arquivo que o código gerou.
+
+**Alternativas descartadas:** documentação em português; números escritos à mão; traduzir os identificadores do código.
+
+### Tudo publicado
+
+**Decisão (decidido pelo autor).** Vai a público, além do código e dos relatórios: o `CLAUDE.md`, `docs/superpowers/` (design, planos e specs), `dados_externos/google_trends/` com o `LEIAME.md` do corte e o enunciado do TAPI. O README traz a linha "How this was built", dizendo que o projeto foi construído com Claude Code sob o processo documentado em `docs/`. O código sai sob licença MIT (escolha do redator), com o titular confirmado pelo autor em 21/11/2026; os microdados do IBGE não são redistribuídos, e o README diz que o enunciado do case não está coberto pela licença.
+
+**Motivo.** O processo (design, pré-registro, planos, revisões e este registro) é evidência de método e não é escondido.
+
+**Alternativa descartada:** publicar só o código e os relatórios.
+
+### Referências conferidas
+
+**Decisão (escolha do executor, nas tarefas 10 e 12).** `docs/REFERENCES.md` traz 17 entradas, cada uma com o que ela sustenta no projeto e a data da conferência (página da editora, da revista, do arXiv ou registro do Crossref; DOI resolvido).
+
+- As nove referências da seção 27 citadas de memória foram todas confirmadas e nenhuma saiu. Correções: Lones é citado pela versão publicada (*Patterns*, 2024), não pelo preprint; as listas de autores foram completadas; Hestness e colegas é marcado como preprint, e a linha do que ele sustenta deixou de dizer que o projeto usou uma curva de potência (usou uma reta em `log(n)`, seção 27).
+- Entraram, de citações deste registro sem entrada formal: TRIPOD+AI, os dois artigos de Riley e colegas sobre tamanho de amostra e Wieczorek e colegas.
+- Rodrigues e colegas (2021), *Revista de Saúde Pública*, entrou na revisão final como fonte do Data Card para a diferença de método entre as edições (registro alimentar em 2008-2009, recordatório de 24 horas em 2017-2018) e para o crescimento da base de alimentos e bebidas de 1.503 para 1.832 itens, conferidos no texto completo do SciELO.
+- PR-AUC e bootstrap por conglomerado ficam sem citação: este registro não cita uma referência específica para eles, e nenhuma foi citada de memória.
+
+**Motivo.** O design proíbe citar no README referência não conferida.
+
+**Alternativa descartada:** citar de memória referências para PR-AUC e bootstrap por conglomerado (exigiriam uma conferência nova).
+
+### Como o plano foi executado
+
+**Escolhas do executor:**
+
+- **Sem worktrees (Ruling D).** As frentes de código e de documentos rodaram em sequência na própria `plano-3`, e não em paralelo em worktrees como o design previa. Evita implementadores em paralelo no mesmo arquivo, o conflito no `Makefile` e o link de `data/` em cada worktree; custa tempo de relógio, não qualidade. As exceções foram tarefas com arquivos disjuntos (a comparação de provedores em paralelo às referências e ao Data Card, Ruling E), cada uma com `git add` explícito.
+- **Texto reserva testado nos quatro objetivos (Ruling B).** O plano falava em "três resultados"; os testes cobrem Sustentar, Converter, Criar ocasião e Não priorizar.
+- **Revisão de uma rodada pelo controlador (Ruling F).** Na tarefa 11, a segunda rodada de correção só removeu a oração que o revisor apontou, sem texto novo, e o controlador conferiu o diff no lugar de uma nova revisão.
+- **Interrupção pelo limite semanal da API.** Em 22/11 as tarefas 5 e 11 pararam no meio (erro 429) e foram retomadas do ponto em que estavam, com o trabalho não commitado ainda no disco.
+- **Documentação das bibliotecas.** O `context7` não respondeu em várias tarefas; as APIs do `httpx`, do FastAPI e do Streamlit foram conferidas no código instalado (`help()`) e pela execução.
+
+---
+
 ## Fontes consultadas
 
 **Dados e POF**
@@ -880,7 +995,7 @@ No servido (tarefa 18), as escolhas de execução foram: treino nas duas ediçõ
 - [Beyond Accuracy: Behavioral Testing with CheckList](https://arxiv.org/pdf/2005.04118)
 - [Validating and testing ML pipelines with pandera](https://flyte.readthedocs.io/en/latest/flytesnacks/examples/pandera_plugin/validating_and_testing_ml_pipelines.html)
 
-**Método: referências citadas no congelamento da receita** (citadas de memória na conversa com o autor, sem link conferido)
+**Método: referências citadas no congelamento da receita** (citadas de memória na conversa com o autor, sem link conferido; conferidas depois, no Plano 3, e mantidas em `docs/REFERENCES.md`, ver seção 28)
 
 - Perlich, Provost e Simonoff (2003). Tree Induction vs. Logistic Regression: A Learning-Curve Analysis. *Journal of Machine Learning Research*.
 - van der Ploeg, Austin e Steyerberg (2014). Modern modelling techniques are data hungry. *BMC Medical Research Methodology*.

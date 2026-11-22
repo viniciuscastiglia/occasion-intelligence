@@ -28,22 +28,43 @@ Comandos do Plano 2 (todos gravam JSON em `reports/experimentos/` ou `reports/`,
 - `make teste-final`: H8 em 2017-2018 (`reports/teste_final.json`; rodar de novo grava `teste_final_reexecucao.json`, sem sobrescrever).
 - `make pos-teste` (H9 e diagnóstico), `make servido` (`models/servido/`, que a tela prefere), `make curva-aprendizado` (exploratória), `make hipoteses` (`reports/hipoteses.json`, H1 a H10).
 
-**Plano 2 executado** na branch `plano-2` (o `plano-1` já está na `main`): `docs/superpowers/plans/2026-11-20-plano-2-modelos-teste-e-servido.md`. O ledger `.superpowers/sdd/2026-11-20-plano-2-modelos-teste-e-servido/progress.md` (fora do git) tem cada decisão de execução. O pré-registro está em `docs/pre-registro.md`; a seção 27 do registro de decisões traz as decisões do Plano 2, inclusive a aprovação da receita em 21/11/2026. Resultados: `reports/hipoteses.json` (H1 a H10; H10 cortada) e `reports/teste_final.json` (H8 refutada: o score não superou o produto das tabelas do degrau A em 2017-2018, com ganho de −0,00003 na PR-AUC e IC 95% [−0,00094; 0,00077], intervalo largo que não prova equivalência; a parte de ocasião supera a tabela, a de preferência não). Receita: degrau C (logística com curvas e interações) nas duas partes, score = produto, sem calibração; o modelo servido é a mesma receita reajustada em 2008-2009 e 2017-2018 (H9).
+Comandos do Plano 3:
 
-**A receita está congelada** pela tag `receita-congelada` (commit `fa700be`). A assinatura (`src/occasion/bases/assinatura.py`, `ARQUIVOS_DA_RECEITA`) cobre `config.py`, `features/`, `models/`, `score/`, `validacao/`, `avaliacao/`, `ingest/`, `bases/{modelagem,ocasioes,assinatura}.py`, `eda/descritivas.py`, `receita.py`, `versoes_da_receita.py`, `inference/{artefato,treino}.py`, `experimentos/{especificacao,teste_final,regras,registro}.py` e `reports/receita.json`. Mudar qualquer um deles bloqueia `make avaliado` e o teste final. O Plano 3 pode mexer em `predict.py`, `contract.py`, `pipeline.py`, `app/`, `pyproject.toml` e `uv.lock`, mas o `uv lock` não pode mudar a versão de numpy, pandas, scipy, scikit-learn, lightgbm ou pyarrow (o teste final confere contra `versoes_da_receita.py`).
+- `make contagens`: grava `reports/contagens.json` (contagens das bases de modelagem por edição, depois das exclusões, e dias-pessoa por dia da semana). Lê o alvo de 2017-2018 por `carregar_base` com `exigir_teste_commitado`: precisa de `make bases` e do teste final commitado.
+- `make docs`: regenera as tabelas entre `<!-- BEGIN:nome -->` e `<!-- END:nome -->` no `README.md` e em `docs/DATA_CARD.md` a partir de `reports/*.json` (não precisa de `data/`). `tests/relatorios/test_docs_atualizados.py` falha se um bloco estiver desatualizado ou se a prosa citar decimal ou porcentagem que não esteja num bloco do mesmo arquivo (inteiros, crases, código e URLs ficam fora da regra).
+- `make api`: API local (FastAPI, `occasion.api.app`) na porta 8000: `POST /predict` (`Contexto` → `Resultado`) e `GET /health`. Sem briefing e não publicada.
+
+**Planos 1 e 2 estão na `main`.** Plano 2: `docs/superpowers/plans/2026-11-20-plano-2-modelos-teste-e-servido.md`. O ledger `.superpowers/sdd/2026-11-20-plano-2-modelos-teste-e-servido/progress.md` (fora do git) tem cada decisão de execução. O pré-registro está em `docs/pre-registro.md`; a seção 27 do registro de decisões traz as decisões do Plano 2, inclusive a aprovação da receita em 21/11/2026. Resultados: `reports/hipoteses.json` (H1 a H10; H10 cortada) e `reports/teste_final.json` (H8 refutada: o score não superou o produto das tabelas do degrau A em 2017-2018, com ganho de −0,00003 na PR-AUC e IC 95% [−0,00094; 0,00077], intervalo largo que não prova equivalência; a parte de ocasião supera a tabela, a de preferência não). Receita: degrau C (logística com curvas e interações) nas duas partes, score = produto, sem calibração; o modelo servido é a mesma receita reajustada em 2008-2009 e 2017-2018 (H9).
+
+**A receita está congelada** pela tag `receita-congelada` (commit `fa700be`). A assinatura (`src/occasion/bases/assinatura.py`, `ARQUIVOS_DA_RECEITA`) cobre `config.py`, `features/`, `models/`, `score/`, `validacao/`, `avaliacao/`, `ingest/`, `bases/{modelagem,ocasioes,assinatura}.py`, `eda/descritivas.py`, `receita.py`, `versoes_da_receita.py`, `inference/{artefato,treino}.py`, `experimentos/{especificacao,teste_final,regras,registro}.py` e `reports/receita.json`. Mudar qualquer um deles bloqueia `make avaliado` e o teste final. Fora da assinatura podem mudar `predict.py`, `contract.py`, `pipeline.py`, `app/`, `briefing/`, `api/`, `relatorios/`, `pyproject.toml` e `uv.lock`, mas o `uv lock` não pode mudar a versão de numpy, pandas, scipy, scikit-learn, lightgbm ou pyarrow (o teste final confere contra `versoes_da_receita.py`).
+
+**Plano 3 executado** na branch `plano-3` (`docs/superpowers/plans/2026-11-21-plano-3-entrega-e-portfolio.md`; ledger em `.superpowers/sdd/2026-11-21-plano-3-entrega-e-portfolio/progress.md`, fora do git; decisões na seção 28 do registro). Entregou: artefato servido commitado, mapa de calor dia x faixa e briefing por LLM na tela, API local, `README.md`, `docs/DATA_CARD.md`, `docs/REFERENCES.md` e `LICENSE` (MIT). Falta a publicação (tarefa 14): tornar o repositório público, cadastrar os *secrets* do LLM no Cloud, conferir a demo pública e pôr a URL no README. O vídeo fica fora do Plano 3.
+
+Repositório e demo:
+
+- Remoto `origin` = `github.com/viniciuscastiglia/occasion-intelligence`, privado até a tarefa 14; `main`, `plano-3` e a tag já foram enviadas.
+- O artefato servido vai no git (`.gitignore`: `/models/*` e `!/models/servido/`; `avaliado` e `baseline` ficam fora). Foi refeito com a árvore limpa (`receita_commit` sem `-dirty`) e conferido contra o anterior por `scripts/comparar_artefatos.py`. Um clone sem `data/` abre a tela.
+- A demo roda no Streamlit Community Cloud, que instala pelo `uv.lock` (não criar `requirements.txt` nem `packages.txt`; Python 3.12 nas configurações avançadas do deploy). URL da demo: definida na publicação (tarefa 14).
+
+Briefing por LLM (`src/occasion/briefing/`):
+
+- Configuração por `BRIEFING_BASE_URL`, `BRIEFING_MODELO` e `BRIEFING_CHAVE`. Nada carrega o `.env`: exportar as três no shell (`set -a; . ./.env; set +a`) ou pô-las em `.streamlit/secrets.toml` (no `.gitignore`). A variável de ambiente prevalece sobre `st.secrets`. Sem as três, a tela mostra o texto reserva com o motivo "sem chave configurada".
+- Provedor escolhido pelo autor: Groq, `qwen/qwen3.8-27b` (`https://api.groq.com/openai/v1`), pela comparação em `reports/briefing_provedores.json`.
+- Proteções: cache pela decisão, 5 chamadas por sessão, teto global de 60 por hora por processo, conferência de números e de termos proibidos (efeito causal e marcas). A conferência não checa os fatores por nome; o limite está declarado no README.
 
 O que existe:
 
 - `Occasion_Intelligence_Pizza_Guarana.md`: o TAPI, enunciado do case.
 - `docs/superpowers/specs/2026-11-12-occasion-intelligence-design.md`: o design aprovado pelo autor em 12/11/2026. Ele prevalece sobre os resumos deste arquivo.
 - `docs/registro-de-decisoes.md`: como cada decisão foi tomada, com as alternativas descartadas e os motivos.
-- `docs/superpowers/plans/2026-11-12-plano-1-dados-e-caminho-inteiro.md`: o Plano 1, executado na branch `plano-1`. Vai dos microdados até a tela funcionando com a tabela de taxas. O Plano 2 (modelos, teste final e servido) está executado na branch `plano-2`. O Plano 3 (tela completa, briefing por LLM, README, Data Card e vídeo) ainda será escrito.
+- `docs/superpowers/plans/2026-11-12-plano-1-dados-e-caminho-inteiro.md`: o Plano 1, executado na branch `plano-1`. Vai dos microdados até a tela funcionando com a tabela de taxas. O Plano 2 (modelos, teste final e servido) e o Plano 3 (entrega e portfólio) também estão em `docs/superpowers/plans/`; o design do Plano 3 é `docs/superpowers/specs/2026-11-21-plano-3-entrega-e-portfolio-design.md`.
+- `README.md`, `docs/DATA_CARD.md` e `docs/REFERENCES.md` (em inglês): a entrega para o avaliador e para o portfólio.
 
-A stack está definida na seção 16 do design: Python 3.12 fixado pelo `uv`, pandas, pandera, scikit-learn, LightGBM, SHAP, pytest, Hypothesis, Pydantic, Streamlit e FastAPI.
+A stack está definida na seção 16 do design: Python 3.12 fixado pelo `uv`, pandas, pandera, scikit-learn, LightGBM, pytest, Hypothesis, Pydantic, Streamlit, FastAPI e `httpx` (cliente do LLM). O pacote `shap` não entra: as contribuições saem do TreeSHAP do próprio LightGBM.
 
 O projeto é individual, com entrega por volta de 25/11/2026 (duas semanas a partir de 11/11/2026). O escopo precisa caber nesse prazo: priorizar os entregáveis obrigatórios e reservar tempo para o vídeo, que é eliminatório.
 
-Conversar e documentar em português.
+Conversar e documentar em português. Exceção: `README.md`, `docs/DATA_CARD.md` e `docs/REFERENCES.md` são em inglês; a tela e o briefing continuam em português.
 
 ## O que é o projeto
 
@@ -87,7 +108,7 @@ O Occasion Score tem duas partes:
 
 O score é o produto das duas partes, mostrado como posição de 0 a 100 entre os contextos da população de referência.
 
-O Decision Engine escolhe a ativação pela combinação das duas partes, em duas camadas: objetivo (sustentar, converter, criar ocasião ou não priorizar) e canal. Promoção de pizza em app de delivery e influencers digitais são categorias de ativação, não o modelo. O briefing gerado por LLM a partir da decisão estruturada está no escopo, por decisão do autor do projeto, mesmo sendo opcional no TAPI. O provedor é um serviço com interface compatível com a da OpenAI, como Groq ou NVIDIA NIM.
+O Decision Engine escolhe a ativação pela combinação das duas partes, em duas camadas: objetivo (sustentar, converter, criar ocasião ou não priorizar) e canal. Promoção de pizza em app de delivery e influencers digitais são categorias de ativação, não o modelo. O briefing gerado por LLM a partir da decisão estruturada está no escopo, por decisão do autor do projeto, mesmo sendo opcional no TAPI. O provedor é um serviço com interface compatível com a da OpenAI; o autor escolheu o Groq (`qwen/qwen3.8-27b`) por comparação com o NVIDIA NIM.
 
 O modelo avaliado é treinado em 2008-2009. Depois do teste final, a mesma receita é reajustada para a aplicação (modelo servido), conforme a seção 12 do design.
 
@@ -191,6 +212,14 @@ Esses percentuais são da edição de teste e já foram vistos. Eles não orient
 - **scikit-learn 1.9:** `penalty` da `LogisticRegression` está depreciado; L2 é `l1_ratio=0.0` (com `solver="newton-cholesky"`, que aceita matriz esparsa e peso).
 - **Execuções longas:** `caffeinate -i` não impede o sono com a tampa fechada nem salva a bateria; rodar a escada na tomada e com a tampa aberta (a máquina dormiu duas vezes no Plano 2).
 - **Tela no Playwright:** o rádio do Streamlit não aceita clique direto; clicar no rótulo dentro de `stSidebarUserContent`. A captura de página inteira só pega a primeira tela; ler o resto pelo snapshot. Apagar `.playwright-mcp/` depois (não está no `.gitignore`); `reports/capturas/` é ignorado.
+- **AppTest e `secrets.toml`:** o `AppTest` lê `./.streamlit/secrets.toml` (e chamaria o LLM de verdade) a menos que `at.secrets` tenha alguma chave. Nos testes da tela, criar a tela sempre pelo helper `_tela()` de `tests/app/test_app.py`, que põe uma chave inócua e bloqueia a rede.
+- **Streamlit 1.67:** sem `secrets.toml`, `st.secrets[...]` lança `StreamlitSecretNotFoundError`, subclasse de `FileNotFoundError`. No `AppTest`, o gráfico Altair é o elemento `vega_lite_chart`, com os dados em Arrow IPC (`proto.datasets[0].data.data`).
+- **Nome de arquivo de teste repetido:** os diretórios de teste não têm `__init__.py`, então dois arquivos com o mesmo nome quebram a coleta do pytest (por isso `tests/api/test_api.py`, e não `test_app.py`).
+- **Regra dos números nos documentos em inglês:** "section 5.4" na prosa conta como decimal e reprova `test_docs_atualizados`. Pôr a referência entre crases ou reescrevê-la; número de resultado só dentro dos blocos gerados por `make docs`.
+- **macOS sem `timeout`:** o comando não existe; subir processos em segundo plano e encerrá-los com `pkill`, conferindo `ps` no fim.
+- **App privado no Cloud:** exige login; a extensão do Chrome não conseguiu operá-lo. Conferir com o autor ou depois de o app ficar público.
+- **Chaves de API:** subagente nunca imprime variáveis de ambiente nem o conteúdo de `.env` ou `secrets.toml` em diagnóstico (conferir só se existem). No Plano 3 um subagente ecoou as chaves na transcrição, e elas precisaram ser rotacionadas.
+- **Limite semanal da API:** pode interromper um subagente no meio (erro 429). Retomá-lo com `SendMessage`, conferindo o que ficou sem commit no disco, em vez de despachar outro do zero.
 
 ## Fluxo de trabalho com o superpowers
 
@@ -225,7 +254,7 @@ A espinha é sequencial: ingestão, base por pessoa x dia e por ocasião, featur
 - camada de briefing por LLM;
 - Data Card e README.
 
-Usar worktrees (`superpowers:using-git-worktrees`) apenas nessas tarefas paralelas.
+Usar worktrees (`superpowers:using-git-worktrees`) apenas nessas tarefas paralelas. No Plano 3 as frentes rodaram em sequência na própria branch, sem worktrees (o `Makefile` comum e o `data/` fora do git pesavam mais que o ganho de tempo); só tarefas com arquivos disjuntos rodaram em paralelo, com `git add` explícito.
 
 ### Onde o TDD se aplica
 
@@ -257,11 +286,11 @@ Usar `superpowers:systematic-debugging`. Se uma contagem divergir da tabela de r
 
 ### Outras ferramentas instaladas que entram no projeto
 
-- `context7` (servidor MCP de documentação): antes de escrever código que usa uma biblioteca (pandas, scikit-learn, LightGBM, SHAP, Streamlit, FastAPI, Pydantic), consultar a documentação da versão fixada no projeto com `resolve-library-id` e `query-docs`, em vez de confiar na memória da API. Vale também para subagentes: a tarefa deve dizer quais bibliotecas consultar. As consultas vão para um serviço externo; mandar só nome de biblioteca e dúvida técnica, nunca dados ou detalhes do projeto.
+- `context7` (servidor MCP de documentação): antes de escrever código que usa uma biblioteca (pandas, scikit-learn, LightGBM, Streamlit, FastAPI, Pydantic, httpx, Altair), consultar a documentação da versão fixada no projeto com `resolve-library-id` e `query-docs`, em vez de confiar na memória da API. Vale também para subagentes: a tarefa deve dizer quais bibliotecas consultar. As consultas vão para um serviço externo; mandar só nome de biblioteca e dúvida técnica, nunca dados ou detalhes do projeto. No Plano 3 o `context7` não respondeu em várias tarefas; o recurso é ler o código instalado (`help()`, o fonte em `.venv`) e conferir pela execução.
 - `pyright-lsp` (checagem de tipos em Python): código novo leva anotações de tipo nas funções públicas, e os diagnósticos do Pyright são resolvidos antes de dar a tarefa como pronta. O Pyright está em `~/.local/bin`.
 - `claude-md-management`: ao fim de cada etapa do pipeline, rodar `/revise-claude-md` para registrar aqui o que a etapa ensinou (comandos reais, decisões, armadilhas). Usar a skill `claude-md-improver` para auditar este arquivo quando ele crescer.
 - `dataviz`: carregar antes de escrever qualquer gráfico, na EDA ou na aplicação.
-- Briefing por LLM: o provedor não é a Anthropic, então a skill `claude-api` não se aplica. Consultar pelo `context7` a documentação do provedor escolhido (Groq ou NVIDIA NIM) e da biblioteca cliente.
+- Briefing por LLM: o provedor não é a Anthropic, então a skill `claude-api` não se aplica. O provedor escolhido é o Groq, e o cliente é `httpx` direto (`briefing/cliente.py`), sem a biblioteca `openai`.
 - `frontend-design` ou `impeccable`: só se a interface não for Streamlit.
 
 ## Em aberto
