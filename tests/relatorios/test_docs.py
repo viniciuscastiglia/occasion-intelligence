@@ -60,3 +60,10 @@ def test_blocos_reais_tem_h1_a_h10_e_h8_refutada():
     assert ids == {f"H{i}" for i in range(1, 11)}
     h8 = next(ln for ln in linhas if ln.split("|")[1].strip() == "H8")
     assert "refuted" in h8
+
+
+def test_rodape_do_teste_final_diz_a_base_de_cada_parte():
+    rodape = gerar_blocos(RAIZ / "reports")["teste_final"].splitlines()[-1]
+    assert "person × day × cell rows" in rodape
+    assert "preference rows on soda occasions" in rodape
+    assert "Evaluated on 2017-2018 cells" not in rodape

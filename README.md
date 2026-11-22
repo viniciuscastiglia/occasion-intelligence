@@ -18,7 +18,7 @@ This repository answers an open case brief written for a student AI league in pa
 **Locally, without the microdata** (the served model is committed in `models/servido/`):
 
 ```bash
-git clone <this repository> && cd case-ambev
+git clone https://github.com/viniciuscastiglia/occasion-intelligence.git && cd occasion-intelligence
 uv sync
 make app        # Streamlit screen at http://localhost:8501
 ```
@@ -76,9 +76,9 @@ flowchart TD
     reports --> docs["README and Data Card tables<br/>src/occasion/relatorios/"]
 ```
 
-- **One inference function.** The screen, the API and batch scoring all go through `prever` (`src/occasion/inference/predict.py`), which calls the same `pontuar` used in evaluation, so they cannot disagree. The screen only formats what `prever` returns.
+- **One inference function.** The screen and the API go through `prever` (`src/occasion/inference/predict.py`), which calls the same `pontuar` used in evaluation, so they cannot disagree. The screen only formats what `prever` returns.
 - **Typed contract.** Input (`Contexto`) and output (`Resultado`) are Pydantic models; the API validates against them and returns 422 on invalid input (for example, age under 18 or an unknown state).
-- **Signed core.** Everything that can change a number (configuration, ingestion, target definition, features, models, score, validation, evaluation and the test code itself) is listed in `ARQUIVOS_DA_RECEITA` (`src/occasion/bases/assinatura.py`) and covered by the recipe signature. The application layers (screen, API, briefing, Decision Engine, `predict.py`) sit outside it.
+- **Signed core.** Everything that can change a reported metric or the target (configuration, ingestion, target definition, features, models, score, validation, evaluation and the test code itself) is listed in `ARQUIVOS_DA_RECEITA` (`src/occasion/bases/assinatura.py`) and covered by the recipe signature. The application layers (screen, API, briefing, Decision Engine, `predict.py`) sit outside it.
 - **Gated target.** `carregar_base` (`src/occasion/bases/acesso.py`) is the only reader of the modelling bases for modelling and testing, and refuses the 2017-2018 target columns until the recipe tag exists.
 - **Generated numbers.** The tables in this README and in the Data Card are written by `make docs` from `reports/*.json`. A test fails if they are stale, or if the prose quotes a decimal or percentage that is not in one of them.
 
@@ -176,7 +176,7 @@ How to read the rows that are easy to misread:
 | preference (all soda occasions) | 0.3187 | 0.3067 | 0.01208 [-0.004224, 0.02856] | refuted | step-A rate table |
 | preference (pizza only) | 0.2398 | 0.2329 | 0.006865 [-0.05160, 0.05794] | refuted | step-A rate table |
 
-A part is 'supported' only if the 95% interval of the PR-AUC gain excludes zero in favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018 cells, weighted.
+A part is 'supported' only if the 95% interval of the PR-AUC gain excludes zero in favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018, weighted: H8 and the occasion part on person × day × cell rows (850,180); the preference rows on soda occasions (16,112 in all, 802 with pizza).
 <!-- END:teste_final -->
 
 **Segments of the final test.** In every segment the observed / expected ratio is above 1: the event is more frequent in 2017-2018 than the 2008-2009 recipe expects. The shift is not uniform: 1.948 at home against 1.106 away from home, 1.958 in the Southeast against 1.203 in the South. Under-prediction that varies by segment does change the ranking across segments.
@@ -223,7 +223,7 @@ H8 is the project's main claim about generalization over time, and it was refute
 - **The occasion part generalizes.** On 2017-2018 it beats its table, with a gain of 0.004199 [0.002116, 0.008206]: the model ranks *when* pizza with soda happens better than counting does, ten years later.
 - **The preference part does not.** In all soda occasions the gain is 0.01208 [-0.004224, 0.02856], and in occasions with pizza it is 0.006865 [-0.05160, 0.05794]. This weakness was declared before the test: at recipe approval, the preference model already ranked weakly out of fold (ROC-AUC 0.6084 in all soda occasions and 0.5269 in the pizza slice, with 101 positive cases), and the decision log recorded as a risk the premise that preference learned from all meals carries over to meals with pizza. H8 tested that premise, and the product did not beat the tables.
 
-**Ten years and a change of method.** 2008-2009 used a food record filled in by the resident; 2017-2018 used a 24-hour recall interview. Any drop between editions mixes a decade of habit change with the change of collection method, and this project cannot separate them. The post-test diagnosis (`make pos-teste`, `reports/pos_teste.json`) refits the same recipe by cross-validation inside 2017-2018 to show how much is lost in crossing the decade; it changes no reported number.
+**Ten years and a change of method.** 2008-2009 used a food record filled in by the resident; 2017-2018 used a 24-hour recall interview. Any drop between editions mixes a decade of habit change with the change of collection method, and this project cannot separate them. The post-test diagnosis (`make pos-teste`, `reports/pos_teste.json`) refits the same recipe by cross-validation inside 2017-2018 to show how much is lost in crossing editions; it changes no reported number.
 
 **What changed because of it: nothing in the recipe.** Changing the model after seeing the test would turn the test into part of the selection. The limitation is shown in the app's model panel and here. For a reader of the app, the practical consequence is that the occasion position carries the signal that held up over time, while the guaraná-preference position is weak evidence, and the objective that depends on it should be read that way.
 
@@ -235,7 +235,7 @@ Explicit rules over the two positions of the score and the context (`src/occasio
 
 | | Preference high (position ≥ 50) | Preference low (< 50) |
 |---|---|---|
-| **Occasion high (position ≥ 75)** | Sustain (`Sustentar`): keep presence where it already works | Convert (`Converter`): the occasion exists and guaraná lags |
+| **Occasion high (position ≥ 75)** | Sustain (`Sustentar`): both the occasion and the preference are high | Convert (`Converter`): the occasion exists and guaraná lags |
 | **Occasion low (< 75)** | Create the occasion (`Criar ocasião`): guaraná is preferred and pizza is missing | Do not prioritize (`Não priorizar`) |
 
 "Preference high" means guaraná is more likely than in the median context of the reference population, **not** that guaraná beats cola: in absolute terms cola leads in most contexts.
@@ -267,8 +267,8 @@ A complementary channel, **regional media**, is added when the state is among th
 - **Provider:** any OpenAI-compatible `chat/completions` endpoint, configured through `BRIEFING_BASE_URL`, `BRIEFING_MODELO` and `BRIEFING_CHAVE` (environment variables or Streamlit secrets; see `.env.example`). No key is committed.
 - **Prompt rules:** use only the factors, numbers and category received, with the direction received; no claim of effect on sales; guaraná is a flavor; no brands.
 - **Automatic check of every answer:** each number in the text must exist in the input, accepting equivalent forms (comma or point, fraction or percentage, rounding to the decimals shown); the text must not contain forbidden terms (effect claims such as "vende mais", "causa", "garante", "impacto", and brand names).
-- **Fallback:** a fixed-template text built from the same output replaces the model's text when there is no key, the provider fails or times out (15 s), the quota is exhausted, the answer is malformed, the check fails or the session limit is reached. The screen always says which text it shows and why.
-- **Cost guards for a public demo:** a cache keyed by the SHA-256 of the input (only approved texts are cached) and a limit of 5 provider calls per session.
+- **Fallback:** a fixed-template text built from the same output replaces the model's text when there is no key, the provider fails or times out (15 s), the quota is exhausted, the answer is malformed, the check fails or the session or global limit is reached. The screen always says which text it shows and why.
+- **Cost guards for a public demo:** a cache keyed by the SHA-256 of the input (only approved texts are cached, and cache hits cost nothing), a limit of 5 provider calls per session and a global cap of 60 calls per hour for the whole process, so opening new sessions does not get around it.
 - **Declared limit of the check:** it does not verify automatically that each factor *named* in the text is in `top_factors`. Matching variable identifiers almost never catches anything, and matching the Portuguese labels would reject faithful texts, because the context uses the same words. The guarantee on factors comes from the prompt and the number check.
 
 ## Limitations
@@ -333,7 +333,7 @@ make qualidade          # ruff and pyright
 | `src/occasion/validacao/`, `experimentos/`, `avaliacao/` | Folds, sector bootstrap, metrics, hypotheses, final test, segments, errors, explainability | Evaluation |
 | `src/occasion/decision/` | Decision Engine rules | Decision Engine |
 | `src/occasion/inference/`, `app/`, `src/occasion/api/` | Inference function and contract, Streamlit screen, local API | Functional application |
-| `src/occasion/briefing/` | LLM briefing with check, fallback, cache and session limit | Optional generative layer |
+| `src/occasion/briefing/` | LLM briefing with check, fallback, cache, and session and global limits | Optional generative layer |
 | `src/occasion/audit/` | Availability, sample size and adversarial check of the editions | Data audit |
 | `src/occasion/relatorios/` | Reference counts and the generated tables of the docs | Documentation |
 | `reports/`, `reports/experimentos/` | Every result as JSON, committed | Evaluation |

@@ -170,9 +170,14 @@ def _bloco_teste_final(t: dict[str, Any]) -> str:
         ]
         for nome, r, ref in linhas
     ]
+    d = t["dados"]
     regra = (
         "A part is 'supported' only if the 95% interval of the PR-AUC gain excludes zero in "
-        "favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018 cells, weighted."
+        "favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018, weighted: H8 "
+        f"and the occasion part on person × day × cell rows ({_int(d['celulas_teste']['n'])}); "
+        "the preference rows on soda occasions "
+        f"({_int(d['ocasioes_refri_teste']['n'])} in all, "
+        f"{_int(d['ocasioes_refri_teste_com_pizza']['n'])} with pizza)."
     )
     tabela = _tabela(
         ["Target", "PR-AUC recipe", "PR-AUC reference", "Gain [95% CI]", "Verdict", "Reference"],

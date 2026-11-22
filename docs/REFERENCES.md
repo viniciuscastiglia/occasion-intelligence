@@ -1,6 +1,6 @@
 # References
 
-Literature behind the method choices in this project. Each entry was checked on 2026-11-21 against the publisher page, the journal's own site or a Crossref record (authors, year, title, venue, volume and pages); DOI links were resolved. A few publisher sites (JAMIA, BMJ) refuse automated requests, so for those the metadata was confirmed through Crossref. "Supports" says which project decision the reference informs; none of these works is evidence about the project's own results.
+Literature behind the method choices in this project. Each entry was checked on 2026-11-21 (the data-source entry on 2026-11-22) against the publisher page, the journal's own site or a Crossref record (authors, year, title, venue, volume and pages); DOI links were resolved. A few publisher sites (JAMIA, BMJ) refuse automated requests, so for those the metadata was confirmed through Crossref. "Supports" says which project decision the reference informs; none of these works is evidence about the project's own results.
 
 ## Temporal validation and model selection
 
@@ -53,7 +53,7 @@ Literature behind the method choices in this project. Each entry was checked on 
   - Supports: fitting a learning curve on subsamples to project performance at a larger sample size.
   - Verified: 2026-11-21.
 - Hestness, J., Narang, S., Ardalani, N., Diamos, G., Jun, H., Kianinejad, H., Patwary, M. M. A., Yang, Y. and Zhou, Y. (2017). Deep learning scaling is predictable, empirically. arXiv:1712.00409. https://arxiv.org/abs/1712.00409
-  - Supports: the use of power-law-style learning-curve extrapolation (preprint; not peer reviewed).
+  - Supports: the general idea of extrapolating learning curves; the project used a straight line in log(n), not a power law (preprint; not peer reviewed).
   - Verified: 2026-11-21.
 
 ## Class imbalance and calibration
@@ -64,6 +64,12 @@ Literature behind the method choices in this project. Each entry was checked on 
 - Van Calster, B., McLernon, D. J., van Smeden, M., Wynants, L. and Steyerberg, E. W. (2019). Calibration: the Achilles heel of predictive analytics. *BMC Medicine*, 17, 230. https://doi.org/10.1186/s12916-019-1466-7
   - Supports: reporting calibration at three levels (mean, slope, curve) alongside discrimination.
   - Verified: 2026-11-21.
+
+## Data source
+
+- Rodrigues, R. M., De Carli, E., Araújo, M. C., Verly Junior, E., Marchioni, D. M. L., Bezerra, I. N., Souza, A. M., Yokoo, E. M., Pereira, R. A. and Sichieri, R. (2021). Limitations in the comparison of the Brazilian National Dietary Surveys of 2008–2009 and 2017–2018. *Revista de Saúde Pública*, 55(Suppl 1). https://doi.org/10.11606/s1518-8787.2021055003365 (full text: https://www.scielo.br/j/rsp/a/d7YbhsbV6sjf9Z4CLwLWp5f/?lang=en)
+  - Supports: the Data Card's statement that 2008-2009 used a food record and 2017-2018 a 24-hour recall, and that the food and beverage intake database had 1,503 items in 2008-2009 and 1,832 in 2017-2018 (stated in the article's text and in its comparison box).
+  - Verified: 2026-11-22, on the SciELO full text and the journal's article page (authors, year, title, venue, DOI).
 
 ## Not included
 
