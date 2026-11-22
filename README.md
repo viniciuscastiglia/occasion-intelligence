@@ -121,7 +121,7 @@ Counts of the modelling bases (cells and soda occasions) after exclusions, unwei
 Each choice below is the one fixed before the corresponding experiment ran. The literature behind them is listed, with checked links, in [`docs/REFERENCES.md`](docs/REFERENCES.md).
 
 - **Declared prediction instant and per-variable leakage check.** Every input is justified against the moment of planning ([leakage sheet](docs/ficha-de-vazamento.md)); a shuffled-label run (`make embaralhado`) is a sanity check against leakage. Following [Kapoor and Narayanan (2023)](https://doi.org/10.1016/j.patter.2023.100804).
-- **Temporal split, test opened once.** Everything fitted or chosen (EDA, time bands, variables, ladder, hyperparameters, calibration, cutoffs) used 2008-2009 only. 2017-2018 was opened once, after the freeze, so the test measures the chosen model instead of taking part in choosing it ([Hastie, Tibshirani and Friedman, 2009, ch. 7](https://doi.org/10.1007/978-0-387-84858-7); [Cawley and Talbot, 2010](https://jmlr.org/papers/v11/cawley10a.html)).
+- **Temporal split, test opened once.** Everything fitted or chosen (EDA, time bands, variables, ladder, hyperparameters, calibration, cutoffs) used 2008-2009 only. The 2017-2018 target was read once, after the freeze, so the test measures the chosen model instead of taking part in choosing it. Before that, the edition was used only without its target (parser counts, schema harmonization, an adversarial check on input columns), and a few raw counts and guaraná/cola shares had been seen before the design was written; the [Data Card](docs/DATA_CARD.md#5-leakage-strategy) lists exactly what ([Hastie, Tibshirani and Friedman, 2009, ch. 7](https://doi.org/10.1007/978-0-387-84858-7); [Cawley and Talbot, 2010](https://jmlr.org/papers/v11/cawley10a.html)).
 - **Pre-registration.** Ten hypotheses, their metrics and decision rules were committed in [`docs/pre-registro.md`](docs/pre-registro.md) before the stage that tests each one; every experiment writes a JSON, failed ones included ([Lones, 2024](https://doi.org/10.1016/j.patter.2024.101046)).
 - **Validation that follows the survey design.** Nested cross-validation inside 2008-2009, 5 outer and 3 inner folds, keeping each sampling sector (`cod_upa`) whole and spreading sectors within strata, so no person, household or sector is on both sides ([Wieczorek, Guerin and McMahon, 2022](https://doi.org/10.1002/sta4.454)).
 - **Uncertainty by sector bootstrap.** Every interval comes from a paired bootstrap of whole sectors within each state (1000 replicates, percentile 95% interval). Sectors, not rows, because rows in a sector are not independent; within the state rather than the stratum, because many strata have only a handful of sectors.
@@ -179,7 +179,7 @@ How to read the rows that are easy to misread:
 A part is 'supported' only if the 95% interval of the PR-AUC gain excludes zero in favor of the recipe; otherwise it is 'refuted'. Evaluated on 2017-2018 cells, weighted.
 <!-- END:teste_final -->
 
-**Segments of the final test.** In every segment the observed / expected ratio is above 1: the event is more frequent in 2017-2018 than the 2008-2009 recipe expects. A level shift like that does not change the ranking the score is based on.
+**Segments of the final test.** In every segment the observed / expected ratio is above 1: the event is more frequent in 2017-2018 than the 2008-2009 recipe expects. The shift is not uniform: 1.948 at home against 1.106 away from home, 1.958 in the Southeast against 1.203 in the South. Under-prediction that varies by segment does change the ranking across segments, so it is part of why the score lost ground over time.
 
 <!-- BEGIN:segmentos_teste -->
 | Dimension | Level | Cells | Positives | PR-AUC | Observed / expected |
@@ -214,7 +214,7 @@ Out-of-fold predictions on 2008-2009; prevalence, metrics and the score are weig
 
 H8 is the project's main claim about generalization over time, and it was refuted. That is reported here as a result of the method working, not hidden as a failure.
 
-**It was a fair test, run once.** The hypothesis, metric, reference and decision rule were committed before any model ran. The recipe was frozen by tag and signature, and the 2017-2018 target sat behind a gated loader until then. The test was opened once, on 21 November 2026, and its JSON was committed as it came; a later re-execution from the raw files reproduced the same metrics. The reference was made strong on purpose (step A tuned by nested cross-validation), which makes the test harder to pass, not easier.
+**It was a fair test, run once.** The hypothesis, metric, reference and decision rule were committed before any model ran. The recipe was frozen by tag and signature, and the 2017-2018 target sat behind a gated loader until then. The 2017-2018 target was opened once, on 21 November 2026 (what had been seen of that edition before is listed in the [Data Card](docs/DATA_CARD.md#5-leakage-strategy)), and the test JSON was committed as it came; a later re-execution from the raw files reproduced the same metrics. The reference was made strong on purpose (step A tuned by nested cross-validation), which makes the test harder to pass, not easier.
 
 **What the numbers say.** The score reached a PR-AUC of 0.001877, against 0.001911 for the product of the step-A tables: a gain of -0.00003392, 95% CI [-0.0009391, 0.0007684]. The interval is wide. It does not show that the recipe is worse, and it does not prove the two are equivalent. It shows that, on this test, the recipe adds nothing demonstrable over counting.
 
@@ -303,7 +303,6 @@ To enable the LLM briefing, export the three `BRIEFING_*` variables listed in `.
 ```bash
 make ambiente           # uv sync
 make tudo               # dados-brutos, bases, auditoria, baseline: about 34 s once the zips are downloaded
-make contagens          # reports/contagens.json (reference counts); minutes
 make teste-dados        # all tests, including the parser reference counts
 make eda                # executes notebooks/eda_2008.ipynb (2008-2009 only); minutes
 make experimentos       # 2008-2009 chain: dobras peso escada h4 embaralhado calibracao produto cortes receita avaliacao-2008
@@ -314,6 +313,7 @@ make pos-teste          # post-test diagnosis and H9
 make servido            # served model in models/servido/ (only with teste_final.json committed)
 make curva-aprendizado  # exploratory learning curve
 make hipoteses          # reports/hipoteses.json, H1 to H10
+make contagens          # reports/contagens.json (reference counts); reads the 2017-2018 target, so only after the test is committed
 make docs               # regenerate the tables of this README and the Data Card
 make qualidade          # ruff and pyright
 ```
