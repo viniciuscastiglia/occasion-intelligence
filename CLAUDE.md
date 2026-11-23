@@ -38,13 +38,13 @@ Comandos do Plano 3:
 
 **A receita está congelada** pela tag `receita-congelada` (commit `fa700be`). A assinatura (`src/occasion/bases/assinatura.py`, `ARQUIVOS_DA_RECEITA`) cobre `config.py`, `features/`, `models/`, `score/`, `validacao/`, `avaliacao/`, `ingest/`, `bases/{modelagem,ocasioes,assinatura}.py`, `eda/descritivas.py`, `receita.py`, `versoes_da_receita.py`, `inference/{artefato,treino}.py`, `experimentos/{especificacao,teste_final,regras,registro}.py` e `reports/receita.json`. Mudar qualquer um deles bloqueia `make avaliado` e o teste final. Fora da assinatura podem mudar `predict.py`, `contract.py`, `pipeline.py`, `app/`, `briefing/`, `api/`, `relatorios/`, `pyproject.toml` e `uv.lock`, mas o `uv lock` não pode mudar a versão de numpy, pandas, scipy, scikit-learn, lightgbm ou pyarrow (o teste final confere contra `versoes_da_receita.py`).
 
-**Plano 3 executado** na branch `plano-3` (`docs/superpowers/plans/2026-11-21-plano-3-entrega-e-portfolio.md`; ledger em `.superpowers/sdd/2026-11-21-plano-3-entrega-e-portfolio/progress.md`, fora do git; decisões na seção 28 do registro). Entregou: artefato servido commitado, mapa de calor dia x faixa e briefing por LLM na tela, API local, `README.md`, `docs/DATA_CARD.md`, `docs/REFERENCES.md` e `LICENSE` (MIT). Falta a publicação (tarefa 14): tornar o repositório público, cadastrar os *secrets* do LLM no Cloud, conferir a demo pública e pôr a URL no README. O vídeo fica fora do Plano 3.
+**Plano 3 executado** na branch `plano-3` (`docs/superpowers/plans/2026-11-21-plano-3-entrega-e-portfolio.md`; ledger em `.superpowers/sdd/2026-11-21-plano-3-entrega-e-portfolio/progress.md`, fora do git; decisões na seção 28 do registro). Entregou: artefato servido commitado, mapa de calor dia x faixa e briefing por LLM na tela, API local, `README.md`, `docs/DATA_CARD.md`, `docs/REFERENCES.md` e `LICENSE` (MIT). Publicado em 23/11/2026: repositório público, `main` com o Plano 3, demo pública conferida (cálculo, mapa, briefing pelo LLM e limite da sessão). O vídeo fica fora do Plano 3.
 
 Repositório e demo:
 
-- Remoto `origin` = `github.com/viniciuscastiglia/occasion-intelligence`, privado até a tarefa 14; `main`, `plano-3` e a tag já foram enviadas.
+- Remoto `origin` = `github.com/viniciuscastiglia/occasion-intelligence`, público desde 23/11/2026; `main`, `plano-3` e a tag enviadas.
 - O artefato servido vai no git (`.gitignore`: `/models/*` e `!/models/servido/`; `avaliado` e `baseline` ficam fora). Foi refeito com a árvore limpa (`receita_commit` sem `-dirty`) e conferido contra o anterior por `scripts/comparar_artefatos.py`. Um clone sem `data/` abre a tela.
-- A demo roda no Streamlit Community Cloud, que instala pelo `uv.lock` (não criar `requirements.txt` nem `packages.txt`; Python 3.12 nas configurações avançadas do deploy). URL da demo: definida na publicação (tarefa 14).
+- A demo roda no Streamlit Community Cloud, que instala pelo `uv.lock` (não criar `requirements.txt` nem `packages.txt`; Python 3.12 nas configurações avançadas do deploy). URL da demo (pública, branch `main`): https://eze77etwj6uewukcr3amfh.streamlit.app. O app foi recriado na publicação; o antigo, privado, apontava para a `plano-3`.
 
 Briefing por LLM (`src/occasion/briefing/`):
 
@@ -218,7 +218,7 @@ Esses percentuais são da edição de teste e já foram vistos. Eles não orient
 - **Regra dos números nos documentos em inglês:** "section 5.4" na prosa conta como decimal e reprova `test_docs_atualizados`. Pôr a referência entre crases ou reescrevê-la; número de resultado só dentro dos blocos gerados por `make docs`.
 - **macOS sem `timeout`:** o comando não existe; subir processos em segundo plano e encerrá-los com `pkill`, conferindo `ps` no fim.
 - **App privado no Cloud:** exige login; a extensão do Chrome não conseguiu operá-lo. Conferir com o autor ou depois de o app ficar público.
-- **Chaves de API:** subagente nunca imprime variáveis de ambiente nem o conteúdo de `.env` ou `secrets.toml` em diagnóstico (conferir só se existem). No Plano 3 um subagente ecoou as chaves na transcrição, e elas precisaram ser rotacionadas.
+- **Chaves de API:** subagente nunca imprime variáveis de ambiente nem o conteúdo de `.env` ou `secrets.toml` em diagnóstico (conferir só se existem). No Plano 3 um subagente ecoou as chaves na transcrição, e o autor trocou a chave do Groq e revogou a da NVIDIA em 23/11/2026.
 - **Limite semanal da API:** pode interromper um subagente no meio (erro 429). Retomá-lo com `SendMessage`, conferindo o que ficou sem commit no disco, em vez de despachar outro do zero.
 
 ## Fluxo de trabalho com o superpowers

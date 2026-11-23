@@ -5,7 +5,7 @@ An end-to-end decision system built on public Brazilian survey microdata. It est
 - **Data:** observed food intake from IBGE's Household Budget Survey (POF), editions 2008-2009 (training) and 2017-2018 (test). The target is what people reported eating, never a proxy.
 - **Method:** a model ladder from a rate table to LightGBM, ten hypotheses pre-registered before any model ran, a recipe frozen by a git tag and a SHA-256 signature, and one temporal test on the later edition.
 - **Headline result, reported as it came:** on 2017-2018 the frozen recipe did **not** rank contexts better than the product of the rate-table baselines (H8 refuted: PR-AUC gain -0.00003392, 95% CI [-0.0009391, 0.0007684]). The occasion part beat its table; the guaraná-preference part did not. [What that means](#what-the-negative-result-means).
-- **Demo:** available after publication. Until then, the app runs locally from a clean clone in two commands ([Try it](#try-it)).
+- **Demo:** [eze77etwj6uewukcr3amfh.streamlit.app](https://eze77etwj6uewukcr3amfh.streamlit.app) (Streamlit Community Cloud; it may take a minute to wake up). The app also runs locally from a clean clone in three commands ([Try it](#try-it)).
 
 Stack: `Python 3.12` with `uv`, pandas, pandera, scikit-learn, LightGBM, Pydantic, Streamlit, Altair, FastAPI, httpx, pytest and Hypothesis.
 
@@ -13,7 +13,7 @@ This repository answers an open case brief written for a student AI league in pa
 
 ## Try it
 
-**Online:** demo link available after publication.
+**Online:** <https://eze77etwj6uewukcr3amfh.streamlit.app> (if the app is asleep, click the wake-up button and wait about a minute).
 
 **Locally, without the microdata** (the served model is committed in `models/servido/`):
 
@@ -354,7 +354,7 @@ make qualidade          # ruff and pyright
 
 ## How this was built
 
-Built with Claude Code under the process documented in `docs/` (design, pre-registration, plans, review and decision log), with every decision made by the author.
+Built with Claude Code under the process documented in `docs/` (design, pre-registration, plans, review and decision log), with every decision made or approved by the author (the executor's rulings are recorded in section 28 of the decision log).
 
 ## A note on language
 
