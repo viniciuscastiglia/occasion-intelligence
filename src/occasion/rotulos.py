@@ -1,5 +1,7 @@
 """Rótulos legíveis de variáveis, valores, partes e regras, usados pela tela e pelo Decision Engine."""
 
+from occasion.config import CODIGO_UF
+
 ROTULOS_DIA: dict[str, str] = {
     "segunda": "Segunda", "terca": "Terça", "quarta": "Quarta", "quinta": "Quinta",
     "sexta": "Sexta", "sabado": "Sábado", "domingo": "Domingo",
@@ -47,6 +49,8 @@ _ROTULOS_DO_VALOR: dict[str, dict[str, str]] = {
     "situacao": {c: r.lower() for c, r in ROTULOS_SITUACAO.items()},
     "sexo": {c: r.lower() for c, r in ROTULOS_SEXO.items()},
     "regiao": ROTULOS_REGIAO,
+    # O fator da UF carrega o código do IBGE; a tela e o texto mostram a sigla.
+    "uf": {str(codigo): sigla for sigla, codigo in CODIGO_UF.items()},
 }
 
 

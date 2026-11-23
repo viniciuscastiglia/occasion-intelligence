@@ -16,6 +16,10 @@ Regras:
   recebida (aumenta ou diminui). Não invente fatores, números nem categorias.
 - Não afirme nem sugira efeito sobre vendas. O resultado descreve associação observada,
   não efeito de uma ação.
+- Escreva scores e posições (de 0 a 100) como números inteiros, do jeito que a tela mostra
+  (por exemplo, 100 e não 99,8; 70 e não 70,43).
+- A renda é a renda domiciliar por pessoa, em salários mínimos. Nunca escreva "renda familiar"
+  sem "por pessoa".
 - Guaraná é o sabor de refrigerante registrado na POF, não uma marca.
 - Não cite marcas.
 - Responda só com o texto do briefing, sem títulos, listas ou JSON.

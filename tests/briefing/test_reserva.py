@@ -35,3 +35,16 @@ def test_texto_reserva_cita_categoria_e_fatores(
     assert "Converter, via combo em app de delivery" in texto
     assert "faixa de horário" in texto
     assert "idade" in texto
+
+
+def test_texto_reserva_mostra_sigla_da_uf_e_nao_o_codigo(
+    contexto: Contexto, montar_resultado: Callable[[str], Resultado]
+) -> None:
+    ctx = contexto.model_copy(update={"uf": "RJ"})
+    resultado = montar_resultado(CATEGORIAS[0])
+    fatores = [resultado.top_factors[0].model_copy(update={"variavel": "uf", "valor": "33"})]
+    resultado = resultado.model_copy(update={"top_factors": fatores})
+    texto = texto_reserva(ctx, resultado)
+    assert "UF RJ" in texto
+    assert "UF 33" not in texto
+    assert conferir(texto, entrada_do_briefing(ctx, resultado)).aprovado

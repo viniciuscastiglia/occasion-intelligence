@@ -24,3 +24,10 @@ def test_mensagens_tem_system_e_user_com_json_da_entrada(
     sistema = mensagens[0]["content"]
     assert "3 a 5 frases" in sistema
     assert "marca" in sistema
+
+
+def test_regras_pedem_inteiros_e_renda_por_pessoa(contexto: Contexto, resultado: Resultado) -> None:
+    sistema = montar_mensagens(contexto, resultado)[0]["content"]
+    assert "números inteiros" in sistema
+    assert "renda domiciliar por pessoa" in sistema
+    assert 'Nunca escreva "renda familiar"' in sistema
